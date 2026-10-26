@@ -376,7 +376,7 @@ function collectActivity(){
   return {mission_id:state.mission,mission_title:mission?.title||'',mode:state.mode,custom_context:val('customContext'),problem:val('myProblem'),conditions:val('myCond'),current_state:val('myCurrent'),goal_state:val('myGoal'),core_elements:val('myCore'),parts:val('myParts'),reflection:val('reflection')};
 }
 function collectRecord(){return {state:JSON.parse(JSON.stringify(state)),activity:collectActivity(),quiz:{...state.quizStats},saved_at:new Date().toISOString()}}
-async function syncRemote(){if(!remoteReady)return;setSync('저장 중...');const {data,error}=await ProblemLabAPI.saveLesson1(collectRecord());if(error||!data?.ok){setSync('저장 실패','bad');return}setSync('Supabase 저장됨','good')}
+async function syncRemote(){if(!remoteReady)return;setSync('저장 중...');const {data,error}=await ProblemLabAPI.saveLesson1(collectRecord());if(error||!data?.ok){setSync('저장 실패','bad');return}setSync('저장됨','good')}
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,450)}};
 
 const analysisItems=[
@@ -513,7 +513,7 @@ $('#startQuiz').onclick=buildQuiz;$('#restartQuiz').onclick=buildQuiz;$('#quizNe
 function applyForm(a={}){const pairs={customContext:'custom_context',myProblem:'problem',myCond:'conditions',myCurrent:'current_state',myGoal:'goal_state',myCore:'core_elements',myParts:'parts',reflection:'reflection'};Object.entries(pairs).forEach(([id,k])=>{if($('#'+id)&&a[k]!=null)$('#'+id).value=a[k]})}
 function rerenderAll(){renderAnalysis();renderAbstract();renderTasks();renderMissions();renderMissionData();renderStage(state.stage||0);if(state.done[1])$('#to2').classList.remove('hide');if(state.done[2])$('#to3').classList.remove('hide');if(state.done[3])$('#to4').classList.remove('hide');if(state.done[4]){$('#to5').classList.remove('hide');$('#modelPreview').classList.remove('hide');}if(state.done[5])$('#to6').classList.remove('hide');}
 ['customContext','myProblem','myCond','myCurrent','myGoal','myCore','myParts','reflection'].forEach(id=>$('#'+id)?.addEventListener('input',()=>{state.formDraft=collectActivity();localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,700)}}));
-async function bootRemote(){setSync('Supabase 확인 중');const {data,error}=await ProblemLabAPI.getLesson1();if(error||!data?.ok){setSync('연결 확인 필요','bad');remoteReady=true;return}const r=data.record||{};if(r.state&&Object.keys(r.state).length){Object.assign(state,r.state);if(!state.quizStats)state.quizStats=r.quiz||{attempts:0,wrong_total:0,passed:false};localStorage.setItem(KEY,JSON.stringify(state));applyForm(r.activity||{});rerenderAll()}remoteReady=true;setSync('Supabase 연결됨','good');syncRemote()}
+async function bootRemote(){setSync('기록 확인 중');const {data,error}=await ProblemLabAPI.getLesson1();if(error||!data?.ok){setSync('저장 확인 필요','bad');remoteReady=true;return}const r=data.record||{};if(r.state&&Object.keys(r.state).length){Object.assign(state,r.state);if(!state.quizStats)state.quizStats=r.quiz||{attempts:0,wrong_total:0,passed:false};localStorage.setItem(KEY,JSON.stringify(state));applyForm(r.activity||{});rerenderAll()}remoteReady=true;setSync('저장됨','good');syncRemote()}
 initRamenGame();rerenderAll();if(state.formDraft)applyForm(state.formDraft);bootRemote();
 })();
 </script>

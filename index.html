@@ -14,8 +14,7 @@
   <section class="card hero">
     <span class="eyebrow">3단원 학습 공간</span>
     <h2>내 문제를 이해하고,<br>친구들의 해결 방법도 만나보자.</h2>
-    <p>1차시는 <b>개별활동</b>, 2차시는 <b>모둠활동</b>으로 운영됩니다. 처음 접속한 학생은 학년·반·이름과 나만의 숫자 4자리 PIN을 등록하세요. 다음 접속부터는 같은 정보와 PIN으로 내 기록을 불러올 수 있습니다.</p>
-    <div id="configWarn" class="configWarn hide"><b>Supabase 연결 전입니다.</b><br><code>assets/supabase-config.js</code>에 프로젝트 URL과 Publishable key를 입력해 주세요.</div>
+    <p>학년·반·이름과 <b>숫자 4자리 PIN</b>을 입력하고 시작하세요.</p>
   </section>
 
   <section id="loginArea" class="wizard">
@@ -25,13 +24,12 @@
         <div class="field"><label>학년</label><select id="grade"></select></div>
         <div class="field"><label>반</label><select id="classNo"></select></div>
       </div>
-      <div class="notice show">현재 활동은 1학년 중심이지만, 데이터 구조는 1~3학년까지 사용할 수 있게 만들어 두었습니다.</div>
     </div>
     <div class="stepCard active">
       <h3>2. 내 정보 · 4자리 PIN</h3>
       <div class="field"><label>이름</label><input id="studentName" maxlength="30" placeholder="예: 홍길동" autocomplete="off"></div>
       <div class="field"><label>숫자 4자리 PIN</label><input id="studentPin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="● ● ● ●" type="password" autocomplete="off"></div>
-      <div class="notice show">처음 접속이면 이 PIN으로 계정이 만들어지고, 기존 학생이면 같은 PIN을 입력해 이어서 활동합니다.</div>
+      <div class="notice show">처음이면 사용할 PIN을 정하고, 다음부터 같은 PIN으로 접속하세요.</div>
       <div class="actions"><button class="btn" id="loginBtn">내 학습 공간 들어가기</button></div>
       <div class="notice" id="loginMsg"></div>
     </div>
@@ -39,20 +37,21 @@
 
   <section id="dashboard" class="dashboard">
     <div class="studentBar">
-      <div><b id="studentLabel"></b><br><span>내 기록은 Supabase에 저장됩니다.</span></div>
+      <div><b id="studentLabel"></b></div>
       <div class="actions" style="margin:0"><button class="ghost" id="switchStudent">학생 바꾸기</button></div>
     </div>
     <div class="menuGrid">
-      <button class="menuCard" id="lesson1Card"><div class="ico">🧩</div><h3>1차시 · 개별활동</h3><p>문제 이해 → 핵심 요소 추출 → 문제 분해 활동을 진행하고, 마지막 ‘내 상황 미션’을 학급 갤러리에 공유합니다.</p><span class="badge" id="lesson1Badge">활동 시작</span></button>
-      <button class="menuCard locked" id="lesson2Card"><div class="ico">🗺️</div><h3>2차시 · 모둠활동</h3><p>교사가 공개하면 바로 이 버튼으로 2차시 공간에 들어갑니다. 1차시 화면을 거치지 않습니다.</p><span class="badge" id="lesson2Badge">교사 공개 전</span></button>
-      <button class="menuCard" id="galleryCard"><div class="ico">🖼️</div><h3>학급 갤러리</h3><p>1차시와 2차시 탭을 나누어 친구들의 결과물을 카드 뉴스처럼 보고, 마음에 드는 작품에 👍를 눌러보세요.</p><span class="badge">친구 작품 보기</span></button>
+      <button class="menuCard" id="lesson1Card"><div class="ico">🧩</div><h3>1차시 · 개별활동</h3><p>문제를 이해하고 핵심을 찾은 뒤 작은 문제로 나누어 봅니다.</p><span class="badge" id="lesson1Badge">활동 시작</span></button>
+      <button class="menuCard locked" id="lesson2Card"><div class="ico">🗺️</div><h3>2차시 · 모둠활동</h3><p>선생님이 공개하면 시작할 수 있습니다.</p><span class="badge" id="lesson2Badge">아직 열리지 않음</span></button>
+      <button class="menuCard" id="galleryCard"><div class="ico">🖼️</div><h3>학급 갤러리</h3><p>친구들의 결과물을 보고 마음에 드는 작품에 👍를 눌러보세요.</p><span class="badge">작품 보기</span></button>
     </div>
+    <div class="notice" id="dashboardMsg"></div>
   </section>
 </div>
 
 <button class="teacherFab" id="teacherOpen" title="교사 콘솔">🧑‍🏫</button>
 <div class="modal" id="teacherModal"><div class="modalCard">
-  <div class="modalTitle"><div><h2>교사 콘솔</h2><p style="color:var(--muted);margin:5px 0 0">2차시 공개와 1차시 기록 다운로드</p></div><button class="ghost" id="teacherClose">닫기</button></div>
+  <div class="modalTitle"><div><h2>교사 콘솔</h2><p style="color:var(--muted);margin:5px 0 0">2차시 공개 · 기록 다운로드</p></div><button class="ghost" id="teacherClose">닫기</button></div>
   <div id="teacherLoginBox">
     <div class="field" style="max-width:320px"><label>교사 PIN</label><input id="teacherPin" type="password" inputmode="numeric" maxlength="8" placeholder="교사 PIN"></div>
     <div class="actions" style="justify-content:flex-start"><button class="btn" id="teacherLoginBtn">교사 콘솔 열기</button></div>
@@ -60,10 +59,8 @@
   </div>
   <div id="teacherBody" class="hide">
     <div class="teacherGrid">
-      <div class="teacherBox"><h3>2차시 공개</h3><div class="toggleRow"><div><b>학생에게 2차시 버튼 열기</b><br><span style="color:var(--muted);font-size:13px">현재는 준비 중 페이지로만 연결됩니다.</span></div><label class="switch"><input type="checkbox" id="lesson2Toggle"><span class="slider"></span></label></div></div>
+      <div class="teacherBox"><h3>2차시 공개</h3><div class="toggleRow"><div><b>학생에게 2차시 버튼 열기</b></div><label class="switch"><input type="checkbox" id="lesson2Toggle"><span class="slider"></span></label></div></div>
       <div class="teacherBox"><h3>기록 다운로드</h3><div class="row"><div class="field"><label>학년</label><select id="exportGrade"><option value="">전체</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></div><div class="field"><label>반</label><select id="exportClass"><option value="">전체</option></select></div></div><div class="actions" style="justify-content:flex-start"><button class="btn" id="downloadCsv">1차시 기록 CSV</button></div></div>
-      <div class="teacherBox"><h3>저장 내용</h3><p style="color:var(--muted);line-height:1.7">학생 인적사항, 각 미션 진행 상태, 내 상황 미션의 문제·현재/목표·조건·핵심 요소·문제 분해·성찰, 형성평가 시도 횟수·오답 수·통과 여부를 내려받습니다.</p></div>
-      <div class="teacherBox"><h3>PIN 운영</h3><p style="color:var(--muted);line-height:1.7">학생 PIN은 DB에 평문으로 저장하지 않습니다. 학생이 PIN을 잊은 경우에는 추후 교사 콘솔의 PIN 초기화 기능을 확장할 수 있게 DB 함수까지 준비해 두었습니다.</p></div>
     </div>
     <div class="notice" id="teacherActionMsg"></div>
   </div>
@@ -81,10 +78,9 @@ function setDashboard(session, data={}){
   $('#loginArea').style.display='none';$('#dashboard').classList.add('show');
   $('#studentLabel').textContent=`${session.grade}학년 ${session.class_no}반 · ${session.name}`;
   $('#lesson1Badge').textContent=data.lesson1_passed?'형성평가 완료':(data.lesson1_started?'이어서 하기':'활동 시작');
-  const open=!!data.lesson2_open; $('#lesson2Card').classList.toggle('locked',!open);$('#lesson2Card').classList.toggle('open',open);$('#lesson2Badge').textContent=open?'2차시 공개됨':'교사 공개 전';
+  const open=!!data.lesson2_open; $('#lesson2Card').classList.toggle('locked',!open);$('#lesson2Card').classList.toggle('open',open);$('#lesson2Badge').textContent=open?'열림':'아직 열리지 않음';
 }
 async function refreshDashboard(){const s=ProblemLabAPI.getStudentSession();if(!s)return;const {data,error}=await ProblemLabAPI.getDashboard();if(error||!data?.ok){ProblemLabAPI.clearStudentSession();$('#loginArea').style.display='grid';$('#dashboard').classList.remove('show');return}setDashboard(s,data)}
-if(!ProblemLabAPI.configured()) $('#configWarn').classList.remove('hide');
 const current=ProblemLabAPI.getStudentSession();if(current) refreshDashboard();
 $('#loginBtn').onclick=async()=>{
   const name=$('#studentName').value.trim(), pin=$('#studentPin').value.trim();
@@ -92,14 +88,14 @@ $('#loginBtn').onclick=async()=>{
   $('#loginBtn').disabled=true;$('#loginBtn').textContent='확인 중...';
   const {data,error}=await ProblemLabAPI.studentLogin({grade:$('#grade').value,classNo:$('#classNo').value,name,pin});
   $('#loginBtn').disabled=false;$('#loginBtn').textContent='내 학습 공간 들어가기';
-  if(error){msg($('#loginMsg'),error.message==='SUPABASE_NOT_CONFIGURED'?'Supabase 설정이 아직 입력되지 않았습니다.':`연결 오류: ${error.message}`);return}
+  if(error){msg($('#loginMsg'),'지금은 접속할 수 없습니다. 선생님께 알려주세요.');return}
   if(!data?.ok){msg($('#loginMsg'),data?.message||'로그인하지 못했습니다.');return}
   await refreshDashboard();
 };
 $('#switchStudent').onclick=()=>{ProblemLabAPI.clearStudentSession();location.reload()};
 $('#lesson1Card').onclick=()=>location.href='lesson1.html';
 $('#galleryCard').onclick=()=>location.href='gallery.html';
-$('#lesson2Card').onclick=async()=>{if($('#lesson2Card').classList.contains('locked'))return;location.href='lesson2.html'};
+$('#lesson2Card').onclick=()=>{if($('#lesson2Card').classList.contains('locked'))return;msg($('#dashboardMsg'),'2차시 활동은 아직 준비 중이에요.');};
 
 let teacherPin='';
 $('#teacherOpen').onclick=()=>$('#teacherModal').classList.add('show');$('#teacherClose').onclick=()=>$('#teacherModal').classList.remove('show');
