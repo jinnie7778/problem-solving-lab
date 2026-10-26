@@ -81,9 +81,34 @@
   async function teacherResetStudentPin(pin, studentId, newPin) {
     return rpc('teacher_reset_student_pin', { p_pin: String(pin || ''), p_student_id: studentId, p_new_pin: String(newPin || '') });
   }
+  async function teacherListStudents(pin, grade = null, classNo = null, name = '') {
+    return rpc('teacher_list_students', {
+      p_pin: String(pin || ''),
+      p_grade: grade === '' || grade == null ? null : Number(grade),
+      p_class_no: classNo === '' || classNo == null ? null : Number(classNo),
+      p_name: String(name || '').trim() || null
+    });
+  }
+  async function teacherListGallery(pin, grade = null, classNo = null, lessonNo = null) {
+    return rpc('teacher_list_gallery', {
+      p_pin: String(pin || ''),
+      p_grade: grade === '' || grade == null ? null : Number(grade),
+      p_class_no: classNo === '' || classNo == null ? null : Number(classNo),
+      p_lesson_no: lessonNo === '' || lessonNo == null ? null : Number(lessonNo)
+    });
+  }
+  async function teacherUpdateGalleryPost(pin, postId, content, published = true) {
+    return rpc('teacher_update_gallery_post', {
+      p_pin: String(pin || ''), p_post_id: postId, p_content: content || {}, p_published: !!published
+    });
+  }
+  async function teacherDeleteGalleryPost(pin, postId) {
+    return rpc('teacher_delete_gallery_post', { p_pin: String(pin || ''), p_post_id: postId });
+  }
   window.ProblemLabAPI = {
     configured, getStudentSession, setStudentSession, clearStudentSession,
     studentLogin, getSettings, getDashboard, getLesson1, saveLesson1, publishLesson1,
-    galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherResetStudentPin
+    galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherResetStudentPin,
+    teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost
   };
 })();
