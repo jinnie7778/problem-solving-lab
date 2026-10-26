@@ -19,3 +19,214 @@
 .galleryEditFields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.galleryEditFields .full{grid-column:1/-1}.galleryEditFields textarea{width:100%;min-height:95px;border:1px solid #ccd7e4;border-radius:16px;padding:13px 14px;background:#fff;font:inherit;resize:vertical}.publishCheck{display:flex;align-items:center;gap:9px;margin-top:14px;padding:12px 14px;border-radius:14px;background:#f5f8ff;border:1px solid #d7e0f7;font-weight:900}.publishCheck input{width:19px;height:19px}
 @media(max-width:900px){.adminFilters{grid-template-columns:1fr 1fr}.studentRow{grid-template-columns:1fr}.studentBtns{justify-content:flex-start}.galleryAdminList{grid-template-columns:1fr}}
 @media(max-width:650px){.adminPanelHead{align-items:flex-start;flex-direction:column}.adminFilters,.recordGrid,.galleryEditFields{grid-template-columns:1fr}.recordItem:nth-last-child(-n+2),.galleryEditFields .full{grid-column:auto}}
+
+
+/* ===== 교사 콘솔 UI v2 ===== */
+.teacherConsole{
+  width:min(1240px,96vw);
+  padding:0;
+  overflow:auto;
+  border:1px solid #dbe4f0;
+  background:#f7f9fc;
+}
+.teacherConsole>.modalTitle{
+  position:sticky;top:0;z-index:6;
+  padding:24px 26px 18px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.teacherConsole>.modalTitle h2{font-size:34px;letter-spacing:-.03em}
+.teacherConsole>#teacherLoginBox,
+.teacherConsole>#teacherBody{padding:0 26px 26px}
+.adminTabs{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:20px 0;
+  padding:8px;
+  background:#eaf0f8;
+  border:1px solid #dbe4ef;
+  border-radius:18px;
+}
+.adminTab{
+  min-height:52px;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  color:#526276;
+  font-size:15px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.adminTab:hover{background:rgba(255,255,255,.65)}
+.adminTab.active{
+  background:#fff;
+  color:var(--navy);
+  box-shadow:0 8px 18px rgba(32,53,85,.10);
+}
+.adminPanel{
+  display:none;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 12px 28px rgba(29,51,84,.06);
+}
+.adminPanel.active{display:block}
+.adminPanelHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin:0 0 16px;
+}
+.adminPanelHead h3{font-size:27px;letter-spacing:-.02em;margin:0}
+.adminPanelHead p{margin:5px 0 0;color:var(--muted);font-size:14px}
+.adminFilters{
+  display:grid;
+  grid-template-columns:150px 150px minmax(220px,1fr) 110px;
+  gap:10px;
+  align-items:center;
+  padding:14px;
+  margin:0 0 14px;
+  background:#f7f9fc;
+  border:1px solid #e0e7f0;
+  border-radius:18px;
+}
+.adminFilters select,.adminFilters input{
+  min-height:46px;
+  border:1px solid #cfd9e7;
+  border-radius:13px;
+  padding:0 13px;
+  background:#fff;
+  font:inherit;
+  color:var(--ink);
+}
+.adminFilters .btn{min-height:46px;padding:0 16px}
+.adminSummary{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 16px;
+  margin:0 0 14px;
+  border:1px solid #dbe4ef;
+  border-radius:16px;
+  background:#f8fbff;
+}
+.adminSummary b{font-size:22px}
+.adminSummary span{color:#68768a;font-size:14px;font-weight:850}
+.studentAdminList{display:grid;gap:10px}
+.studentRow{
+  display:grid;
+  grid-template-columns:minmax(230px,1.15fr) minmax(220px,.95fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:16px 17px;
+  background:#fff;
+  border:1px solid #dde5ef;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(29,51,84,.035);
+}
+.studentRow:hover{border-color:#c4d3e8;background:#fbfdff}
+.studentIdentity b{display:block;font-size:18px;margin-bottom:8px}
+.studentIdentity>div{display:flex;gap:6px;flex-wrap:wrap}
+.studentMeta{display:grid;gap:4px;color:#607086;font-size:13px}
+.studentMeta span:first-child{font-weight:850;color:#4a5a6e}
+.studentBtns{
+  display:flex;
+  gap:7px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+.miniBtn{padding:9px 11px;border-radius:11px;font-size:13px;min-height:38px}
+.statusPill{
+  display:inline-flex;align-items:center;
+  padding:5px 8px;border-radius:999px;
+  background:#eef2f7;color:#5d6a7a;
+  font-size:11px;font-weight:1000;
+}
+.statusPill.good{background:var(--green2);color:#176140}
+.statusPill.gallery{background:var(--blue2);color:#3159c7}
+.statusPill.muted{background:#f4f4f5;color:#808793}
+.recordDetail{
+  margin-top:16px;
+  padding:18px;
+  border:1px solid #dbe4ef;
+  border-radius:20px;
+  background:#f9fbfe;
+}
+.recordHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.recordHead h4{font-size:22px;margin:0}
+.recordHead p{margin:4px 0 0;color:var(--muted)}
+.recordStats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.recordStats span{padding:8px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px}
+.recordGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.recordItem{padding:13px;background:#fff;border:1px solid var(--line);border-radius:15px;line-height:1.55}
+.recordItem small{display:block;color:var(--muted);font-size:11px;font-weight:1000;margin-bottom:4px}
+.galleryAdminList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.galleryAdminCard{
+  border:1px solid #dde5ef;border-radius:20px;padding:17px;background:#fff;
+  box-shadow:0 5px 16px rgba(29,51,84,.04)
+}
+.galleryAdminCard.unpublished{opacity:.72;background:#f7f8fa}
+.galleryAdminTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.galleryAdminTop b{font-size:16px}
+.galleryAdminTop span:not(.statusPill){display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.galleryAdminCard h4{font-size:20px;margin:14px 0 6px}
+.galleryAdminCard p{margin:0;color:#536478;line-height:1.55}
+.galleryAdminBtns{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+.danger{
+  background:#fff1f2;
+  border:1px solid #efc1c6;
+  color:#9a3640;
+  box-shadow:none;
+}
+.danger:hover{background:#ffe8eb;border-color:#e8aab2}
+.danger:disabled{
+  opacity:.42;
+  cursor:not-allowed;
+  filter:grayscale(.25);
+}
+.dangerBox{
+  margin:14px 0 4px;
+  padding:15px 16px;
+  border-radius:16px;
+  background:#fff2f3;
+  border:1px solid #efc3c8;
+  color:#8d3039;
+}
+.dangerBox b{display:block;font-size:17px;margin-bottom:5px}
+.dangerBox p{margin:0;line-height:1.6;font-size:14px}
+.deleteStudentCard .field{margin-top:16px}
+.adminLoading,.adminEmpty{
+  padding:36px 20px;text-align:center;
+  border:1px dashed #cbd7e7;border-radius:18px;
+  color:#738196;background:#fbfdff;
+}
+.teacherBox{
+  border:1px solid #dde5ef;
+  border-radius:20px;
+  padding:20px;
+  background:#f9fbfe;
+}
+.teacherBox h3{font-size:23px;margin:0 0 8px}
+.adminHint{color:var(--muted);font-size:13px;line-height:1.55;margin:5px 0 0}
+
+@media(max-width:980px){
+  .adminTabs{grid-template-columns:1fr 1fr}
+  .adminFilters{grid-template-columns:1fr 1fr}
+  .studentRow{grid-template-columns:1fr}
+  .studentBtns{justify-content:flex-start}
+  .galleryAdminList{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .teacherConsole{width:100%;max-height:96vh}
+  .teacherConsole>.modalTitle{padding:18px}
+  .teacherConsole>#teacherLoginBox,.teacherConsole>#teacherBody{padding:0 14px 18px}
+  .adminTabs{grid-template-columns:1fr 1fr;gap:7px}
+  .adminTab{font-size:13px}
+  .adminPanel{padding:15px}
+  .adminPanelHead{align-items:flex-start;flex-direction:column}
+  .adminFilters,.recordGrid,.galleryEditFields{grid-template-columns:1fr}
+}
