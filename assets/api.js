@@ -105,10 +105,13 @@
   async function teacherDeleteGalleryPost(pin, postId) {
     return rpc('teacher_delete_gallery_post', { p_pin: String(pin || ''), p_post_id: postId });
   }
+  async function teacherDeleteStudent(pin, studentId) {
+    return rpc('teacher_delete_student', { p_pin: String(pin || ''), p_student_id: studentId });
+  }
   window.ProblemLabAPI = {
     configured, getStudentSession, setStudentSession, clearStudentSession,
     studentLogin, getSettings, getDashboard, getLesson1, saveLesson1, publishLesson1,
     galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherResetStudentPin,
-    teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost
+    teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost, teacherDeleteStudent
   };
 })();
