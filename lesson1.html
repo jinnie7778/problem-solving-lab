@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>문제 해결 LAB 01 · 문제 이해와 문제 분해</title>
+<style>
+:root{
+  --bg:#f4f7fb;--paper:#fff;--ink:#182230;--muted:#68768a;--line:#dfe6ef;
+  --navy:#17243a;--blue:#315fdf;--blue2:#eef3ff;--green:#12865d;--green2:#eaf8f2;
+  --orange:#d9782d;--orange2:#fff3e8;--red:#b44752;--red2:#fff0f2;--purple:#6f56c9;--purple2:#f3efff;
+  --shadow:0 18px 44px rgba(29,51,84,.10);--r:28px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,#f1f5fb 100%);color:var(--ink);font-family:Pretendard,"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:18px;line-height:1.65}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.shell{max-width:1320px;margin:auto;padding:22px}
+.topbar{position:sticky;top:10px;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.brand,.status{background:rgba(255,255,255,.91);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);border-radius:999px}
+.brand{display:flex;align-items:center;gap:12px;padding:10px 16px}.brandLogo{width:43px;height:43px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;color:#fff;font-weight:1000}.brand b{font-size:20px}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:1px}.status{padding:11px 16px;font-weight:950}
+.card{background:var(--paper);border:1px solid rgba(255,255,255,.92);box-shadow:var(--shadow);border-radius:var(--r);padding:28px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}.heroText{padding:34px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:var(--blue2);color:#3159c7;font-size:13px;font-weight:1000;letter-spacing:.03em}.hero h1{font-size:50px;line-height:1.1;letter-spacing:-.055em;margin:13px 0 14px}.hero p{font-size:20px;line-height:1.7;color:#3e4f65;margin:0}.heroArt{min-height:410px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 72% 20%,#dce9ff 0,#f0f5ff 36%,#fff 74%)}
+.process{margin-top:18px}.process h2{font-size:28px;margin:0 0 14px}.processRow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.processStep{position:relative;min-height:105px;padding:16px;border:1px solid var(--line);background:#fbfcfe;border-radius:20px;display:grid;place-items:center;text-align:center;font-weight:950}.processStep b{font-size:18px}.processStep small{display:block;color:var(--muted);font-size:12px;margin-top:5px}.processStep::after{content:'→';position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:28px;color:#9bacc2;font-weight:1000;z-index:3}.processStep:last-child::after{display:none}.processStep.now{background:var(--blue2);border-color:#bdcdfb;color:#294fae}.processStep.next{background:#fafbfc;color:#7a8798}
+.lessonNav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:18px 0}.lessonNav button{border:1px solid var(--line);background:#fff;border-radius:17px;padding:13px 9px;font-size:13px;font-weight:950;color:#67768a}.lessonNav button .n{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#eef2f6;margin-right:5px}.lessonNav button.active{background:var(--navy);color:#fff;border-color:var(--navy)}.lessonNav button.active .n{background:#fff;color:var(--navy)}.lessonNav button.done{background:var(--green2);color:#126642;border-color:#c7e7d5}.lessonNav button.done .n{background:var(--green);color:#fff}
+.stage{display:none}.stage.active{display:block}.titleRow{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:18px}.titleRow h2{font-size:37px;line-height:1.2;letter-spacing:-.04em;margin:0}.titleRow p{margin:7px 0 0;color:var(--muted);font-size:17px}.tag{padding:7px 11px;border-radius:999px;background:#f1f5fa;border:1px solid var(--line);font-size:12px;font-weight:950;white-space:nowrap}
+.btn,.ghost,.tiny,.choice,.infoCard,.missionCard,.lensBtn{border:none;transition:.16s}.btn{background:linear-gradient(135deg,var(--blue),#194cdb);color:#fff;border-radius:15px;padding:14px 19px;font-weight:950;box-shadow:0 10px 22px rgba(49,95,223,.21)}.ghost{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 18px;font-weight:900;color:var(--ink)}.tiny{background:#f4f7fb;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:12px;font-weight:950}.btn:hover,.ghost:hover,.choice:hover,.missionCard:hover{transform:translateY(-1px)}.actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:18px}
+.callout{border-radius:21px;padding:18px 20px;background:var(--blue2);border:1px solid #cbd9ff;font-size:19px;font-weight:850;line-height:1.65}.callout.green{background:var(--green2);border-color:#c2e4d2}.callout.orange{background:var(--orange2);border-color:#f0d1b3}.callout.purple{background:var(--purple2);border-color:#d8cef8}.callout strong{font-size:21px}
+.conceptGrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.concept{border:1px solid var(--line);border-radius:24px;background:#fbfdff;padding:22px}.concept .ico{font-size:42px}.concept h3{font-size:25px;margin:8px 0 5px}.concept p{margin:0;color:#47576b;font-size:18px}.concept b{color:var(--blue)}.exampleRow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.example{padding:15px;border-radius:18px;background:#fff;border:1px solid var(--line);text-align:center;font-weight:900}.example span{display:block;font-size:30px;margin-bottom:4px}
+.scenarioGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.scene{border:1px solid var(--line);border-radius:26px;background:linear-gradient(180deg,#f9fbff,#f1f6ff);padding:18px;overflow:hidden}.missionTitle{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.missionTitle h3{font-size:28px;margin:0}.deadline{padding:9px 12px;border-radius:999px;background:#fff0e7;color:#a3511b;border:1px solid #f0c8ad;font-size:13px;font-weight:1000}.story{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;font-size:18px;line-height:1.8;color:#34465b}.story b{color:#17243a}.storyMark{display:inline-block;background:#fff5c9;border-radius:7px;padding:0 5px;font-weight:900}.factGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:13px}.fact{padding:14px;border:1px solid var(--line);background:#fff;border-radius:17px;font-weight:850}.fact small{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}.chat{display:grid;gap:9px;margin-top:13px}.bubble{max-width:88%;padding:12px 15px;border-radius:18px;background:#fff;border:1px solid var(--line);font-weight:800}.bubble.me{margin-left:auto;background:#eaf2ff;border-color:#c9d9fb}.bubble .name{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.timeNode{padding:12px 10px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:center}.timeNode b{font-size:15px}.timeNode span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.snsPanel{border:1px solid var(--line);border-radius:26px;background:#fff;padding:18px;box-shadow:0 12px 28px rgba(31,54,89,.06)}.snsHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:12px}.snsHeader strong{font-size:20px}.snsHeader span{font-size:12px;color:var(--muted);font-weight:800}.snsPanel .chat{margin-top:0}.snsPanel .bubble{max-width:92%;font-size:17px;line-height:1.55}.problemBlock{margin-top:18px;padding:22px;border:1px solid var(--line);border-radius:24px;background:#fbfdff}.problemBlock .question{margin-bottom:12px}.analysisGuide{display:none}.zoneGuide{margin:-2px -2px 14px;padding:16px 16px 14px;border-radius:18px;background:#fff;border:1px solid var(--line)}.zoneGuide h3{font-size:23px;margin:0 0 5px}.zoneGuide b{display:block;font-size:15px;line-height:1.55}.zoneGuide p{font-size:13px!important;color:var(--muted);margin:5px 0 0!important;line-height:1.5}.zone.current .zoneGuide{background:#f6f9ff;border-color:#cddcff}.zone.goal .zoneGuide{background:#f1fbf6;border-color:#c3e5d1}.zone.condition .zoneGuide{background:#fff8ef;border-color:#efd6ad}.quizIntro{margin-top:16px;padding:22px;border-radius:24px;background:linear-gradient(135deg,#f7f9ff,#eef4ff);border:1px solid #cfdcff}.quizIntro h3{font-size:28px;margin:0 0 8px}.quizIntro p{font-size:17px;line-height:1.65;color:#455670;margin:0}.quizRules{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.quizRule{padding:10px 13px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:900}.quizWrap{margin-top:16px;border:1px solid var(--line);border-radius:24px;background:#fbfdff;padding:22px}.quizTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.quizProgress{font-weight:950;color:#38506f}.quizMiss{padding:8px 12px;border-radius:999px;background:#fff3f3;border:1px solid #efc5c5;color:#9b3a42;font-weight:950}.quizQ{font-size:27px;font-weight:950;line-height:1.45;margin:0 0 16px}.quizChoices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.quizChoice{border:2px solid var(--line);background:#fff;border-radius:19px;padding:17px 18px;text-align:left;font-weight:900;line-height:1.5;color:var(--ink);min-height:84px}.quizChoice:hover{border-color:#b9cbeb}.quizChoice.correct{background:#eefbf4;border-color:#8bcaa9}.quizChoice.wrong{background:#fff3f4;border-color:#efb8bf}.quizChoice:disabled{cursor:default}.quizResult{margin-top:18px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#eefaf4,#eef4ff);border:1px solid #c9e2d3}.quizResult h3{font-size:30px;margin:0 0 8px}.quizResult p{font-size:18px;line-height:1.65;margin:0}.restartBox{margin-top:16px;padding:22px;border-radius:22px;background:#fff4f4;border:1px solid #efc3c3}.restartBox h3{font-size:26px;margin:0 0 6px;color:#923740}.restartBox p{margin:0;color:#6e4a4f;font-size:17px;line-height:1.6}.algoBridge{margin-top:16px;padding:20px 22px;border-radius:22px;background:linear-gradient(135deg,#f3efff,#eef3ff);border:1px solid #d4ccf4;font-size:18px;line-height:1.7}.algoBridge strong{font-size:21px}.algoArrow{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-weight:950;color:#4d41a8}.algoArrow span{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#fff;border:1px solid #d8d1f4}
+.question{font-size:25px;font-weight:950;margin:0 0 14px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{border:2px solid var(--line);background:#fff;border-radius:20px;padding:18px;text-align:left;font-weight:850;min-height:92px;color:var(--ink)}.choice.selected{border-color:var(--blue);background:#f5f8ff}.choice.correct{border-color:#8acbaa;background:#eefbf4}.choice.wrong{border-color:#efb8bf;background:#fff3f4}.feedback{display:none;margin-top:14px;padding:15px 17px;border-radius:16px;font-weight:850}.feedback.show{display:block}.feedback.good{background:var(--green2);border:1px solid #bae2cb;color:#176140}.feedback.bad{background:var(--red2);border:1px solid #efc1c6;color:#99353d}
+.bank{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.infoCard{padding:14px;background:#fff;border:1px solid var(--line);border-radius:17px;text-align:left;color:var(--ink);font-weight:850}.infoCard strong{display:block;font-size:15px}.infoCard small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.infoBtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.triad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.zone{min-height:245px;background:#f9fbfe;border:2px dashed #cbd7e7;border-radius:22px;padding:16px}.zone h3{font-size:24px;margin:0}.zone p{font-size:14px;color:var(--muted);margin:2px 0 12px}.placed{display:inline-flex;align-items:center;gap:7px;margin:4px;padding:10px 11px;border-radius:13px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:850}
+.abstractGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.bucket{min-height:250px;border-radius:22px;border:2px dashed #cbd7e7;padding:16px}.bucket.need{background:#f0faf5;border-color:#bfe1cd}.bucket.skip{background:#fff6f6;border-color:#ecc5c8}.bucket h3{font-size:23px;margin:0}.bucket p{font-size:14px;color:var(--muted);margin:2px 0 10px}.abstractBank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.decompGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.listBox{min-height:355px;border:2px dashed #cbd7e7;background:#f9fbfe;border-radius:22px;padding:16px}.listBox h3{font-size:24px;margin:0}.listBox p{font-size:14px;color:var(--muted);margin:2px 0 10px}.task{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:13px 14px;border:1px solid var(--line);background:#fff;border-radius:15px;margin-top:9px;font-weight:850}.ops{display:flex;gap:6px}
+.selfIntro{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px;align-items:stretch}.missionCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.missionCard{border:2px solid var(--line);background:#fff;border-radius:22px;padding:19px;text-align:left;color:var(--ink);min-height:180px}.missionCard.selected{border-color:var(--blue);background:#f5f8ff;box-shadow:0 0 0 4px rgba(49,95,223,.07)}.missionCard .ico{font-size:38px}.missionCard h3{font-size:21px;margin:7px 0 4px}.missionCard p{font-size:13px;color:var(--muted);margin:0;line-height:1.55}.dataSheet{margin-top:16px;border-radius:24px;background:#f8fbff;border:1px solid var(--line);padding:20px}.dataSheet h3{font-size:26px;margin:0 0 12px}.dataFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dataFact{padding:14px 15px;background:#fff;border:1px solid var(--line);border-radius:16px}.dataFact small{display:block;color:var(--muted);font-size:12px}.dataFact b{font-size:17px}.modeSwitch{display:flex;gap:8px;margin-top:14px}.modeSwitch button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:900}.modeSwitch button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-weight:950}.field input,.field textarea{width:100%;border:1px solid #ccd7e4;border-radius:16px;padding:14px 15px;background:#fff;color:var(--ink)}.field textarea{min-height:110px;resize:vertical}.hintline{font-size:13px;color:var(--muted)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:16px}.sum{padding:20px;border:1px solid var(--line);border-radius:22px;background:#fff}.sum .ico{font-size:36px}.sum h3{font-size:24px;margin:8px 0 4px}.sum p{margin:0;color:#47576d}.nextBox{margin-top:16px;padding:22px;border-radius:24px;background:linear-gradient(135deg,#17243a,#315fdf);color:#fff}.nextBox h3{font-size:27px;margin:0 0 6px}.nextBox p{margin:0;color:#e0e8ff;font-size:18px}
+.teacher{position:fixed;right:18px;bottom:18px;width:58px;height:58px;border:none;border-radius:18px;background:#111827;color:#fff;font-size:24px;box-shadow:0 14px 28px rgba(0,0,0,.25)}.modal{position:fixed;inset:0;background:rgba(12,20,34,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:70}.modal.show{display:flex}.modalCard{width:min(850px,100%);background:#fff;border-radius:26px;padding:24px;box-shadow:0 26px 60px rgba(0,0,0,.25)}.hide{display:none!important}
+.ramenWrap .actions{margin-top:10px}
+
+.ramenWrap{margin-top:18px;display:grid;grid-template-columns:1.04fr .96fr;gap:18px;align-items:start}.ramenScene{display:grid;gap:14px}.kidCard,.ramenPosterCard,.ramenGameBox{border:1px solid var(--line);border-radius:26px;background:#fbfdff}.kidCard{padding:20px;display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:center;background:linear-gradient(180deg,#fffdf6,#fff7e9)}.kidText h3{font-size:30px;line-height:1.25;margin:0 0 10px}.kidText p{margin:0;color:#526173;font-size:18px;line-height:1.7}.kidBadge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #f0d3a5;font-size:13px;font-weight:1000;color:#a66a1f;margin-bottom:10px}.kidIllo{position:relative;height:240px;border-radius:22px;background:linear-gradient(180deg,#dff0ff 0%,#ecf8ff 44%,#d8f0d6 44%,#d8f0d6 100%);overflow:hidden}.kidIllo .sun{position:absolute;top:18px;right:18px;width:50px;height:50px;border-radius:50%;background:#ffd75d;box-shadow:0 0 0 10px rgba(255,215,93,.22)}.kidIllo .table{position:absolute;left:22px;bottom:20px;width:235px;height:24px;border-radius:16px;background:#c48c5d}.kidIllo .body{position:absolute;left:92px;top:108px;width:88px;height:94px;border-radius:26px 26px 20px 20px;background:#4f7ff1}.kidIllo .head{position:absolute;left:101px;top:55px;width:72px;height:74px;border-radius:50%;background:#ffd9b7;z-index:2}.kidIllo .hair{position:absolute;left:95px;top:48px;width:84px;height:46px;border-radius:38px 38px 16px 18px;background:#23334c;z-index:3}.kidIllo .hair:after{content:'';position:absolute;left:4px;top:20px;width:22px;height:16px;border-radius:0 0 18px 14px;background:#23334c}.kidIllo .eye{position:absolute;top:86px;width:8px;height:8px;border-radius:50%;background:#23334c;z-index:4}.kidIllo .eye.e1{left:122px}.kidIllo .eye.e2{left:150px}.kidIllo .mouth{position:absolute;left:132px;top:102px;width:15px;height:11px;border-radius:0 0 12px 12px;border:3px solid #d06a77;border-top:none;z-index:4}.kidIllo .arm{position:absolute;top:128px;width:18px;height:58px;border-radius:16px;background:#ffd9b7}.kidIllo .arm.a1{left:78px;transform:rotate(22deg)}.kidIllo .arm.a2{left:176px;transform:rotate(-25deg)}.kidIllo .leg{position:absolute;top:188px;width:18px;height:42px;border-radius:16px;background:#ffd9b7}.kidIllo .leg.l1{left:114px}.kidIllo .leg.l2{left:146px}.kidIllo .shoe{position:absolute;top:226px;width:30px;height:12px;border-radius:12px;background:#24395f}.kidIllo .shoe.s1{left:106px}.kidIllo .shoe.s2{left:140px}.kidIllo .thought{position:absolute;left:16px;top:18px;max-width:110px;padding:10px 12px;border-radius:18px;background:#fff;border:1px solid var(--line);font-weight:900;line-height:1.35;box-shadow:0 10px 18px rgba(31,54,89,.08)}.kidIllo .thought:after{content:'';position:absolute;right:-8px;bottom:24px;width:16px;height:16px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(-45deg)}.ramenPosterCard{padding:18px;background:linear-gradient(180deg,#fff 0%,#fff9f0 100%)}.ramenPosterCard h3{font-size:26px;margin:0 0 10px}.ramenPosterCard p{margin:0 0 14px;color:#546377;font-size:17px;line-height:1.65}.ramenPoster{position:relative;height:250px;border-radius:24px;background:linear-gradient(180deg,#fff6d8 0%,#fff2ca 56%,#f5e5a5 100%);overflow:hidden}.ramenPoster .steam{position:absolute;top:18px;width:22px;height:62px;border-radius:50px;border:4px solid rgba(255,255,255,.7);border-color:rgba(255,255,255,.82) transparent transparent transparent;transform:rotate(8deg)}.ramenPoster .steam.s1{left:130px}.ramenPoster .steam.s2{left:170px;top:10px}.ramenPoster .steam.s3{left:210px;top:22px}.ramenPoster .bowl{position:absolute;left:82px;bottom:34px;width:210px;height:116px;border-radius:0 0 118px 118px;background:#ef5c43;border:8px solid #cc3f2f;overflow:hidden}.ramenPoster .bowl:before{content:'';position:absolute;left:-8px;top:-18px;width:226px;height:60px;border-radius:50%;background:#fff4eb;border:8px solid #cc3f2f}.ramenPoster .soup{position:absolute;left:18px;top:16px;width:174px;height:44px;border-radius:50%;background:#ffcc76}.ramenPoster .noodle{position:absolute;width:120px;height:22px;border-radius:30px;border:6px solid #ffd34b;border-color:#ffd34b transparent transparent transparent}.ramenPoster .n1{left:42px;top:18px;transform:rotate(10deg)}.ramenPoster .n2{left:28px;top:30px;transform:rotate(-8deg)}.ramenPoster .n3{left:66px;top:34px;transform:rotate(4deg)}.ramenPoster .egg{position:absolute;left:110px;top:20px;width:34px;height:26px;border-radius:50%;background:#fff7da}.ramenPoster .egg:after{content:'';position:absolute;left:9px;top:5px;width:16px;height:16px;border-radius:50%;background:#ffca3b}.ramenPoster .green{position:absolute;left:58px;top:40px;width:22px;height:10px;border-radius:10px;background:#5fad63;box-shadow:26px 4px 0 #5fad63,58px -2px 0 #5fad63}.ramenPoster .chop{position:absolute;right:46px;top:54px;width:8px;height:120px;border-radius:6px;background:#8d623f;transform:rotate(-30deg);box-shadow:16px 0 0 #9f7148}.ramenPoster .label{position:absolute;left:20px;top:18px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #f1d5ae;font-weight:1000;color:#a3651a}.ramenGameBox{padding:20px;background:#fff}.ramenStep{display:none}.ramenStep.show{display:block}.ramenStep h3{font-size:31px;line-height:1.3;margin:0 0 8px}.ramenStep p{margin:0 0 14px;color:#536478;font-size:18px;line-height:1.65}.ramenQuestion{margin-bottom:12px;padding:16px 18px;border-radius:20px;background:#f7f9ff;border:1px solid #d6e0f7;font-size:22px;font-weight:1000}.ramenChoices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ramenBtn{border:2px solid var(--line);background:#fff;border-radius:20px;padding:18px 16px;text-align:left;font-size:19px;font-weight:950;line-height:1.45}.ramenBtn:hover{border-color:#b8c9eb;transform:translateY(-1px)}.ramenMini{padding:15px;border-radius:18px;background:#f7fbff;border:1px dashed #bfd0eb;font-weight:850;color:#49607a;margin-top:12px}.ramenBoard{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ramenItems,.ramenSelected,.ramenOrder{display:grid;gap:10px}.ramenItem{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 15px;border-radius:18px;background:#fff;border:1px solid var(--line);font-weight:900}.ramenItem span{display:flex;align-items:center;gap:10px}.ramenTag{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;border-radius:14px;background:#f1f5fb;font-size:22px}.ramenItem button{border:none;background:#eef3ff;color:#2a56cb;border-radius:12px;padding:9px 12px;font-weight:1000}.ramenBucket{padding:16px;border-radius:20px;background:#fbfcfe;border:1px solid var(--line)}.ramenBucket h4{font-size:22px;margin:0 0 6px}.ramenBucket p{font-size:15px;line-height:1.55;color:var(--muted);margin:0 0 12px}.orderList .ramenItem{background:#fcfdff}.ramenOps{display:flex;gap:6px}.ramenOps button{border:none;background:#f4f7fb;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-weight:1000}.ramenSuccess{margin-top:14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#f2fff6,#e8f8ee);border:1px solid #c6e7d1;font-size:18px;line-height:1.65}.ramenSuccess strong{font-size:21px}.ramenAction{margin-top:14px;display:flex;justify-content:flex-end;gap:10px}.hide{display:none!important}
+
+@media(max-width:1040px){.ramenWrap,.kidCard,.ramenBoard{grid-template-columns:1fr}.kidCard{grid-template-columns:1fr}.ramenChoices{grid-template-columns:1fr}.kidIllo{height:220px}.ramenPoster{height:220px}.ramenScene{order:2}.ramenGameBox{order:1}
+.hero,.scenarioGrid,.abstractGrid,.decompGrid,.selfIntro{grid-template-columns:1fr}.processRow,.triad,.summary,.missionCards,.bank{grid-template-columns:1fr 1fr}.lessonNav{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.quizChoices{grid-template-columns:1fr}body{font-size:16px}.shell{padding:12px}.hero h1{font-size:36px}.titleRow h2{font-size:29px}.processRow,.triad,.summary,.missionCards,.bank,.choices,.fields,.exampleRow,.factGrid,.timeline,.abstractBank,.dataFacts{grid-template-columns:1fr}.lessonNav{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.brand small{display:none}}
+
+.topRight{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.studentChip,.syncChip,.homeLink{background:rgba(255,255,255,.91);border:1px solid rgba(255,255,255,.92);box-shadow:var(--shadow);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900}.studentChip{color:#30445f}.syncChip{color:#6a788a}.syncChip.good{color:#176140;background:#eefaf4}.syncChip.bad{color:#963740;background:#fff2f3}.homeLink{text-decoration:none;color:var(--ink)}
+@media(max-width:760px){.topbar{align-items:flex-start}.topRight{justify-content:flex-start}.status{padding:9px 12px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand"><div class="brandLogo">3</div><div><b>문제 해결 LAB 01</b><small>알고리즘과 프로그래밍 · 문제 이해와 문제 분해</small></div></div>
+    <div class="topRight">
+      <div class="studentChip" id="studentChip">학생 확인 중</div>
+      <div class="syncChip" id="syncState">저장 준비 중</div>
+      <div class="status" id="status">미션 0 / 6</div>
+      <a class="homeLink" href="index.html">🏠 홈</a>
+      <a class="homeLink" href="gallery.html">🖼️ 갤러리</a>
+    </div>
+  </div>
+
+  <section class="card hero">
+    <div class="heroText">
+      <div class="eyebrow">3단원 첫 수업</div>
+      <h1>복잡한 문제를<br><span style="color:var(--blue)">작게 만들면</span><br>해결이 보인다.</h1>
+      <p>이번 단원은 코드를 바로 쓰는 단원이 아닙니다. 먼저 <b>문제를 이해하고</b>, 필요한 것만 남기고, 해결 가능한 작은 문제로 나누는 연습부터 시작합니다.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true">
+      <svg viewBox="0 0 560 420" width="100%" height="100%">
+        <defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stop-color="#315fdf"/><stop offset="1" stop-color="#7359d6"/></linearGradient></defs>
+        <rect x="32" y="38" width="496" height="334" rx="36" fill="#fff" stroke="#dfe6ef"/>
+        <rect x="58" y="64" width="194" height="92" rx="24" fill="#eef3ff"/>
+        <text x="78" y="100" font-size="24" font-weight="900" fill="#284a9b">복잡한 문제</text>
+        <text x="78" y="128" font-size="15" fill="#526985">정보가 많고 어디서부터</text><text x="78" y="149" font-size="15" fill="#526985">시작할지 모르겠음</text>
+        <circle cx="378" cy="112" r="58" fill="url(#hg)" opacity=".12"/>
+        <path d="M352 97h52v18h-17v40h-18v-40h-17z" fill="url(#hg)"/>
+        <rect x="84" y="222" width="108" height="90" rx="24" fill="#f5f8ff" stroke="#c9d6f3"/><text x="107" y="258" font-size="18" font-weight="900" fill="#243d6c">문제 이해</text><text x="110" y="285" font-size="14" fill="#59708f">무엇을?</text>
+        <rect x="225" y="222" width="108" height="90" rx="24" fill="#f0faf5" stroke="#c3e3cf"/><text x="247" y="258" font-size="18" font-weight="900" fill="#205e43">핵심 추출</text><text x="251" y="285" font-size="14" fill="#5e7b6a">무엇이 중요?</text>
+        <rect x="368" y="222" width="108" height="90" rx="24" fill="#fff5eb" stroke="#f0d2b5"/><text x="390" y="258" font-size="18" font-weight="900" fill="#8a5222">문제 분해</text><text x="394" y="285" font-size="14" fill="#8e6c50">작게 나누기</text>
+        <path d="M192 267h32" stroke="#9eb1cb" stroke-width="8" stroke-linecap="round"/><polygon points="219,259 235,267 219,275" fill="#9eb1cb"/><path d="M333 267h34" stroke="#9eb1cb" stroke-width="8" stroke-linecap="round"/><polygon points="362,259 378,267 362,275" fill="#9eb1cb"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="card process">
+    <h2>컴퓨팅 사고력을 이용한 문제 해결 과정</h2>
+    <div class="processRow">
+      <div class="processStep now"><div><b>문제 이해</b><small>무엇을 해결하지?</small></div></div>
+      <div class="processStep now"><div><b>핵심 요소 추출</b><small>무엇이 중요하지?</small></div></div>
+      <div class="processStep now"><div><b>문제 분해 및 모델링</b><small>작게 나누고 표현</small></div></div>
+      <div class="processStep next"><div><b>알고리즘 설계</b><small>해결 절차 만들기</small></div></div>
+      <div class="processStep next"><div><b>프로그래밍</b><small>컴퓨터가 실행</small></div></div>
+    </div>
+    <div class="callout" style="margin-top:14px">오늘은 <b>문제 이해 → 핵심 요소 추출 → 문제 분해</b>까지 직접 체험합니다. <b>모델링</b>은 다음 시간에 이어집니다.</div>
+  </section>
+
+  <nav class="lessonNav" id="lessonNav">
+    <button class="active" data-stage="0"><span class="n">0</span>개념 맛보기</button>
+    <button data-stage="1"><span class="n">1</span>영화 미션</button>
+    <button data-stage="2"><span class="n">2</span>문제 분석</button>
+    <button data-stage="3"><span class="n">3</span>추상화</button>
+    <button data-stage="4"><span class="n">4</span>문제 분해</button>
+    <button data-stage="5"><span class="n">5</span>내 상황 미션</button>
+    <button data-stage="6"><span class="n">6</span>형성평가</button>
+  </nav>
+
+  <section class="stage active" id="stage0">
+    <div class="card">
+      <div class="titleRow"><div><h2>미션 0 · 라면 미니게임으로 맛보기</h2><p><b>문제</b>와 <b>알고리즘</b>을 길게 설명하지 않고, 바로 짧은 시뮬레이션으로 체험합니다.</p></div><span class="tag">개념 맛보기</span></div>
+      <div class="conceptGrid">
+        <div class="concept"><div class="ico">❓</div><h3>문제란?</h3><p><b>해결해야 하는 일 또는 상황</b></p></div>
+        <div class="concept"><div class="ico">🧭</div><h3>알고리즘이란?</h3><p><b>문제를 해결하기 위한 단계적 절차 또는 방법</b><br>쉽게 말해 <b>문제 해결 절차</b></p></div>
+      </div>
+      <div class="exampleRow"><div class="example"><span>🎡</span>놀이공원 찾아가기</div><div class="example"><span>📚</span>공부 루틴</div><div class="example"><span>🏫</span>등교하기</div><div class="example"><span>👥</span>모둠 활동</div></div>
+      <div class="callout orange" style="margin-top:14px"><strong>짧게 체험해 보기</strong><br>배고픈 상황을 해결하는 과정을 따라가며 <b>문제 → 필요한 것 준비 → 순서 정하기</b> 흐름을 느껴 봅시다.</div>
+
+      <div class="ramenWrap">
+        <div class="ramenScene">
+          <div class="kidCard">
+            <div class="kidIllo">
+              <div class="sun"></div><div class="thought">배고파...<br>라면 먹고 싶다!</div><div class="table"></div>
+              <div class="body"></div><div class="head"></div><div class="hair"></div>
+              <div class="eye e1"></div><div class="eye e2"></div><div class="mouth"></div>
+              <div class="arm a1"></div><div class="arm a2"></div><div class="leg l1"></div><div class="leg l2"></div><div class="shoe s1"></div><div class="shoe s2"></div>
+            </div>
+            <div class="kidText">
+              <div class="kidBadge">🍜 상황 카드 · 10세 남자아이</div>
+              <h3>배고픈 민우의<br>라면 만들기 작전</h3>
+              <p>민우는 지금 배가 고픕니다. 그런데 그냥 “배고프다”에서 끝나면 아무것도 해결되지 않아요. <b>이 상황이 문제인지</b> 먼저 판단하고, <b>무엇이 필요하고 어떤 순서로 해야 하는지</b> 생각해 보면 문제 해결의 기본 흐름이 보입니다.</p>
+            </div>
+          </div>
+          <div class="ramenPosterCard">
+            <h3>오늘의 목표</h3>
+            <p>라면을 먹기 위해 필요한 것을 고르고, 올바른 순서로 정리해 보세요. 마지막에는 왜 이게 <b>알고리즘</b>인지까지 연결합니다.</p>
+            <div class="ramenPoster">
+              <div class="label">귀여운 라면 미션</div>
+              <div class="steam s1"></div><div class="steam s2"></div><div class="steam s3"></div>
+              <div class="bowl"><div class="soup"></div><div class="noodle n1"></div><div class="noodle n2"></div><div class="noodle n3"></div><div class="egg"></div><div class="green"></div></div>
+              <div class="chop"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ramenGameBox">
+          <div class="ramenStep show" id="ramenStep1">
+            <h3>1단계 · 이것은 문제일까?</h3>
+            <p>민우가 “배고프다”라고 말했습니다. 이 상황은 <b>문제</b>일까요, 아닐까요?</p>
+            <div class="ramenQuestion">“배고프다”는 해결해야 하는 일 또는 상황일까?</div>
+            <div class="ramenChoices">
+              <button class="ramenBtn" id="ramenProblemYes">✅ 문제다<br><small>배고픔을 해결해야 하니까</small></button>
+              <button class="ramenBtn" id="ramenProblemNo">❌ 문제가 아니다<br><small>그냥 느낌일 뿐이라고 생각하기</small></button>
+            </div>
+          </div>
+
+          <div class="ramenStep" id="ramenStep2">
+            <h3>2단계 · 그럼 어떻게 해결할까?</h3>
+            <p>민우는 라면을 발견했습니다. 다음 선택은 무엇일까요?</p>
+            <div class="ramenQuestion">라면 봉지를 <b>뜯을까</b>, <b>말까</b>?</div>
+            <div class="ramenChoices">
+              <button class="ramenBtn" id="ramenOpen">🍜 뜯는다<br><small>이제 해결을 시작할 수 있다</small></button>
+              <button class="ramenBtn" id="ramenIgnore">😵 말까 한다<br><small>아무 행동도 하지 않는다</small></button>
+            </div>
+            <div class="ramenMini">힌트 · 문제라고 판단했다면, 이제는 해결을 향한 행동이 따라와야 해요.</div>
+          </div>
+
+          <div class="ramenStep" id="ramenStep3">
+            <h3>3단계 · 필요한 것을 준비하자</h3>
+            <p>라면을 끓이려면 필요한 것만 골라 보세요. <b>면, 스프, 물, 냄비</b>가 핵심입니다.</p>
+            <div class="ramenBoard">
+              <div class="ramenBucket">
+                <h4>준비물 후보</h4>
+                <p>아래에서 필요한 것을 눌러 골라 보세요.</p>
+                <div class="ramenItems" id="ramenItems"></div>
+              </div>
+              <div class="ramenBucket">
+                <h4>내가 고른 준비물</h4>
+                <p>잘못 넣었으면 다시 눌러서 뺄 수 있어요.</p>
+                <div class="ramenSelected" id="ramenSelected"></div>
+                <div class="ramenAction"><button class="ghost" id="ramenResetItems">다시 고르기</button><button class="btn" id="ramenCheckItems">준비 확인</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ramenStep" id="ramenStep4">
+            <h3>4단계 · 절차 순서를 정하자</h3>
+            <p>이제는 <b>어떤 순서로</b> 해야 할지 정해야 합니다. 이것이 바로 <b>알고리즘</b>으로 가는 생각입니다.</p>
+            <div class="ramenMini"><b>알고리즘</b> = 문제를 해결하기 위한 <b>단계적 절차 또는 방법</b></div>
+            <div class="ramenBucket" style="margin-top:12px">
+              <h4>라면 만들기 순서</h4>
+              <p>↑ ↓ 버튼으로 순서를 바꾼 뒤 확인하세요.</p>
+              <div class="ramenOrder orderList" id="ramenOrder"></div>
+              <div class="ramenAction"><button class="ghost" id="ramenShuffleOrder">순서 다시 섞기</button><button class="btn" id="ramenCheckOrder">순서 확인</button></div>
+            </div>
+            <div class="ramenSuccess hide" id="ramenSuccess"><strong>성공!</strong><br>배고픔이라는 <b>문제</b>를 발견하고, 필요한 준비물을 고른 뒤, 올바른 <b>절차</b>를 정했어요. 이렇게 <b>문제를 해결하는 순서를 만드는 생각</b>이 바로 알고리즘으로 이어집니다.</div>
+          </div>
+
+          <div class="feedback" id="ramenFb"></div>
+        </div>
+      </div>
+      <div class="actions"><button class="btn hide" id="to1">친구들과 영화 보러 가기 🎬</button></div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage1">
+    <div class="card">
+      <div class="titleRow"><div><h2>미션 1 · 18:20 영화, 늦으면 안 된다!</h2><p>상황과 대화 속 정보가 많습니다. 먼저 <b>지금 해결해야 하는 문제</b>부터 찾아보세요.</p></div><span class="tag">문제 이해</span></div>
+      <div class="scenarioGrid">
+        <div class="scene">
+          <div class="missionTitle"><h3>🎬 금요일 방과 후 영화 미션</h3><span class="deadline">목표 · 18:10까지 좌석 착석</span></div>
+          <div class="story">
+            금요일 <span class="storyMark">15:40</span>, 수업이 끝났습니다. 나와 현우, 민지는 오늘 <span class="storyMark">18:20 영화</span>를 예매해 두었습니다. 세 사람은 지금 모두 학교에 있습니다. 학교 앞 버스는 <span class="storyMark">17:00</span>과 <span class="storyMark">17:20</span>에 출발하고, 영화관 근처 정류장까지 약 <span class="storyMark">42분</span>이 걸립니다. 버스에서 내린 뒤 영화관까지는 <span class="storyMark">도보 8분</span>입니다. 영화표 QR은 민지 휴대폰에 저장되어 있고 배터리는 <span class="storyMark">12%</span> 남았습니다. 세 사람은 함께 이동하기로 했고, 영화 시작 10분 전인 <span class="storyMark">18:10</span>까지 좌석에 앉는 것이 목표입니다.
+          </div>
+          <div class="factGrid">
+            <div class="fact"><small>현재</small>🏫 15:40 · 세 사람 모두 학교</div><div class="fact"><small>영화</small>🎞️ 18:20 시작 · 18:10 착석 목표</div>
+            <div class="fact"><small>버스</small>🚏 17:00 / 17:20 출발</div><div class="fact"><small>이동</small>🚌 42분 + 🚶 8분</div>
+            <div class="fact"><small>입장</small>📱 민지 폰의 예매 QR 필요</div><div class="fact"><small>휴대폰</small>🔋 민지 폰 배터리 12%</div>
+          </div>
+          <div class="timeline"><div class="timeNode"><b>15:40</b><span>수업 끝</span></div><div class="timeNode"><b>17:00</b><span>첫 버스</span></div><div class="timeNode"><b>17:20</b><span>다음 버스</span></div><div class="timeNode"><b>18:20</b><span>영화 시작</span></div></div>
+        </div>
+        <div class="snsPanel">
+          <div class="snsHeader"><strong>💬 SNS 메시지 · 영화팟 🎬</strong><span>3명</span></div>
+          <div class="chat">
+            <div class="bubble"><span class="name">현우</span>영화 포스터 파란색 예쁘다 ㅋㅋ</div>
+            <div class="bubble me"><span class="name">나</span>일단 시간 맞춰 가는 게 먼저지 않나?</div>
+            <div class="bubble"><span class="name">민지</span>내 폰 배터리 12%야. QR 여기 있는데...</div>
+            <div class="bubble"><span class="name">현우</span>아 맞다 오늘 급식 제육이었지?</div>
+          </div>
+          <div class="callout purple" style="margin-top:16px"><strong>대화에도 힌트와 잡음이 섞여 있어요.</strong><br>지금 문제 해결에 정말 중요한 말은 무엇인지 생각해 보세요.</div>
+        </div>
+      </div>
+      <div class="problemBlock">
+        <p class="question">가장 핵심적인 문제는?</p>
+        <div class="choices" id="q1">
+          <button class="choice" data-ok="1">세 사람이 18:10까지 영화관 좌석에 앉을 수 있도록 이동과 입장 준비를 해결해야 한다.</button>
+          <button class="choice" data-ok="0">영화 포스터 색이 예쁜지 정해야 한다.</button>
+          <button class="choice" data-ok="0">오늘 급식 메뉴가 맛있었는지 평가해야 한다.</button>
+          <button class="choice" data-ok="0">민지가 새 휴대폰 케이스를 살지 정해야 한다.</button>
+        </div>
+        <div class="feedback" id="fb1"></div>
+        <div class="actions"><button class="btn" id="check1">문제 확인</button><button class="btn hide" id="to2">다음 · 문제 분석</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage2">
+    <div class="card">
+      <div class="titleRow"><div><h2>미션 2 · 문제를 세 조각으로 분석하기</h2><p>현재 상태 / 목표 상태 / 조건으로 나누면 긴 상황이 훨씬 선명해집니다.</p></div><span class="tag">문제 분석</span></div>
+      <div class="bank" id="analysisBank" style="margin-top:14px"></div>
+      <div class="triad">
+        <div class="zone current">
+          <div class="zoneGuide"><h3>현재 상태</h3><b>지금 이미 정해져 있는 모습</b><p>“지금 어디에 있고, 무엇이 어떤 상태인가?”</p></div>
+          <div id="curZone"></div>
+        </div>
+        <div class="zone goal">
+          <div class="zoneGuide"><h3>목표 상태</h3><b>문제를 해결했을 때 원하는 결과</b><p>“최종적으로 어떤 모습이 되어야 하나?”</p></div>
+          <div id="goalZone"></div>
+        </div>
+        <div class="zone condition">
+          <div class="zoneGuide"><h3>조건</h3><b>반드시 지켜야 하거나 바꿀 수 없는 제한</b><p>“시간·이동·규칙처럼 꼭 고려해야 하는 것은?”</p></div>
+          <div id="condZone"></div>
+        </div>
+      </div>
+      <div class="feedback" id="fb2"></div>
+      <div class="actions"><button class="ghost" id="reset2">다시 하기</button><button class="btn" id="check2">분석 확인</button><button class="btn hide" id="to3">다음 · 추상화</button></div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage3">
+    <div class="card">
+      <div class="titleRow"><div><h2>미션 3 · 핵심만 남기면 어떻게 보일까?</h2><p>긴 상황에서 문제 해결에 필요한 정보와 주변 정보를 구분합니다.</p></div><span class="tag">핵심 요소 추출 · 추상화</span></div>
+      <div class="callout green"><strong>추상화</strong> = 복잡한 문제의 <b>불필요한 요소를 제거</b>한 후 <b>핵심 요소만 남기는 것</b></div>
+      <div class="abstractGrid" style="margin-top:14px">
+        <div><div class="abstractBank" id="abstractBank"></div></div>
+        <div style="display:grid;gap:12px"><div class="bucket need"><h3>✅ 해결에 필요</h3><p>없으면 계획을 세우기 어려운 정보</p><div id="needZone"></div></div><div class="bucket skip"><h3>❌ 지금은 중요하지 않음</h3><p>재미있는 정보지만 핵심 문제 해결에는 필요 없음</p><div id="skipZone"></div></div></div>
+      </div>
+      <div class="feedback" id="fb3"></div>
+      <div class="actions"><button class="ghost" id="reset3">다시 하기</button><button class="btn" id="check3">추상화 확인</button><button class="btn hide" id="to4">다음 · 문제 분해</button></div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage4">
+    <div class="card">
+      <div class="titleRow"><div><h2>미션 4 · 큰 문제를 해결 가능한 작은 문제로</h2><p>“영화 시간에 늦지 않기”를 한 번에 해결하지 말고, 실제로 처리할 수 있는 작은 문제로 나눕니다.</p></div><span class="tag">문제 분해</span></div>
+      <div class="callout orange"><strong>문제 분해</strong> = 복잡한 문제를 해결하기 쉽도록 <b>작은 문제로 나누는 것</b></div>
+      <div class="decompGrid" style="margin-top:14px"><div class="listBox"><h3>작은 문제 후보</h3><p>필요한 작업 5개를 선택하세요. 관련 없는 작업도 섞여 있습니다.</p><div id="taskBank"></div></div><div class="listBox"><h3>우리의 문제 분해</h3><p>먼저 작은 문제를 고르고, 그다음 실제로 처리할 순서도 생각해 보세요.</p><div id="taskChosen"></div></div></div>
+      <div class="algoBridge"><strong>🧩 문제 분해와 🧭 알고리즘은 어떻게 이어질까?</strong><br><b>필요한 작은 문제로 나눈 것</b>은 문제 분해입니다. 그 작은 문제를 <b>어떤 순서로 처리할지 정해 단계적 해결 절차로 만드는 것</b>은 <b>알고리즘 설계</b>로 이어집니다.<div class="algoArrow"><span>1</span> 작은 문제 고르기 → <span>2</span> 처리 순서 정하기 → <span>3</span> 해결 절차 만들기</div></div>
+      <div class="feedback" id="fb4"></div>
+      <div class="actions"><button class="ghost" id="reset4">다시 하기</button><button class="btn" id="check4">문제 분해 확인</button><button class="btn hide" id="to5">내 상황 미션으로</button></div>
+      <div class="nextBox hide" id="modelPreview"><h3>다음 시간 · 모델링</h3><p>오늘은 문제를 작은 문제로 나누고 해결 순서도 잠깐 생각해 봤습니다. 다음 시간에는 먼저 이 문제의 핵심과 관계를 <b>표·트리·그래프처럼 보기 쉽게 표현하는 모델링</b>을 배웁니다. 그다음에는 해결 절차를 더 체계적으로 만드는 <b>알고리즘</b>으로 이어집니다.</p></div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage5">
+    <div class="card">
+      <div class="titleRow"><div><h2>마지막 미션 · 이번엔 ‘내가’ 해결한다</h2><p>아래에서 재미있는 상황 하나를 고르세요. 먼저 <b>예시 데이터</b>가 나오고, 원하면 내 상황에 맞게 숫자와 조건을 바꿀 수 있습니다.</p></div><span class="tag">내 상황 적용</span></div>
+      <div class="missionCards" id="missionCards"></div>
+      <div class="dataSheet hide" id="dataSheet"><h3 id="dataTitle">예시 데이터</h3><div class="dataFacts" id="dataFacts"></div><div class="modeSwitch"><button class="active" data-mode="example">예시 그대로 도전</button><button data-mode="custom">내 상황으로 바꾸기</button></div><div id="customData" class="hide" style="margin-top:12px"><div class="field full"><label>내 상황의 정보로 바꾸기</label><textarea id="customContext" placeholder="예: 현재 평균 63점, 목표 75점, 시험까지 21일, 평일 공부 가능 1시간..."></textarea><div class="hintline">정답을 쓰는 칸이 아니라, 문제를 해결하기 전에 알고 있는 상황 정보를 적는 칸입니다.</div></div></div></div>
+      <div class="fields">
+        <div class="field"><label>이 상황에서 해결해야 하는 문제</label><input id="myProblem" placeholder="한 문장으로 직접 작성"></div>
+        <div class="field"><label>중요한 조건 2가지 이상</label><input id="myCond" placeholder="예: 남은 기간, 시간, 예산, 인원"></div>
+        <div class="field"><label>현재 상태</label><textarea id="myCurrent" placeholder="지금 어떤 상태인지 작성"></textarea></div>
+        <div class="field"><label>목표 상태</label><textarea id="myGoal" placeholder="최종적으로 어떤 상태가 되어야 하는지 작성"></textarea></div>
+        <div class="field full"><label>핵심 요소만 골라 적기</label><textarea id="myCore" placeholder="문제 해결에 꼭 필요한 정보만 적어 보세요."></textarea></div>
+        <div class="field full"><label>작은 문제 4개 이상으로 나누기</label><textarea id="myParts" placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ..."></textarea></div>
+        <div class="field full"><label>문제를 나누기 전과 후, 무엇이 달라졌나요?</label><textarea id="reflection" placeholder="내 생각을 1~2문장으로 작성"></textarea></div>
+      </div>
+      <div class="feedback" id="fb5"></div>
+      <div class="actions"><button class="btn" id="finish">내 상황 미션 완료</button><button class="btn hide" id="to6">다음 · 형성평가</button></div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage6">
+    <div class="card">
+      <div class="titleRow"><div><h2>마무리 · 오늘 개념을 내 것으로 만들기</h2><p>문제를 풀기 전에 오늘 배운 개념을 한 번 정리해 보세요.</p></div><span class="tag">형성평가</span></div>
+
+      <div class="summary" id="conceptReview">
+        <div class="sum"><div class="ico">❓</div><h3>문제</h3><p><b>해결해야 하는 일 또는 상황</b></p></div>
+        <div class="sum"><div class="ico">🔍</div><h3>문제 분석</h3><p><b>현재 상태 · 목표 상태 · 조건</b>을 파악해 문제를 분명하게 만듭니다.</p></div>
+        <div class="sum"><div class="ico">🎯</div><h3>추상화</h3><p>불필요한 요소를 제거하고 <b>핵심 요소만 남기는 것</b></p></div>
+        <div class="sum"><div class="ico">🧩</div><h3>문제 분해</h3><p>복잡한 문제를 해결하기 쉽도록 <b>작은 문제로 나누는 것</b></p></div>
+        <div class="sum"><div class="ico">🧭</div><h3>알고리즘</h3><p>문제를 해결하기 위한 <b>단계적 절차 또는 방법</b></p></div>
+        <div class="sum"><div class="ico">💻</div><h3>전체 흐름</h3><p><b>문제 이해 → 핵심 요소 추출 → 문제 분해 및 모델링 → 알고리즘 설계 → 프로그래밍</b></p></div>
+      </div>
+
+      <div class="quizIntro" id="quizIntro">
+        <h3>준비됐으면 5문제 도전!</h3>
+        <p>틀려도 <b>같은 문제에서 다시 선택</b>할 수 있습니다. 오답은 누적되고, <b>2번 틀리면 1번 문제부터 다시 시작</b>합니다. 다시 시작할 때는 선지 순서도 바뀝니다.</p>
+        <div class="quizRules"><span class="quizRule">총 5문제</span><span class="quizRule">오답 2회 → 처음부터</span><span class="quizRule">선지 순서 매번 섞임</span></div>
+        <div class="actions"><button class="btn" id="startQuiz">문제 풀기 시작</button></div>
+      </div>
+
+      <div class="quizWrap hide" id="quizWrap">
+        <div class="quizTop"><div class="quizProgress" id="quizProgress">1 / 5</div><div class="quizMiss" id="quizMiss">오답 0 / 2</div></div>
+        <div class="quizQ" id="quizQ"></div>
+        <div class="quizChoices" id="quizChoices"></div>
+        <div class="feedback" id="quizFb"></div>
+        <div class="actions"><button class="btn hide" id="quizNext">다음 문제</button></div>
+      </div>
+
+      <div class="restartBox hide" id="quizRestart">
+        <h3>오답이 2번 누적됐어요.</h3>
+        <p>개념 정리를 다시 훑어보고 1번 문제부터 다시 도전하세요. 정답 위치도 새로 섞입니다.</p>
+        <div class="actions"><button class="btn" id="restartQuiz">처음부터 다시 풀기</button></div>
+      </div>
+
+      <div class="quizResult hide" id="quizResult">
+        <h3>형성평가 통과 🎉</h3>
+        <p id="quizResultText"></p>
+        <div class="nextBox" style="margin-top:16px"><h3>다음 시간 · 모델링</h3><p>오늘은 문제를 이해하고 핵심을 남긴 뒤 작은 문제로 나눴습니다. 다음 시간에는 그 결과를 <b>단순하고 구조적으로 표현하는 모델링</b>으로 이어집니다.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/api.js"></script>
+<script>
+(()=>{
+const $=(s,p=document)=>p.querySelector(s), $$=(s,p=document)=>[...p.querySelectorAll(s)];
+const STUDENT=ProblemLabAPI.getStudentSession();
+if(!STUDENT){location.href='index.html';return;}
+$('#studentChip').textContent=`${STUDENT.grade}학년 ${STUDENT.class_no}반 · ${STUDENT.name}`;
+const KEY=`problemLabLesson1V9_${STUDENT.student_id}`;
+const state={stage:0,done:[false,false,false,false,false,false,false],analysis:{},abstract:{},chosen:[],mission:'',mode:'example',ramenDone:false,ramenItems:[],ramenOrder:[],quizStats:{attempts:0,wrong_total:0,passed:false}};
+try{Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+if(!state.quizStats)state.quizStats={attempts:0,wrong_total:0,passed:false};
+let remoteReady=false,syncTimer=null;
+function setSync(text,kind=''){const e=$('#syncState');e.textContent=text;e.className='syncChip '+kind}
+function collectActivity(){
+  const mission=typeof missions!=='undefined'?missions.find(x=>x.id===state.mission):null;
+  const val=id=>$('#'+id)?.value?.trim?.()||'';
+  return {mission_id:state.mission,mission_title:mission?.title||'',mode:state.mode,custom_context:val('customContext'),problem:val('myProblem'),conditions:val('myCond'),current_state:val('myCurrent'),goal_state:val('myGoal'),core_elements:val('myCore'),parts:val('myParts'),reflection:val('reflection')};
+}
+function collectRecord(){return {state:JSON.parse(JSON.stringify(state)),activity:collectActivity(),quiz:{...state.quizStats},saved_at:new Date().toISOString()}}
+async function syncRemote(){if(!remoteReady)return;setSync('저장 중...');const {data,error}=await ProblemLabAPI.saveLesson1(collectRecord());if(error||!data?.ok){setSync('저장 실패','bad');return}setSync('Supabase 저장됨','good')}
+const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,450)}};
+
+const analysisItems=[
+{id:'a1',t:'금요일 15:40, 세 사람은 모두 학교에 있음',z:'current'},
+{id:'a6',t:'학교 앞 버스는 17:00 / 17:20에 출발함',z:'condition'},
+{id:'a4',t:'18:10까지 세 사람이 영화관 좌석에 앉아 있음',z:'goal'},
+{id:'a3',t:'민지 휴대폰 배터리가 12% 남아 있음',z:'current'},
+{id:'a7',t:'버스로 42분 이동한 뒤 영화관까지 8분 걸어야 함',z:'condition'},
+{id:'a2',t:'18:20 영화표를 이미 예매했고 QR은 민지 휴대폰에 있음',z:'current'},
+{id:'a5',t:'세 사람은 함께 이동해야 함',z:'condition'},
+{id:'a8',t:'영화관 입장 시 예매 QR을 제시해야 함',z:'condition'}
+];
+const abstractItems=[
+{id:'h7',t:'영화 포스터가 파란색',need:false},
+{id:'h1',t:'현재 시각 15:40',need:true},
+{id:'h4',t:'버스 17:00 / 17:20',need:true},
+{id:'h8',t:'오늘 급식은 제육볶음',need:false},
+{id:'h5',t:'QR이 있는 민지 휴대폰 배터리 12%',need:true},
+{id:'h9',t:'현우 신발 브랜드',need:false},
+{id:'h3',t:'버스 42분 + 도보 8분',need:true},
+{id:'h10',t:'주연 배우가 좋아하는 음식',need:false},
+{id:'h2',t:'18:10까지 좌석 착석이 목표',need:true},
+{id:'h6',t:'세 사람이 함께 이동해야 함',need:true}
+];
+const taskItems=[
+{id:'d6',t:'영화 포스터 색 조합 분석하기',good:false},
+{id:'d2',t:'17:00 / 17:20 중 어느 버스를 탈지 정하기',good:true},
+{id:'d7',t:'오늘 급식 제육볶음 평가하기',good:false},
+{id:'d1',t:'세 사람이 언제 만나서 출발할지 정하기',good:true},
+{id:'d3',t:'QR을 보여줄 수 있도록 휴대폰 배터리 준비하기',good:true},
+{id:'d8',t:'주연 배우 SNS 찾아보기',good:false},
+{id:'d4',t:'버스와 도보로 영화관까지 이동하기',good:true},
+{id:'d5',t:'QR로 입장한 뒤 상영관과 좌석 찾기',good:true}
+];
+const missions=[
+{id:'grade',ico:'📚',title:'다음 시험 성적 올리기',desc:'공부 계획을 문제 해결처럼 나눠 보기',facts:[['현재 상태','최근 시험 평균 58점'],['목표','다음 시험 평균 75점 이상'],['남은 기간','28일'],['가능 시간','평일 1시간 · 주말 2시간'],['약한 부분','수학 함수 · 영어 단어'],['추가 정보','과목은 5개']]},
+{id:'soccer',ico:'⚽',title:'내가 감독이라면 우승하기',desc:'남은 경기에서 팀을 어떻게 끌어올릴까?',facts:[['현재 순위','3위'],['1위와 승점 차','3점'],['남은 경기','4경기'],['주전 공격수','발목 부상 · 2경기 출전 어려움'],['팀 장점','수비 실점이 적음'],['팀 약점','후반 체력 저하']]},
+{id:'trip',ico:'🚆',title:'친구들과 하루 여행 성공하기',desc:'시간과 예산 안에서 계획 짜기',facts:[['인원','친구 3명'],['예산','1인 30,000원'],['가능 시간','10:00~18:00'],['가고 싶은 곳','카페 · 전시 · 맛집'],['이동','대중교통만 가능'],['조건','18시 전 귀가 시작']]},
+{id:'game',ico:'🎮',title:'게임 대회에서 이기기',desc:'팀 역할과 연습 계획을 쪼개 보기',facts:[['팀원','4명'],['대회까지','7일'],['연습 가능','평일 1시간'],['현재 문제','역할이 자주 겹침'],['강점','한 명의 공격력이 높음'],['조건','모든 팀원이 최소 1경기 참여']]},
+{id:'morning',ico:'⏰',title:'지각하지 않는 아침 만들기',desc:'매일 반복되는 문제를 해결해 보기',facts:[['현재 기상','07:20'],['학교까지','25분'],['목표 도착','07:50'],['자주 늦는 이유','준비가 오래 걸림'],['아침 준비','씻기 · 옷 · 가방 · 식사'],['조건','수면 7시간 이상']]},
+{id:'custom',ico:'✨',title:'나만의 문제',desc:'내가 실제로 해결하고 싶은 일을 직접 넣기',facts:[['예시','용돈 관리 / 다이어리 꾸준히 쓰기 / 수행평가 준비 / 취미 연습'],['현재 상태','직접 입력'],['목표 상태','직접 입력'],['조건','직접 입력'],['핵심 요소','직접 판단'],['작은 문제','직접 분해']]}
+];
+function renderStage(n){state.stage=n;save();$$('.stage').forEach((x,i)=>x.classList.toggle('active',i===n));$$('#lessonNav button').forEach((b,i)=>{b.classList.toggle('active',i===n);b.classList.toggle('done',!!state.done[i]&&i!==n)});$('#status').textContent=`미션 ${state.done.slice(1).filter(Boolean).length} / 6`;window.scrollTo({top:0,behavior:'smooth'});}
+$$('#lessonNav button').forEach(b=>b.addEventListener('click',()=>renderStage(+b.dataset.stage)));$('#to1').onclick=()=>renderStage(1);
+
+
+const mix=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
+const ramenNeeded=['면','스프','물','냄비'];
+const ramenPool=[['면','🍜'],['스프','🧂'],['물','💧'],['냄비','🍲'],['축구공','⚽'],['베개','🛏️'],['이어폰','🎧'],['만화책','📘']];
+const ramenOrderAnswer=['냄비 준비하기','냄비에 물 붓기','물이 끓을 때까지 기다리기','면과 스프 넣기','4분 정도 익히기','그릇에 담아 먹기'];
+if(!Array.isArray(state.ramenItems)) state.ramenItems=[];
+if(!Array.isArray(state.ramenOrder) || state.ramenOrder.length!==ramenOrderAnswer.length) state.ramenOrder=mix(ramenOrderAnswer);
+function showRamenFb(msg,good){const e=$('#ramenFb');e.textContent=msg;e.className='feedback show '+(good?'good':'bad')}
+function showRamenStep(n){['1','2','3','4'].forEach(x=>$('#ramenStep'+x).classList.toggle('show',x===String(n)));}
+function renderRamenItems(){const items=$('#ramenItems'), sel=$('#ramenSelected'); if(!items||!sel) return; items.innerHTML=''; sel.innerHTML='';
+  ramenPool.forEach(([name,ico])=>{if(state.ramenItems.includes(name)) return; const row=document.createElement('div'); row.className='ramenItem'; row.innerHTML=`<span><span class="ramenTag">${ico}</span>${name}</span>`; const btn=document.createElement('button'); btn.textContent='준비'; btn.onclick=()=>{state.ramenItems.push(name); save(); renderRamenItems(); showRamenFb('',true)}; row.appendChild(btn); items.appendChild(row);});
+  if(!state.ramenItems.length){sel.innerHTML='<div class="ramenMini">아직 고른 준비물이 없어요.</div>'} else {state.ramenItems.forEach(name=>{const ico=(ramenPool.find(x=>x[0]===name)||[])[1]||'📦'; const row=document.createElement('div'); row.className='ramenItem'; row.innerHTML=`<span><span class="ramenTag">${ico}</span>${name}</span>`; const btn=document.createElement('button'); btn.textContent='빼기'; btn.onclick=()=>{state.ramenItems=state.ramenItems.filter(x=>x!==name); save(); renderRamenItems();}; row.appendChild(btn); sel.appendChild(row);})}
+}
+function renderRamenOrder(){const host=$('#ramenOrder'); if(!host) return; host.innerHTML=''; state.ramenOrder.forEach((step,i)=>{const row=document.createElement('div'); row.className='ramenItem'; row.innerHTML=`<span><span class="ramenTag">${i+1}</span>${step}</span>`; const ops=document.createElement('div'); ops.className='ramenOps'; [['↑',-1],['↓',1]].forEach(([t,d])=>{const b=document.createElement('button'); b.textContent=t; b.disabled=(d<0&&i===0)||(d>0&&i===state.ramenOrder.length-1); b.onclick=()=>{const j=i+d; [state.ramenOrder[i],state.ramenOrder[j]]=[state.ramenOrder[j],state.ramenOrder[i]]; save(); renderRamenOrder();}; ops.appendChild(b)}); row.appendChild(ops); host.appendChild(row);})}
+function completeRamen(){state.ramenDone=true; save(); $('#ramenSuccess').classList.remove('hide'); $('#to1').classList.remove('hide'); showRamenFb('좋아요! 이제 문제와 절차가 무엇인지 몸으로 한 번 느꼈어요. 다음 미션으로 가 봅시다.',true)}
+function initRamenGame(){
+  if($('#to1')) $('#to1').onclick=()=>renderStage(1);
+  $('#ramenProblemYes').onclick=()=>{showRamenFb('맞아요. 배고픔은 해결해야 하는 상황이므로 문제라고 볼 수 있어요.',true); showRamenStep(2)};
+  $('#ramenProblemNo').onclick=()=>{showRamenFb('다시 생각해 보세요. 배고픔은 해결이 필요한 상황이므로 문제로 볼 수 있어요.',false)};
+  $('#ramenOpen').onclick=()=>{showRamenFb('좋아요. 문제를 해결하려면 행동을 시작해야 하죠. 이제 필요한 것을 준비해 봅시다.',true); showRamenStep(3); renderRamenItems();};
+  $('#ramenIgnore').onclick=()=>{showRamenFb('말까 하면… 굶어 죽었습니다 😵 다시 생각! 문제라고 판단했다면 해결 행동이 따라와야 해요.',false)};
+  $('#ramenResetItems').onclick=()=>{state.ramenItems=[]; save(); renderRamenItems(); showRamenFb('준비물을 다시 고를 수 있어요.',true)};
+  $('#ramenCheckItems').onclick=()=>{const chosen=[...state.ramenItems].sort(); const needed=[...ramenNeeded].sort(); if(chosen.length!==needed.length || JSON.stringify(chosen)!==JSON.stringify(needed)){showRamenFb('아직 부족하거나 필요 없는 것이 섞였어요. 면, 스프, 물, 냄비를 골라 보세요.',false); return;} showRamenFb('좋아요! 필요한 준비물을 정확히 골랐어요. 이제 순서를 정해 봅시다.',true); showRamenStep(4); renderRamenOrder();};
+  $('#ramenShuffleOrder').onclick=()=>{state.ramenOrder=mix(ramenOrderAnswer); save(); renderRamenOrder(); showRamenFb('순서를 다시 섞었어요. 차근차근 다시 정리해 보세요.',true)};
+  $('#ramenCheckOrder').onclick=()=>{if(JSON.stringify(state.ramenOrder)!==JSON.stringify(ramenOrderAnswer)){showRamenFb('순서를 다시 살펴보세요. 물을 붓고 끓인 다음 면과 스프를 넣어야 해요.',false); return;} completeRamen();};
+  renderRamenItems(); renderRamenOrder(); if(state.ramenDone){showRamenStep(4); $('#ramenSuccess').classList.remove('hide'); $('#to1').classList.remove('hide');} else {showRamenStep(1);} 
+}
+
+// q1
+$$('#q1 .choice').forEach(b=>b.onclick=()=>{$$('#q1 .choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
+$('#check1').onclick=()=>{const s=$('#q1 .choice.selected');if(!s){showFb('fb1','하나를 선택해 주세요.',false);return}$$('#q1 .choice').forEach(x=>x.classList.remove('correct','wrong'));s.classList.add(s.dataset.ok==='1'?'correct':'wrong');if(s.dataset.ok==='1'){showFb('fb1','맞아요. 문제는 해결해야 하는 일 또는 상황입니다. 긴 설명 속에서도 먼저 “무엇을 해결해야 하지?”를 찾으면 됩니다.',true);state.done[1]=true;$('#to2').classList.remove('hide');save()}else showFb('fb1','이 정보도 상황 속에 있지만, 지금 가장 핵심적으로 해결해야 하는 일은 아닙니다.',false)};$('#to2').onclick=()=>renderStage(2);
+
+function showFb(id,msg,good){const e=$('#'+id);e.textContent=msg;e.className='feedback show '+(good?'good':'bad')}
+function renderAnalysis(){const bank=$('#analysisBank');bank.innerHTML='';analysisItems.forEach(it=>{if(state.analysis[it.id])return;const c=document.createElement('div');c.className='infoCard';c.innerHTML=`<strong>${it.t}</strong><div class="infoBtns"></div>`;const btns=$('.infoBtns',c);[['current','현재 상태'],['goal','목표 상태'],['condition','조건']].forEach(([z,l])=>{const b=document.createElement('button');b.className='tiny';b.textContent=l;b.onclick=()=>{state.analysis[it.id]=z;save();renderAnalysis()};btns.appendChild(b)});bank.appendChild(c)});[['current','curZone'],['goal','goalZone'],['condition','condZone']].forEach(([z,id])=>{const h=$('#'+id);h.innerHTML='';analysisItems.filter(it=>state.analysis[it.id]===z).forEach(it=>{const b=document.createElement('button');b.className='placed';b.textContent=it.t;b.onclick=()=>{delete state.analysis[it.id];save();renderAnalysis()};h.appendChild(b)})})}
+$('#reset2').onclick=()=>{state.analysis={};$('#to3').classList.add('hide');save();renderAnalysis()};$('#check2').onclick=()=>{if(Object.keys(state.analysis).length!==analysisItems.length){showFb('fb2','모든 카드를 세 칸 중 하나에 넣어 주세요.',false);return}const wrong=analysisItems.filter(it=>state.analysis[it.id]!==it.z);if(wrong.length)showFb('fb2','몇 개가 섞여 있어요. “지금 이미 일어난 것”, “원하는 결과”, “반드시 고려할 것”을 다시 구분해 보세요.',false);else{showFb('fb2','좋아요. 현재 상태·목표 상태·조건을 나누니 문제가 훨씬 선명해졌습니다.',true);state.done[2]=true;$('#to3').classList.remove('hide');save()}};$('#to3').onclick=()=>renderStage(3);
+
+function renderAbstract(){const bank=$('#abstractBank');bank.innerHTML='';abstractItems.forEach(it=>{if(state.abstract[it.id])return;const c=document.createElement('div');c.className='infoCard';c.innerHTML=`<strong>${it.t}</strong><div class="infoBtns"></div>`;const btns=$('.infoBtns',c);[['need','필요해'],['skip','중요하지 않아']].forEach(([z,l])=>{const b=document.createElement('button');b.className='tiny';b.textContent=l;b.onclick=()=>{state.abstract[it.id]=z;save();renderAbstract()};btns.appendChild(b)});bank.appendChild(c)});[['need','needZone'],['skip','skipZone']].forEach(([z,id])=>{const h=$('#'+id);h.innerHTML='';abstractItems.filter(it=>state.abstract[it.id]===z).forEach(it=>{const b=document.createElement('button');b.className='placed';b.textContent=it.t;b.onclick=()=>{delete state.abstract[it.id];save();renderAbstract()};h.appendChild(b)})})}
+$('#reset3').onclick=()=>{state.abstract={};$('#to4').classList.add('hide');save();renderAbstract()};$('#check3').onclick=()=>{if(Object.keys(state.abstract).length!==abstractItems.length){showFb('fb3','모든 정보를 두 칸 중 하나에 넣어 주세요.',false);return}const wrong=abstractItems.filter(it=>(it.need?'need':'skip')!==state.abstract[it.id]);if(wrong.length)showFb('fb3','다시 생각해 보세요. 이 정보가 없어도 영화 시간에 맞추는 문제를 해결할 수 있는지가 기준입니다.',false);else{showFb('fb3','정확해요. 불필요한 요소를 덜어내고 핵심만 남기는 것이 추상화입니다.',true);state.done[3]=true;$('#to4').classList.remove('hide');save()}};$('#to4').onclick=()=>renderStage(4);
+
+function renderTasks(){const b=$('#taskBank'),c=$('#taskChosen');b.innerHTML='';c.innerHTML='';taskItems.forEach(it=>{if(state.chosen.includes(it.id))return;const r=document.createElement('div');r.className='task';r.innerHTML=`<span>${it.t}</span>`;const x=document.createElement('button');x.className='tiny';x.textContent='선택';x.onclick=()=>{if(state.chosen.length<5){state.chosen.push(it.id);save();renderTasks()}};r.appendChild(x);b.appendChild(r)});state.chosen.forEach((id,i)=>{const it=taskItems.find(x=>x.id===id);const r=document.createElement('div');r.className='task';r.innerHTML=`<span><b>${i+1}.</b> ${it.t}</span>`;const ops=document.createElement('div');ops.className='ops';[['↑',-1],['↓',1]].forEach(([t,d])=>{const x=document.createElement('button');x.className='tiny';x.textContent=t;x.disabled=(d<0&&i===0)||(d>0&&i===state.chosen.length-1);x.onclick=()=>{const j=i+d;[state.chosen[i],state.chosen[j]]=[state.chosen[j],state.chosen[i]];save();renderTasks()};ops.appendChild(x)});const del=document.createElement('button');del.className='tiny';del.textContent='삭제';del.onclick=()=>{state.chosen=state.chosen.filter(x=>x!==id);save();renderTasks()};ops.appendChild(del);r.appendChild(ops);c.appendChild(r)})}
+$('#reset4').onclick=()=>{state.chosen=[];save();renderTasks();$('#to5').classList.add('hide');$('#modelPreview').classList.add('hide')};$('#check4').onclick=()=>{if(state.chosen.length!==5){showFb('fb4','작은 문제 5개를 골라 주세요.',false);return}const wrong=state.chosen.filter(id=>!taskItems.find(x=>x.id===id).good);if(wrong.length)showFb('fb4','영화 미션과 직접 관련 없는 일이 섞여 있어요. 실제 해결에 필요한 작업만 골라 보세요.',false);else{showFb('fb4','좋아요. 필요한 작은 문제로 나눈 것이 문제 분해입니다. 이제 오른쪽에서 순서를 바꾸면 “어떤 순서로 해결할지” 생각하게 되고, 이것이 다음 단계인 알고리즘 설계로 이어집니다.',true);$('#modelPreview').classList.remove('hide');$('#to5').classList.remove('hide');state.done[4]=true;save()}};$('#to5').onclick=()=>renderStage(5);
+
+function renderMissions(){const h=$('#missionCards');h.innerHTML=missions.map(m=>`<button class="missionCard ${state.mission===m.id?'selected':''}" data-mid="${m.id}"><div class="ico">${m.ico}</div><h3>${m.title}</h3><p>${m.desc}</p></button>`).join('');$$('.missionCard',h).forEach(b=>b.onclick=()=>{state.mission=b.dataset.mid;state.mode='example';save();renderMissions();renderMissionData()})}
+function renderMissionData(){const box=$('#dataSheet');if(!state.mission){box.classList.add('hide');return}const m=missions.find(x=>x.id===state.mission);box.classList.remove('hide');$('#dataTitle').textContent=`${m.ico} ${m.title} · 예시 데이터`;$('#dataFacts').innerHTML=m.facts.map(([k,v])=>`<div class="dataFact"><small>${k}</small><b>${v}</b></div>`).join('');$$('.modeSwitch button').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));$('#customData').classList.toggle('hide',state.mode!=='custom')}
+$$('.modeSwitch button').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;save();renderMissionData()});
+$('#finish').onclick=async()=>{const vals=[$('#myProblem').value,$('#myCond').value,$('#myCurrent').value,$('#myGoal').value,$('#myCore').value,$('#myParts').value,$('#reflection').value].map(v=>v.trim());if(!state.mission){showFb('fb5','먼저 상황 하나를 선택해 주세요.',false);return}if(vals.some(v=>!v)){showFb('fb5','모든 칸을 채운 뒤 완료해 주세요.',false);return}state.done[5]=true;state.formDraft=collectActivity();$('#to6').classList.remove('hide');save();const content=collectActivity();const {data,error}=await ProblemLabAPI.publishLesson1(content);if(error||!data?.ok){showFb('fb5','활동은 저장했지만 갤러리 등록에 실패했어요. 인터넷 연결을 확인한 뒤 완료 버튼을 다시 눌러 주세요.',false);return}showFb('fb5','좋아요. 내 상황 미션을 저장했고 학급 갤러리에도 카드로 등록했어요. 준비되면 형성평가로 넘어가세요.',true)};$('#to6').onclick=()=>renderStage(6);
+
+// formative quiz
+const quizQuestions=[
+  {q:'“문제”의 뜻으로 가장 알맞은 것은?',choices:[
+    {t:'해결해야 하는 일 또는 상황',ok:true},
+    {t:'컴퓨터가 처리한 최종 결과',ok:false},
+    {t:'문제를 표현한 그림이나 표',ok:false},
+    {t:'프로그램을 작성할 때 사용하는 명령어',ok:false}
+  ],ex:'문제는 해결해야 하는 일 또는 상황입니다.'},
+  {q:'다음 중 “추상화”를 가장 잘 설명한 것은?',choices:[
+    {t:'문제의 모든 정보를 빠짐없이 남기는 것',ok:false},
+    {t:'불필요한 요소를 제거하고 핵심 요소만 남기는 것',ok:true},
+    {t:'작은 문제를 하나의 큰 문제로 합치는 것',ok:false},
+    {t:'정해진 순서대로 프로그램을 실행하는 것',ok:false}
+  ],ex:'추상화는 복잡한 문제에서 불필요한 요소를 제거하고 핵심 요소만 남기는 것입니다.'},
+  {q:'복잡한 문제를 해결하기 쉽도록 여러 개의 작은 문제로 나누는 것은?',choices:[
+    {t:'문제 분해',ok:true},
+    {t:'프로그래밍',ok:false},
+    {t:'데이터 압축',ok:false},
+    {t:'암호화',ok:false}
+  ],ex:'큰 문제를 실제로 해결할 수 있는 작은 단위로 나누는 것이 문제 분해입니다.'},
+  {q:'문제 분해 후 “알고리즘 설계”로 이어지는 생각의 순서로 가장 알맞은 것은?',choices:[
+    {t:'작은 문제 고르기 → 처리 순서 정하기 → 해결 절차 만들기',ok:true},
+    {t:'처리 순서 정하기 → 불필요한 정보 늘리기 → 큰 문제 만들기',ok:false},
+    {t:'프로그래밍하기 → 문제 찾기 → 조건 지우기',ok:false},
+    {t:'모든 정보를 남기기 → 순서를 없애기 → 결과만 보기',ok:false}
+  ],ex:'문제 분해로 작은 문제를 만든 뒤 처리 순서를 정하면 단계적 해결 절차인 알고리즘 설계로 이어집니다.'},
+  {q:'컴퓨팅 사고력을 이용한 문제 해결 과정의 순서로 알맞은 것은?',choices:[
+    {t:'문제 이해 → 핵심 요소 추출 → 문제 분해 및 모델링 → 알고리즘 설계 → 프로그래밍',ok:true},
+    {t:'프로그래밍 → 알고리즘 설계 → 문제 이해 → 모델링 → 핵심 요소 추출',ok:false},
+    {t:'핵심 요소 추출 → 프로그래밍 → 문제 이해 → 알고리즘 설계 → 문제 분해',ok:false},
+    {t:'문제 분해 → 프로그래밍 → 문제 이해 → 핵심 요소 추출 → 알고리즘 설계',ok:false}
+  ],ex:'문제를 이해하고 핵심을 추출한 뒤 분해·모델링하고, 알고리즘을 설계한 다음 프로그래밍으로 구현합니다.'}
+];
+let quiz={index:0,wrong:0,locked:false,shuffled:[]};
+const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
+function buildQuiz(){state.quizStats.attempts=(state.quizStats.attempts||0)+1;save();quiz={index:0,wrong:0,locked:false,shuffled:quizQuestions.map(q=>shuffle(q.choices))};$('#conceptReview').classList.add('hide');$('#quizIntro').classList.add('hide');$('#quizRestart').classList.add('hide');$('#quizResult').classList.add('hide');$('#quizWrap').classList.remove('hide');renderQuizQuestion()}
+function renderQuizQuestion(){const q=quizQuestions[quiz.index];quiz.locked=false;$('#quizProgress').textContent=`${quiz.index+1} / ${quizQuestions.length}`;$('#quizMiss').textContent=`오답 ${quiz.wrong} / 2`;$('#quizQ').textContent=q.q;$('#quizFb').className='feedback';$('#quizFb').textContent='';$('#quizNext').classList.add('hide');const host=$('#quizChoices');host.innerHTML='';quiz.shuffled[quiz.index].forEach(opt=>{const b=document.createElement('button');b.className='quizChoice';b.textContent=opt.t;b.onclick=()=>answerQuiz(b,opt);host.appendChild(b)})}
+function answerQuiz(btn,opt){if(quiz.locked||btn.disabled)return;if(opt.ok){quiz.locked=true;btn.classList.add('correct');$$('.quizChoice',$('#quizChoices')).forEach(b=>b.disabled=true);showFb('quizFb','정답! '+quizQuestions[quiz.index].ex,true);if(quiz.index===quizQuestions.length-1){$('#quizNext').textContent='결과 확인';$('#quizNext').classList.remove('hide')}else{$('#quizNext').textContent='다음 문제';$('#quizNext').classList.remove('hide')}}else{btn.classList.add('wrong');btn.disabled=true;quiz.wrong++;state.quizStats.wrong_total=(state.quizStats.wrong_total||0)+1;save();$('#quizMiss').textContent=`오답 ${quiz.wrong} / 2`;showFb('quizFb','오답입니다. 다른 선지를 다시 골라 보세요.',false);if(quiz.wrong>=2){quiz.locked=true;$('#quizNext').classList.add('hide');setTimeout(()=>{$('#quizWrap').classList.add('hide');$('#conceptReview').classList.remove('hide');$('#quizRestart').classList.remove('hide')},350)}}}
+$('#startQuiz').onclick=buildQuiz;$('#restartQuiz').onclick=buildQuiz;$('#quizNext').onclick=()=>{if(quiz.index===quizQuestions.length-1){$('#quizWrap').classList.add('hide');$('#quizResult').classList.remove('hide');$('#quizResultText').innerHTML=`5문제를 끝까지 풀었습니다. <b>오답 ${quiz.wrong}개</b>로 통과했어요. 문제·추상화·문제 분해와 전체 문제 해결 흐름을 다시 확인했습니다.`;state.done[6]=true;state.quizStats.passed=true;state.quizStats.last_wrong=quiz.wrong;state.quizStats.completed_at=new Date().toISOString();save();$('#status').textContent=`미션 ${state.done.slice(1).filter(Boolean).length} / 6`;return}quiz.index++;renderQuizQuestion()};
+
+
+function applyForm(a={}){const pairs={customContext:'custom_context',myProblem:'problem',myCond:'conditions',myCurrent:'current_state',myGoal:'goal_state',myCore:'core_elements',myParts:'parts',reflection:'reflection'};Object.entries(pairs).forEach(([id,k])=>{if($('#'+id)&&a[k]!=null)$('#'+id).value=a[k]})}
+function rerenderAll(){renderAnalysis();renderAbstract();renderTasks();renderMissions();renderMissionData();renderStage(state.stage||0);if(state.done[1])$('#to2').classList.remove('hide');if(state.done[2])$('#to3').classList.remove('hide');if(state.done[3])$('#to4').classList.remove('hide');if(state.done[4]){$('#to5').classList.remove('hide');$('#modelPreview').classList.remove('hide');}if(state.done[5])$('#to6').classList.remove('hide');}
+['customContext','myProblem','myCond','myCurrent','myGoal','myCore','myParts','reflection'].forEach(id=>$('#'+id)?.addEventListener('input',()=>{state.formDraft=collectActivity();localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,700)}}));
+async function bootRemote(){setSync('Supabase 확인 중');const {data,error}=await ProblemLabAPI.getLesson1();if(error||!data?.ok){setSync('연결 확인 필요','bad');remoteReady=true;return}const r=data.record||{};if(r.state&&Object.keys(r.state).length){Object.assign(state,r.state);if(!state.quizStats)state.quizStats=r.quiz||{attempts:0,wrong_total:0,passed:false};localStorage.setItem(KEY,JSON.stringify(state));applyForm(r.activity||{});rerenderAll()}remoteReady=true;setSync('Supabase 연결됨','good');syncRemote()}
+initRamenGame();rerenderAll();if(state.formDraft)applyForm(state.formDraft);bootRemote();
+})();
+</script>
+</body>
+</html>

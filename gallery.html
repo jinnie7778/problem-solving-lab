@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학급 갤러리 · 문제 해결 LAB</title><link rel="stylesheet" href="assets/site.css"></head>
+<body><div class="shell">
+  <div class="top"><div class="brand"><div class="logo">🖼️</div><div><h1>학급 갤러리</h1><p>친구들의 문제 해결 아이디어를 살펴보고 👍를 눌러보세요.</p></div></div><a class="back" href="index.html">← 홈으로</a></div>
+  <section class="card">
+    <div class="galleryHead"><div><span class="eyebrow">우리 반 + 다른 반 보기</span><h2 style="font-size:38px;margin:12px 0 3px">문제 해결 작품 갤러리</h2><p style="color:var(--muted);margin:0">학년·반을 바꾸면 다른 학급의 작품도 볼 수 있습니다.</p></div><div class="filters"><select id="galleryGrade"></select><select id="galleryClass"></select></div></div>
+    <div class="tabs"><button class="tab active" data-lesson="1">1차시 · 내 상황 미션</button><button class="tab" data-lesson="2">2차시 · 모델링</button></div>
+    <div id="galleryMsg" class="notice"></div><div id="galleryGrid" class="galleryGrid"></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/api.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const session=ProblemLabAPI.getStudentSession();if(!session){location.href='index.html'}
+for(let i=1;i<=3;i++) $('#galleryGrade').insertAdjacentHTML('beforeend',`<option value="${i}" ${i===session.grade?'selected':''}>${i}학년</option>`);
+for(let i=1;i<=12;i++) $('#galleryClass').insertAdjacentHTML('beforeend',`<option value="${i}" ${i===session.class_no?'selected':''}>${i}반</option>`);
+let lessonNo=1;
+const missionMeta={grade:['📚','다음 시험 성적 올리기'],soccer:['⚽','내가 감독이라면 우승하기'],trip:['🚆','친구들과 하루 여행 성공하기'],game:['🎮','게임 대회에서 이기기'],morning:['⏰','지각하지 않는 아침 만들기'],custom:['✨','나만의 문제']};
+function showMsg(t,good=false){const e=$('#galleryMsg');e.textContent=t;e.className='notice show '+(good?'good':'bad')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function partsList(s){return esc(s||'').split(/\n+/).filter(Boolean).slice(0,6).map(x=>`<li>${x.replace(/^\s*\d+[.)]?\s*/, '')}</li>`).join('')}
+async function loadGallery(){const grid=$('#galleryGrid');grid.innerHTML='<div class="empty">불러오는 중...</div>';const {data,error}=await ProblemLabAPI.galleryList({grade:$('#galleryGrade').value,classNo:$('#galleryClass').value,lessonNo});if(error||!data?.ok){grid.innerHTML='';showMsg(data?.message||error?.message||'갤러리를 불러오지 못했습니다.');return}$('#galleryMsg').className='notice';const posts=data.posts||[];if(!posts.length){grid.innerHTML=`<div class="empty">${lessonNo===1?'아직 이 반에 올라온 1차시 작품이 없어요.':'2차시 작품은 아직 준비 중이에요.'}</div>`;return}grid.innerHTML=posts.map(p=>{const c=p.content||{}, meta=missionMeta[c.mission_id]||['✨',c.mission_title||'문제 해결'];return `<article class="workCard ${esc(c.mission_id||'custom')}"><div class="author"><div><b>${esc(p.student_name)}</b><br><span>${p.grade}학년 ${p.class_no}반</span></div><span>${new Date(p.updated_at).toLocaleDateString('ko-KR')}</span></div><div style="font-size:34px">${meta[0]}</div><h3>${esc(c.mission_title||meta[1])}</h3><div class="workBlock"><div class="miniLabel">해결해야 하는 문제</div>${esc(c.problem)}</div><div class="arrowGoal"><div><div class="miniLabel">현재 상태</div>${esc(c.current_state)}</div><b>→</b><div><div class="miniLabel">목표 상태</div>${esc(c.goal_state)}</div></div><div class="workBlock"><div class="miniLabel">핵심 요소</div>${esc(c.core_elements)}</div><div class="workBlock"><div class="miniLabel">문제 분해</div><ol class="parts">${partsList(c.parts)}</ol></div><div class="workBlock"><div class="miniLabel">한 줄 성찰</div>${esc(c.reflection)}</div><div class="likeRow"><span style="color:var(--muted);font-size:12px">${esc(c.mode==='custom'?'내 상황으로 수정':'예시 데이터 기반')}</span><button class="likeBtn ${p.liked_by_me?'liked':''}" data-id="${p.id}">👍 <span>${p.like_count||0}</span></button></div></article>`}).join('');$$('.likeBtn').forEach(b=>b.onclick=async()=>{b.disabled=true;const {data,error}=await ProblemLabAPI.toggleLike(b.dataset.id);b.disabled=false;if(error||!data?.ok){showMsg(data?.message||error?.message||'따봉 처리 실패');return}b.classList.toggle('liked',!!data.liked);b.querySelector('span').textContent=data.like_count;});}
+$$('.tab').forEach(b=>b.onclick=()=>{lessonNo=+b.dataset.lesson;$$('.tab').forEach(x=>x.classList.toggle('active',x===b));loadGallery()});$('#galleryGrade').onchange=loadGallery;$('#galleryClass').onchange=loadGallery;loadGallery();
+</script></body></html>
