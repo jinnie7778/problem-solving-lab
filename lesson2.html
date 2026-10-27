@@ -96,13 +96,53 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 @media(max-width:1040px){.m8ScenarioGrid,.m8FactBank{grid-template-columns:1fr 1fr}.m8NetworkLayout{grid-template-columns:1fr}.m8ExampleGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.m8Start,.m8ScenarioGrid,.m8FactBank,.m8ExampleGrid{grid-template-columns:1fr}.m8ModeCard{align-items:flex-start}.m8CanvasWrap{height:390px}.m8SectionHead{align-items:flex-start}.m8SectionHead>div{align-items:flex-start}.m8SectionHead h3{font-size:23px}}
 
-.groupGate{position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#eef3ff,#f7f9ff);display:flex;align-items:center;justify-content:center;padding:24px}.groupGateCard{width:min(760px,100%);background:#fff;border:1px solid #dfe6ef;border-radius:30px;box-shadow:0 28px 70px rgba(27,48,82,.18);padding:30px}.groupGateHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.groupGateHead h2{font-size:34px;margin:0 0 6px}.groupGateHead p{margin:0;color:#68768a}.groupGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.groupField{display:flex;flex-direction:column;gap:6px}.groupField.full{grid-column:1/-1}.groupField label{font-weight:950}.groupField input{width:100%;border:1px solid #ccd7e4;border-radius:15px;padding:13px 14px;background:#fff}.groupHelp{margin-top:12px;padding:13px 15px;border-radius:16px;background:#f7f9fc;border:1px solid #dfe6ef;color:#536478;font-size:14px}.groupGateMsg{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;font-weight:850}.groupGateMsg.show{display:block}.groupGateMsg.bad{background:#fff0f2;color:#933946;border:1px solid #efc4ca}.groupGateMsg.good{background:#eaf8f2;color:#176442;border:1px solid #c2e4d2}.groupBar{max-width:1320px;margin:0 auto;padding:0 22px 10px;display:none}.groupBar.show{display:flex;justify-content:space-between;align-items:center;gap:12px}.groupInfo{padding:10px 14px;border-radius:16px;background:#fff;border:1px solid #dfe6ef;box-shadow:0 8px 20px rgba(29,51,84,.06);font-weight:900}.groupInfo small{display:block;color:#68768a;font-size:12px}.homeLink{display:inline-flex;align-items:center;text-decoration:none;color:#182230;background:#fff;border:1px solid #dfe6ef;border-radius:14px;padding:10px 13px;font-weight:900}.remoteBadge{position:fixed;right:18px;top:18px;z-index:120;padding:8px 11px;border-radius:999px;background:#fff;border:1px solid #dfe6ef;box-shadow:0 8px 18px rgba(29,51,84,.08);font-size:12px;font-weight:900;color:#68768a}.remoteBadge.ok{color:#176442;background:#effaf4}.remoteBadge.bad{color:#963c46;background:#fff3f4}
+.groupGate{position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#eef3ff,#f7f9ff);display:flex;align-items:center;justify-content:center;padding:24px}.groupGateCard{width:min(760px,100%);background:#fff;border:1px solid #dfe6ef;border-radius:30px;box-shadow:0 28px 70px rgba(27,48,82,.18);padding:30px}.groupGateHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.groupGateHead h2{font-size:34px;margin:0 0 6px}.groupGateHead p{margin:0;color:#68768a}.groupGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.groupField{display:flex;flex-direction:column;gap:6px}.groupField.full{grid-column:1/-1}.groupField label{font-weight:950}.groupField input{width:100%;border:1px solid #ccd7e4;border-radius:15px;padding:13px 14px;background:#fff}.groupHelp{margin-top:12px;padding:13px 15px;border-radius:16px;background:#f7f9fc;border:1px solid #dfe6ef;color:#536478;font-size:14px}.groupStepHead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}.groupStepNo{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#17243a;color:#fff;font-weight:1000}.groupStepHead strong{font-size:19px}.groupSetupNotice{margin:0 0 14px;padding:14px 16px;border-radius:16px;background:#eef3ff;border:1px solid #cbd9ff;color:#294d9a;font-weight:850;line-height:1.55}.groupConfirm{margin-top:12px}.groupGateMsg{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;font-weight:850}.groupGateMsg.show{display:block}.groupGateMsg.bad{background:#fff0f2;color:#933946;border:1px solid #efc4ca}.groupGateMsg.good{background:#eaf8f2;color:#176442;border:1px solid #c2e4d2}.groupBar{max-width:1320px;margin:0 auto;padding:0 22px 10px;display:none}.groupBar.show{display:flex;justify-content:space-between;align-items:center;gap:12px}.groupInfo{padding:10px 14px;border-radius:16px;background:#fff;border:1px solid #dfe6ef;box-shadow:0 8px 20px rgba(29,51,84,.06);font-weight:900}.groupInfo small{display:block;color:#68768a;font-size:12px}.homeLink{display:inline-flex;align-items:center;text-decoration:none;color:#182230;background:#fff;border:1px solid #dfe6ef;border-radius:14px;padding:10px 13px;font-weight:900}.remoteBadge{position:fixed;right:18px;top:18px;z-index:120;padding:8px 11px;border-radius:999px;background:#fff;border:1px solid #dfe6ef;box-shadow:0 8px 18px rgba(29,51,84,.08);font-size:12px;font-weight:900;color:#68768a}.remoteBadge.ok{color:#176442;background:#effaf4}.remoteBadge.bad{color:#963c46;background:#fff3f4}
 
-.groupPicker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}.groupPickCard{border:2px solid #dfe6ef;background:#fff;border-radius:22px;padding:18px;text-align:left;color:#182230;min-height:132px;transition:.16s}.groupPickCard:hover{transform:translateY(-2px);border-color:#b8c9ed;box-shadow:0 10px 24px rgba(29,51,84,.08)}.groupPickCard.active{border-color:#315fdf;background:#f4f7ff}.groupPickTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.groupPickTop b{font-size:22px}.groupPickStatus{padding:5px 8px;border-radius:999px;background:#f1f4f8;color:#718096;font-size:11px;font-weight:950}.groupPickStatus.used{background:#eaf8f2;color:#176442}.groupPickMembers{margin-top:12px;color:#68768a;font-size:13px;line-height:1.55}.groupAccess{margin-top:18px;padding:20px;border-radius:22px;background:#f8fbff;border:1px solid #d7e2f0}.groupAccessTitle{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.groupAccessTitle h3{font-size:25px;margin:0}.groupExistingMembers{padding:12px 14px;border-radius:15px;background:#fff;border:1px solid #dfe6ef;font-weight:850;color:#42536a;margin-bottom:12px}
+.groupPicker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}.groupPickCard{border:2px solid #dfe6ef;background:#fff;border-radius:22px;padding:18px;text-align:left;color:#182230;min-height:132px;transition:.16s}.groupPickCard:hover{transform:translateY(-2px);border-color:#b8c9ed;box-shadow:0 10px 24px rgba(29,51,84,.08)}.groupPickCard.active{border-color:#315fdf;background:#f4f7ff}.groupPickCard.otherGroup{opacity:.55;cursor:not-allowed;background:#f7f8fa}.groupPickCard.otherGroup:hover{transform:none;box-shadow:none;border-color:#dfe6ef}.groupPickTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.groupPickTop b{font-size:22px}.groupPickStatus{padding:5px 8px;border-radius:999px;background:#f1f4f8;color:#718096;font-size:11px;font-weight:950}.groupPickStatus.used{background:#eaf8f2;color:#176442}.groupPickMembers{margin-top:12px;color:#68768a;font-size:13px;line-height:1.55}.groupAccess{margin-top:18px;padding:20px;border-radius:22px;background:#f8fbff;border:1px solid #d7e2f0}.groupAccessTitle{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.groupAccessTitle h3{font-size:25px;margin:0}.groupExistingMembers{padding:12px 14px;border-radius:15px;background:#fff;border:1px solid #dfe6ef;font-weight:850;color:#42536a;margin-bottom:12px}
 .personalGate{margin:8px 0 18px;padding:22px;border-radius:24px;background:linear-gradient(135deg,#f5f8ff,#f7f3ff);border:1px solid #ced9f7}.personalGateHead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.personalGateHead h3{font-size:27px;margin:0 0 5px}.personalGateHead p{margin:0;color:#5c6d83}.memberPickGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.memberPick{border:2px solid #dfe6ef;background:#fff;border-radius:20px;padding:16px;text-align:left;color:#182230}.memberPick:hover{border-color:#b9c9eb}.memberPick.done{border-color:#a8d8bf;background:#f2fbf6}.memberPick .who{font-size:20px;font-weight:950}.memberPick .state{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:999px;background:#f1f4f8;color:#718096;font-size:11px;font-weight:950}.memberPick.done .state{background:#dcf4e7;color:#176442}.memberUnlock{margin-top:14px;padding:16px;border-radius:18px;background:#fff;border:1px solid #dfe6ef}.memberUnlockRow{display:flex;gap:10px;align-items:flex-end}.memberUnlockRow .groupField{flex:1}.personalBar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;padding:13px 15px;border-radius:18px;background:#17243a;color:#fff}.personalBar small{display:block;color:#d7e2f5;font-size:12px}.personalBar b{font-size:18px}.personalBar button{border:1px solid rgba(255,255,255,.35);background:#fff;color:#17243a;border-radius:12px;padding:9px 11px;font-weight:950}.reflectionPanel{margin-top:18px;padding:20px;border-radius:22px;background:#fff9ed;border:1px solid #efd8ad}.reflectionPanel h3{font-size:25px;margin:0 0 6px}.reflectionPanel>p{margin:0;color:#725b37}.reflectionPicks{display:flex;gap:9px;flex-wrap:wrap;margin:13px 0}.reflectionPick{border:2px solid #e2d6bd;background:#fff;border-radius:16px;padding:11px 15px;font-weight:950;color:#5a4b32}.reflectionPick.selected{border-color:#d6962d;background:#fff1cf;color:#8b5910}.individualDoneBox{margin-top:16px;padding:18px;border-radius:20px;background:#eefaf4;border:1px solid #c5e5d1}.individualDoneBox h4{font-size:22px;margin:0 0 5px}.individualDoneBox p{margin:0;color:#476756}.allDoneBox{margin-top:14px;padding:16px 18px;border-radius:18px;background:#eef3ff;border:1px solid #cbd9ff;font-weight:900;color:#284d9b}
 @media(max-width:900px){.groupPicker{grid-template-columns:repeat(3,1fr)}.memberPickGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.groupPicker{grid-template-columns:1fr 1fr}.memberPickGrid{grid-template-columns:1fr}.memberUnlockRow{flex-direction:column;align-items:stretch}.personalBar{align-items:flex-start;flex-direction:column}.groupGrid{grid-template-columns:1fr}.groupGateCard{padding:20px}.groupGateHead h2{font-size:28px}}
 
+
+
+/* 2026-10-27 · 2차시 모둠 PIN 입장 스크롤 및 개인활동 전환 보완 */
+#groupGate {
+  overflow-y:auto;
+  overflow-x:hidden;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:24px 18px 38px;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+  scroll-padding-top:18px;
+}
+#groupGate .groupGateCard {
+  flex:0 0 auto;
+  min-width:0;
+  margin:0 auto;
+  max-height:none;
+  overflow:visible;
+}
+#groupAccess { scroll-margin-top:18px; }
+#groupAccess:not(.hide) { margin-top:0; }
+#groupAccess .actions {
+  position:sticky;
+  bottom:0;
+  z-index:3;
+  padding:12px 0 4px;
+  margin-top:8px;
+  background:linear-gradient(180deg,rgba(248,251,255,.89),#f8fbff 35%);
+}
+#groupLoginBtn {min-height:52px;min-width:220px;}
+#groupPin, #groupPinConfirm {scroll-margin-bottom:100px;}
+#m8SwitchNotice:not(.hide){margin-top:12px;padding:12px 15px;border-radius:14px;background:#fff0f2;border:1px solid #efc4ca;color:#933946;font-weight:800}
+@media(max-width:680px){
+  #groupGate{padding:12px 10px 28px;}
+  #groupGate .groupGateCard{padding:20px 16px;}
+  #groupAccess{padding:14px;}
+  #groupAccess .groupAccessTitle{flex-direction:column;align-items:flex-start;}
+  #groupLoginBtn{width:100%;min-width:0;}
+}
 
 </style>
 </head>
@@ -111,18 +151,24 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 <div class="groupGate" id="groupGate">
   <div class="groupGateCard" style="width:min(1020px,100%)">
     <div class="groupGateHead"><div><div class="eyebrow">2차시 · 모둠활동</div><h2>우리 모둠을 선택하세요</h2><p id="groupStudentInfo">학급 정보를 확인하는 중...</p></div><a class="homeLink" href="index.html">← 홈</a></div>
-    <div class="groupHelp"><b>1모둠~12모둠</b> 중 우리 모둠을 선택하세요. 처음 사용하는 모둠은 조원 이름과 <b>모둠 4자리 PIN</b>을 정하고, 다음부터는 같은 PIN으로 들어갑니다.</div>
-    <div class="groupPicker" id="groupPicker"></div>
+    <div id="groupChooseView">
+      <div class="groupStepHead"><span class="groupStepNo">1</span><strong>우리 모둠 선택</strong></div>
+      <div class="groupHelp"><b>1모둠~12모둠</b> 중 우리 모둠을 먼저 선택하세요. 카드만 누른다고 수업에 들어가지 않습니다.</div>
+      <div class="groupPicker" id="groupPicker"></div>
+    </div>
     <div class="groupAccess hide" id="groupAccess">
-      <div class="groupAccessTitle"><h3 id="selectedGroupTitle">1모둠</h3><button class="tiny" id="groupBackBtn">모둠 다시 선택</button></div>
+      <div class="groupStepHead"><span class="groupStepNo">2</span><strong id="groupAccessStepText">모둠 설정</strong></div>
+      <div class="groupAccessTitle"><h3 id="selectedGroupTitle">1모둠</h3><button class="tiny" id="groupBackBtn">← 모둠 다시 선택</button></div>
+      <div class="groupSetupNotice" id="groupSetupNotice">조원 이름과 모둠 PIN을 설정한 뒤 아래 버튼을 눌러야 활동에 들어갑니다.</div>
       <div class="groupExistingMembers hide" id="groupExistingMembers"></div>
       <div class="groupGrid" id="newGroupFields">
         <div class="groupField"><label>조원 1</label><input id="member1" readonly></div>
-        <div class="groupField"><label>조원 2</label><input id="member2" maxlength="30" placeholder="조원 이름"></div>
+        <div class="groupField"><label>조원 2 · 필수</label><input id="member2" maxlength="30" placeholder="함께 활동할 조원 이름"></div>
         <div class="groupField"><label>조원 3 · 선택</label><input id="member3" maxlength="30" placeholder="3명일 때만 입력"></div>
       </div>
       <div class="groupField" style="margin-top:12px"><label id="groupPinLabel">모둠 4자리 PIN</label><input id="groupPin" type="password" inputmode="numeric" maxlength="4" placeholder="● ● ● ●"></div>
-      <div class="actions"><button class="btn" id="groupLoginBtn">모둠활동 시작</button></div>
+      <div class="groupField groupConfirm" id="groupPinConfirmWrap"><label>모둠 PIN 한 번 더 입력</label><input id="groupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="같은 PIN 4자리"></div>
+      <div class="actions"><button class="btn" id="groupLoginBtn">모둠 설정하고 입장</button></div>
       <div class="groupGateMsg" id="groupGateMsg"></div>
     </div>
   </div>
@@ -414,6 +460,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 
       <div id="m8PersonalWorkspace" class="hide">
         <div class="personalBar"><div><small>현재 개인활동</small><b id="m8CurrentMember">학생 이름</b></div><button id="m8LockBtn">🔒 저장하고 다른 조원으로</button></div>
+        <div id="m8SwitchNotice" class="hide" role="alert" aria-live="assertive"></div>
 
       <div class="m8Start" id="m8Start">
         <button class="m8ModeCard" data-mode="custom">
@@ -444,7 +491,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 
       <div class="m8Panel hide" id="m8CardPanel">
         <div class="m8SectionHead"><div><span class="m8StepNo">1</span><h3>문제 상황 카드 고르기</h3></div><button class="tiny" id="m8BackFromCards">선택 다시 하기</button></div>
-        <p class="m8Lead">상황을 읽고 <b>현재·목표·조건</b>을 먼저 확인하세요. 그다음 꼭 필요한 정보만 골라내고, 가장 알맞은 모델을 선택하면 바로 피드백을 받을 수 있습니다.</p>
+        <p class="m8Lead">상황을 읽고 <b>현재·목표·조건</b>을 먼저 확인하세요. 그다음 필요한 정보를 골라내고, 표·트리·그래프 중 스스로 적합하다고 생각하는 모델을 선택해 이유를 적어 보세요.</p>
         <div class="m8ScenarioGrid" id="m8ScenarioGrid"></div>
         <div class="m8ScenarioDetail hide" id="m8ScenarioDetail">
           <div class="m8ScenarioStory"><div><span class="tag" id="m8ScenarioTag">상황</span><h3 id="m8ScenarioTitle"></h3><p id="m8ScenarioStory"></p></div></div>
@@ -638,7 +685,7 @@ const esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'
 function m8CurrentScenario(){return mission8Scenarios.find(x=>x.id===m8.scenarioId)}
 function m8CoreTexts(){if(m8.mode==='card'){const sc=m8CurrentScenario();return (sc?.facts||[]).filter(f=>(m8.selectedCore||[]).includes(f.id)).map(f=>`${f.label}: ${f.value}`)}return (m8.custom.core||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean)}
 function m8ProblemTitle(){return m8.mode==='card'?(m8CurrentScenario()?.problem||'문제 상황'):(m8.custom.problem||'나만의 문제')}
-function m8SetMode(mode,reset=true){if(reset)m8={...m8,schemaVersion:2,mode,scenarioId:mode==='card'?m8.scenarioId:'',selectedCore:mode==='card'?(m8.selectedCore||[]):[],modelType:'',modelData:null,result:null};else m8.mode=mode;saveM8();$$('.m8ModeCard').forEach(b=>b.classList.toggle('selected',b.dataset.mode===mode));$('#m8CustomPanel').classList.toggle('hide',mode!=='custom');$('#m8CardPanel').classList.toggle('hide',mode!=='card');if(reset){$('#m8ModelPanel').classList.add('hide');$('#m8EditorPanel').classList.add('hide');$('#m8GalleryPreviewPanel').classList.add('hide')}if(mode==='card')renderM8Scenarios();if(mode==='custom')restoreM8Custom()}
+function m8SetMode(mode,reset=true){if(reset)m8={...m8,schemaVersion:3,mode,scenarioId:mode==='card'?m8.scenarioId:'',selectedCore:mode==='card'?(m8.selectedCore||[]):[],modelType:'',modelData:null,result:null,reflection:{models:[],why:'',other:''}};else m8.mode=mode;saveM8();$$('.m8ModeCard').forEach(b=>b.classList.toggle('selected',b.dataset.mode===mode));$('#m8CustomPanel').classList.toggle('hide',mode!=='custom');$('#m8CardPanel').classList.toggle('hide',mode!=='card');if(reset){$('#m8ModelPanel').classList.add('hide');$('#m8EditorPanel').classList.add('hide');$('#m8GalleryPreviewPanel').classList.add('hide')}if(mode==='card')renderM8Scenarios();if(mode==='custom')restoreM8Custom()}
 $$('.m8ModeCard').forEach(b=>b.onclick=()=>m8SetMode(b.dataset.mode));
 $('#m8BackFromCustom').onclick=$('#m8BackFromCards').onclick=()=>{m8.mode='';m8.modelType='';m8.modelData=null;m8.result=null;saveM8();$$('.m8ModeCard').forEach(b=>b.classList.remove('selected'));$('#m8CustomPanel').classList.add('hide');$('#m8CardPanel').classList.add('hide');$('#m8ModelPanel').classList.add('hide');$('#m8EditorPanel').classList.add('hide');$('#m8GalleryPreviewPanel').classList.add('hide')};
 function restoreM8Custom(){const c=m8.custom||{};$('#m8CustomProblem').value=c.problem||'';$('#m8CustomCurrent').value=c.current||'';$('#m8CustomGoal').value=c.goal||'';$('#m8CustomConditions').value=c.conditions||'';$('#m8CustomCore').value=c.core||''}
@@ -648,8 +695,25 @@ function renderM8Scenarios(){const h=$('#m8ScenarioGrid');h.innerHTML=mission8Sc
 function renderM8ScenarioDetail(){const sc=m8CurrentScenario();if(!sc){$('#m8ScenarioDetail').classList.add('hide');return}$('#m8ScenarioDetail').classList.remove('hide');$('#m8ScenarioTag').textContent=sc.ico+' 문제 상황';$('#m8ScenarioTitle').textContent=sc.title;$('#m8ScenarioStory').textContent=sc.story;$('#m8AnalysisStrip').innerHTML=`<div class="m8AnalysisBox current"><small>현재 상태</small><b>${esc(sc.analysis.current)}</b></div><div class="m8AnalysisBox goal"><small>목표 상태</small><b>${esc(sc.analysis.goal)}</b></div><div class="m8AnalysisBox condition"><small>조건</small><b>${esc(sc.analysis.condition)}</b></div><div class="m8RelationCue" style="grid-column:1/-1">💡 <b>힌트:</b> “이 정보가 없으면 모델을 제대로 만들 수 있을까?”를 생각하며 고르세요.</div>`;const h=$('#m8FactBank');h.innerHTML=sc.facts.map(f=>`<button class="m8FactChip ${(m8.selectedCore||[]).includes(f.id)?'selected':''}" data-id="${f.id}"><small>${f.label}</small><b>${f.value}</b></button>`).join('');$$('.m8FactChip',h).forEach(b=>b.onclick=()=>{const set=new Set(m8.selectedCore||[]);set.has(b.dataset.id)?set.delete(b.dataset.id):set.add(b.dataset.id);m8.selectedCore=[...set];saveM8();renderM8ScenarioDetail()})}
 $('#m8ResetCore').onclick=()=>{m8.selectedCore=[];saveM8();renderM8ScenarioDetail();$('#m8CoreFb').className='feedback';$('#m8ModelPanel').classList.add('hide');$('#m8EditorPanel').classList.add('hide')};
 $('#m8CheckCore').onclick=()=>{const sc=m8CurrentScenario();if(!sc)return;const need=new Set(sc.facts.filter(f=>f.core).map(f=>f.id)),sel=new Set(m8.selectedCore||[]);const ok=sel.size===need.size&&[...need].every(x=>sel.has(x));$$('.m8FactChip',$('#m8FactBank')).forEach(b=>{const f=sc.facts.find(x=>x.id===b.dataset.id);b.classList.remove('correct','wrong','missed');if(sel.has(b.dataset.id))b.classList.add(f.core?'correct':'wrong');else if(f.core)b.classList.add('missed')});if(!ok){const must=sc.facts.filter(f=>f.core).map(f=>f.label+' · '+f.value).join(' / '),extra=sc.facts.filter(f=>!f.core&&sel.has(f.id)).map(f=>f.label).join(', ');showFb('m8CoreFb',`다시 확인! 이 문제의 핵심은 “${must}”입니다.${extra?` ${extra} 정보는 없어도 모델을 만들 수 있어요.`:''} 표시된 카드를 보고 다시 골라 보세요.`,false);return}showFb('m8CoreFb','정답! 이 문제를 표현하려면 지금 고른 정보면 충분해요. 불필요한 정보를 빼고 핵심만 남기는 것이 추상화입니다.',true);showM8ModelPanel()};
-function showM8ModelPanel(){const p=$('#m8ModelPanel');p.classList.remove('hide');const cores=m8CoreTexts();let detail='';if(m8.mode==='custom'){detail=`<div><small>현재</small> ${esc(m8.custom.current)} &nbsp; / &nbsp; <small>목표</small> ${esc(m8.custom.goal)}</div>`}else{const sc=m8CurrentScenario();detail=`<div><small>핵심 관계</small> ${esc(sc?.relation||'')}</div>`}$('#m8ProblemSummary').innerHTML=`<strong>${esc(m8ProblemTitle())}</strong>${detail}<div class="chips">${cores.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;$('#m8Reason').value=m8.reason||'';$('#m8ModelFb').className='feedback';$$('#m8ModelPick button').forEach(b=>{b.classList.toggle('selected',b.dataset.model===m8.modelType);b.classList.remove('goodPick','badPick')});if(m8.modelType&&m8.mode==='custom'){$('#m8EditorPanel').classList.remove('hide');renderM8Editor()}}
-$$('#m8ModelPick button').forEach(b=>b.onclick=()=>{const picked=b.dataset.model;$$('#m8ModelPick button').forEach(x=>x.classList.remove('selected','goodPick','badPick'));b.classList.add('selected');if(m8.mode==='card'){const sc=m8CurrentScenario();if(picked!==sc.preferredModel){b.classList.add('badPick');m8.modelType='';m8.modelData=null;m8.result=null;saveM8();$('#m8EditorPanel').classList.add('hide');showFb('m8ModelFb',`다시 생각! 핵심 관계는 “${sc.relation}”입니다. 이 관계를 가장 잘 보여주는 모델을 다시 골라 보세요.`,false);return}b.classList.add('goodPick');m8.modelType=picked;m8.reason=sc.modelWhy;m8.modelData=createM8ModelData(picked);m8.result=null;saveM8();$('#m8Reason').value=sc.modelWhy;showFb('m8ModelFb',`정답! ${sc.modelWhy}`,true);$('#m8EditorPanel').classList.remove('hide');$('#m8GalleryPreviewPanel').classList.add('hide');renderM8Editor();return}m8.modelType=picked;m8.reason=$('#m8Reason').value.trim();m8.modelData=createM8ModelData(picked);m8.result=null;saveM8();$('#m8EditorPanel').classList.remove('hide');$('#m8GalleryPreviewPanel').classList.add('hide');renderM8Editor()});
+function showM8ModelPanel(){const p=$('#m8ModelPanel');p.classList.remove('hide');const cores=m8CoreTexts();let detail='';if(m8.mode==='custom'){detail=`<div><small>현재</small> ${esc(m8.custom.current)} &nbsp; / &nbsp; <small>목표</small> ${esc(m8.custom.goal)}</div>`}else{const sc=m8CurrentScenario();detail=`<div><small>핵심 관계</small> ${esc(sc?.relation||'')}</div>`}$('#m8ProblemSummary').innerHTML=`<strong>${esc(m8ProblemTitle())}</strong>${detail}<div class="chips">${cores.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;$('#m8Reason').value=m8.reason||'';$('#m8ModelFb').className='feedback';$$('#m8ModelPick button').forEach(b=>{b.classList.toggle('selected',b.dataset.model===m8.modelType);b.classList.remove('goodPick','badPick')});if(m8.modelType&&m8.modelData){$('#m8EditorPanel').classList.remove('hide');renderM8Editor()}}
+$$('#m8ModelPick button').forEach(b=>b.onclick=()=>{
+  const picked=b.dataset.model;
+  $$('#m8ModelPick button').forEach(x=>x.classList.remove('selected','goodPick','badPick'));
+  b.classList.add('selected');
+  const wasDifferent=m8.modelType!==picked;
+  m8.modelType=picked;
+  if(wasDifferent){m8.modelData=createM8ModelData(picked);m8.result=null;m8.reason='';$('#m8Reason').value=''}
+  saveM8();
+  const sc=m8CurrentScenario();
+  if(m8.mode==='card' && sc && picked===sc.preferredModel){
+    showFb('m8ModelFb','좋아요. 이 문제를 이렇게 표현할 수 있어요. 다른 모델도 가능하니, 직접 선택한 이유를 적어 보세요.',true);
+  }else{
+    showFb('m8ModelFb','선택한 모델로 직접 표현해 보세요. 정해진 한 가지 정답은 없어요. 이 모델이 왜 적합한지 자신의 생각을 적어 주세요.',true);
+  }
+  $('#m8EditorPanel').classList.remove('hide');
+  $('#m8GalleryPreviewPanel').classList.add('hide');
+  renderM8Editor();
+});
 $('#m8Reason').oninput=()=>{m8.reason=$('#m8Reason').value;saveM8()};
 function createM8ModelData(type){const sc=m8CurrentScenario();if(m8.mode==='card'&&sc?.starter?.type===type){const st=JSON.parse(JSON.stringify(sc.starter));if(type==='table')return{type,headers:st.headers,rows:st.rows};if(type==='tree')return{type,nodes:st.nodes,edges:st.edges||[],selectedId:st.nodes[0]?.id||null,connectFirst:null,connectMode:false};if(type==='graph')return{type,nodes:st.nodes,edges:st.edges||[],selectedId:st.nodes[0]?.id||null,connectFirst:null,connectMode:false}}if(type==='table'){const headers=['항목','내용'];return{type,headers:[...headers],rows:Array.from({length:3},()=>Array(headers.length).fill(''))}}if(type==='tree'){const nodes=Array.from({length:4},(_,i)=>({id:'t'+(i+1),label:i===0?'가장 위 내용':'내용 입력'}));return{type,nodes,edges:[],selectedId:'t1',connectFirst:null,connectMode:false}}return{type,nodes:Array.from({length:4},(_,i)=>({id:'g'+(i+1),label:'내용 입력',x:18+(i%3)*31,y:22+Math.floor(i/3)*45})),edges:[],selectedId:'g1',connectFirst:null,connectMode:false}}
 function renderM8Editor(){const t=m8.modelType,d=m8.modelData;if(!t||!d)return;$('#m8ModelBadge').textContent=t==='table'?'📋 표 모델':t==='tree'?'🌳 트리 모델':'🕸️ 그래프 모델';const starter=m8.mode==='card'?'<div class="m8StarterNote">✅ 시작 틀은 준비해 두었어요. <b>핵심 요소의 실제 내용</b>을 빈칸이나 노드에 채워 완성하면 됩니다.</div>':'';const guide=t==='table'?'행·열의 제목을 보고 상황 카드의 데이터를 알맞은 칸에 채우세요. 필요하면 행·열을 더 늘릴 수 있습니다.':t==='tree'?'큰 분류 노드는 준비되어 있습니다. 각 분류 아래에 알맞은 내용을 넣고 부모→자식으로 연결하세요.':'장소·대상 노드는 준비되어 있습니다. 상황 카드의 연결 정보를 보고 노드끼리 연결하고 간선 의미를 적으세요.';$('#m8EditorGuide').innerHTML=starter+guide;if(t==='table')renderM8Table();else renderM8Network(t)}
@@ -669,8 +733,15 @@ $$('[data-ref-model]').forEach(b=>b.onclick=()=>{m8.reflection=m8.reflection||{m
 $('#m8ReflectionWhy').oninput=()=>{m8.reflection=m8.reflection||{};m8.reflection.why=$('#m8ReflectionWhy').value;saveM8()};$('#m8ReflectionOther').oninput=()=>{m8.reflection=m8.reflection||{};m8.reflection.other=$('#m8ReflectionOther').value;saveM8()};
 $('#m8FinishIndividual').onclick=async()=>{m8.reflection=m8.reflection||{models:[],why:'',other:''};m8.reflection.why=$('#m8ReflectionWhy').value.trim();m8.reflection.other=$('#m8ReflectionOther').value.trim();if(!(m8.reflection.models||[]).length){showFb('m8FinishFb','표·트리·그래프 중 이 문제에 적합하다고 생각하는 모델을 하나 이상 선택해 주세요.',false);return}if(!m8.reflection.why){showFb('m8FinishFb','왜 그 모델이 적합하다고 생각했는지 내 생각을 한 문장 이상 적어 주세요.',false);return}if(!m8.result)m8.result=buildM8Result();m8.result.reflection=JSON.parse(JSON.stringify(m8.reflection));saveM8();$('#m8FinishIndividual').disabled=true;const res=await window.Lesson2Personal?.finishCurrent?.(m8);$('#m8FinishIndividual').disabled=false;if(!res?.ok){showFb('m8FinishFb',res?.message||'개인 결과를 저장하지 못했어요. 다시 눌러 주세요.',false);return}showFb('m8FinishFb','개인활동 완료! 내 작품이 2차시 갤러리에 올라갔습니다.',true);renderIndividualAfterFinish(res.status||[])};
 function renderIndividualAfterFinish(status){const host=$('#m8AfterFinish');const done=status.filter(x=>x.completed).length,total=status.length;host.innerHTML=`<div class="individualDoneBox"><h4>✅ 개인활동 저장 완료</h4><p>현재 모둠 완료 현황 · <b>${done}/${total}명</b> 완료</p></div>`;if(total>0&&done===total){state.done[8]=true;save();$('#toQuiz').classList.remove('hide');host.insertAdjacentHTML('beforeend','<div class="allDoneBox">🎉 조원 모두 미션 8을 완료했습니다. 이제 함께 형성평가로 넘어가세요.</div>')}else{$('#toQuiz').classList.add('hide');host.insertAdjacentHTML('beforeend','<div class="actions"><button class="btn" id="m8NextMemberBtn">다른 조원 개인활동으로</button></div>');$('#m8NextMemberBtn').onclick=()=>window.Lesson2Personal?.lockCurrent?.()}}
-$('#m8EditAgain').onclick=()=>{$('#m8GalleryPreviewPanel').classList.add('hide');$('#m8EditorPanel').scrollIntoView({behavior:'smooth',block:'start'})};$('#toQuiz').onclick=async()=>{if(window.Lesson2Personal?.isUnlocked?.())await window.Lesson2Personal.lockCurrent();renderStage(9)};
-function restoreM8(){if(!m8.mode)return;m8SetMode(m8.mode,false);if(m8.mode==='card'){renderM8Scenarios();if(m8.scenarioId)renderM8ScenarioDetail()}if(m8.mode==='custom')restoreM8Custom();const ready=m8.mode==='custom'?!!(m8.custom?.problem&&m8.custom?.current&&m8.custom?.goal&&m8.custom?.conditions&&m8CoreTexts().length>=2):(()=>{const sc=m8CurrentScenario();if(!sc)return false;const need=sc.facts.filter(f=>f.core).map(f=>f.id),sel=new Set(m8.selectedCore||[]);return need.length===sel.size&&need.every(x=>sel.has(x))})();if(ready)showM8ModelPanel();if(m8.modelType&&m8.modelData&&(m8.mode==='custom'||m8.modelType===m8CurrentScenario()?.preferredModel)){$('#m8EditorPanel').classList.remove('hide');renderM8Editor()}if(m8.result){renderM8GalleryPreview();$('#m8GalleryPreviewPanel').classList.remove('hide');restoreM8Reflection()}}
+$('#m8EditAgain').onclick=()=>{$('#m8GalleryPreviewPanel').classList.add('hide');$('#m8EditorPanel').scrollIntoView({behavior:'smooth',block:'start'})};$('#toQuiz').onclick=async()=>{if(window.Lesson2Personal?.isUnlocked?.() && !(await window.Lesson2Personal.lockCurrent()))return;renderStage(9)};
+function resetM8Dom(){
+  $$('.m8ModeCard').forEach(b=>b.classList.remove('selected'));
+  ['m8CustomPanel','m8CardPanel','m8ModelPanel','m8EditorPanel','m8GalleryPreviewPanel'].forEach(id=>$('#'+id)?.classList.add('hide'));
+  $('#m8AfterFinish').innerHTML='';$('#m8FinishFb').className='feedback';$('#fb8').className='feedback';$('#toQuiz').classList.add('hide');
+  if($('#m8Reason'))$('#m8Reason').value='';if($('#m8ReflectionWhy'))$('#m8ReflectionWhy').value='';if($('#m8ReflectionOther'))$('#m8ReflectionOther').value='';
+  $$('[data-ref-model]').forEach(b=>b.classList.remove('selected'));
+}
+function restoreM8(){if(!m8.mode)return;m8SetMode(m8.mode,false);if(m8.mode==='card'){renderM8Scenarios();if(m8.scenarioId)renderM8ScenarioDetail()}if(m8.mode==='custom')restoreM8Custom();const ready=m8.mode==='custom'?!!(m8.custom?.problem&&m8.custom?.current&&m8.custom?.goal&&m8.custom?.conditions&&m8CoreTexts().length>=2):(()=>{const sc=m8CurrentScenario();if(!sc)return false;const need=sc.facts.filter(f=>f.core).map(f=>f.id),sel=new Set(m8.selectedCore||[]);return need.length===sel.size&&need.every(x=>sel.has(x))})();if(ready)showM8ModelPanel();if(m8.modelType&&m8.modelData){$('#m8EditorPanel').classList.remove('hide');renderM8Editor()}if(m8.result){renderM8GalleryPreview();$('#m8GalleryPreviewPanel').classList.remove('hide');restoreM8Reflection()}}
 
 
 // quiz
@@ -694,6 +765,7 @@ window.Lesson2App={
   getMission8:()=>JSON.parse(JSON.stringify(m8)),
   loadMission8:(record)=>{m8=record&&record.schemaVersion?JSON.parse(JSON.stringify(record)):blankM8();resetM8Dom();restoreM8()},
   clearMission8:()=>{m8=blankM8();resetM8Dom()},
+  setMission8GroupComplete:(v)=>{state.done[8]=!!v;save();if(v)$('#toQuiz')?.classList.remove('hide');else $('#toQuiz')?.classList.add('hide')},
   hydrate:(record)=>{const next=freshState();Object.assign(next,record||{});delete next.mission8;Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,next);localStorage.setItem(KEY,JSON.stringify(sharedSnapshot()));renderAnalysis();renderStage(state.stage||0);renderTree();if(state.done[0])$('#toModelingDiscover')?.classList.remove('hide');if(state.done[3])$('#toChallenge')?.classList.remove('hide');if(state.solutionHistory?.length)$('#toTable').classList.remove('hide');if(state.done[5])$('#toTree')?.classList.remove('hide');if(state.done[6])$('#toGraph')?.classList.remove('hide');if(state.done[7])$('#toMission')?.classList.remove('hide');if(state.done[8])$('#toQuiz')?.classList.remove('hide')}
 };
 renderAnalysis();renderStage(state.stage||0);if(state.done[0])$('#toModelingDiscover')?.classList.remove('hide');if(state.done[3])$('#toChallenge')?.classList.remove('hide');if(state.solutionHistory?.length)$('#toTable').classList.remove('hide');if(state.done[5])$('#toTree')?.classList.remove('hide');if(state.done[6])$('#toGraph')?.classList.remove('hide');if(state.done[7])$('#toMission')?.classList.remove('hide');if(state.done[8])$('#toQuiz')?.classList.remove('hide');renderTree();
@@ -704,14 +776,41 @@ renderAnalysis();renderStage(state.stage||0);if(state.done[0])$('#toModelingDisc
 (()=>{
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const student=ProblemLabAPI.getStudentSession();
-const badge=$('#remoteBadge');let timer=null,busy=false,pending=null;let groupList=[];let selectedGroup=null;let personalTimer=null,personalPending=null,personalBusy=false;
+const badge=$('#remoteBadge');let timer=null,busy=false,pending=null;let groupList=[];let selectedGroup=null;let personalTimer=null;let personalSaveTail=Promise.resolve(true);let personalSwitching=false;
 function gateMsg(t,good=false){const e=$('#groupGateMsg');e.textContent=t;e.className='groupGateMsg show '+(good?'good':'bad')}
 function unlockMsg(t,good=false){const e=$('#m8UnlockMsg');e.textContent=t;e.className='groupGateMsg show '+(good?'good':'bad')}
 function setBadge(t,cls=''){badge.textContent=t;badge.className='remoteBadge '+cls}
 async function saveNow(record){if(busy){pending=record;return}busy=true;setBadge('모둠 저장 중...');const {data,error}=await ProblemLabAPI.saveLesson2(record);busy=false;if(error||!data?.ok){setBadge('모둠 저장 오류','bad')}else setBadge('저장됨','ok');if(pending){const next=pending;pending=null;saveNow(next)}}
-async function savePersonalNow(record){if(!ProblemLabAPI.getLesson2MemberSession())return;if(personalBusy){personalPending=record;return}personalBusy=true;setBadge('개인 저장 중...');const {data,error}=await ProblemLabAPI.saveLesson2Individual(record);personalBusy=false;if(error||!data?.ok){setBadge('개인 저장 오류','bad')}else setBadge('개인 저장됨','ok');if(personalPending){const next=personalPending;personalPending=null;savePersonalNow(next)}}
-function queuePersonal(record){if(!ProblemLabAPI.getLesson2MemberSession())return;clearTimeout(personalTimer);const snap=JSON.parse(JSON.stringify(record));personalTimer=setTimeout(()=>savePersonalNow(snap),450)}
-async function flushPersonal(){clearTimeout(personalTimer);personalTimer=null;if(ProblemLabAPI.getLesson2MemberSession()&&window.Lesson2App?.getMission8){await savePersonalNow(window.Lesson2App.getMission8())}}
+// Serialize writes and bind each snapshot to the current student session.
+// Do not clear/switch that session until the final write is confirmed.
+function personalSessionKey(){const ss=ProblemLabAPI.getLesson2MemberSession();return ss?JSON.stringify(ss):null}
+function savePersonalNow(record){
+  const owner=personalSessionKey();if(!owner)return Promise.resolve(false);
+  const snapshot=JSON.parse(JSON.stringify(record));
+  const work=personalSaveTail.catch(()=>false).then(async()=>{
+    if(personalSessionKey()!==owner)return false;
+    setBadge('개인 저장 중...');
+    try{
+      const {data,error}=await ProblemLabAPI.saveLesson2Individual(snapshot);
+      if(error||!data?.ok){setBadge('개인 저장 오류','bad');return false}
+      setBadge('개인 저장됨','ok');return true;
+    }catch(e){setBadge('개인 저장 오류','bad');return false}
+  });
+  personalSaveTail=work;
+  return work;
+}
+function queuePersonal(record){
+  if(!personalSessionKey()||personalSwitching)return;
+  clearTimeout(personalTimer);
+  const snapshot=JSON.parse(JSON.stringify(record));
+  personalTimer=setTimeout(()=>{personalTimer=null;void savePersonalNow(snapshot)},450);
+}
+async function flushPersonal(){
+  clearTimeout(personalTimer);personalTimer=null;
+  if(!personalSessionKey())return true;
+  if(!window.Lesson2App?.getMission8)return false;
+  return await savePersonalNow(window.Lesson2App.getMission8());
+}
 window.Lesson2Remote={queueSave(record){if(!ProblemLabAPI.getGroupSession())return;clearTimeout(timer);const snap=JSON.parse(JSON.stringify(record));delete snap.mission8;timer=setTimeout(()=>saveNow(snap),500)}};
 
 async function refreshMemberStatus(){const {data,error}=await ProblemLabAPI.lesson2MemberStatus();if(error||!data?.ok)return[];renderMemberCards(data.members||[]);return data.members||[]}
@@ -719,26 +818,46 @@ function renderMemberCards(status){const h=$('#m8MemberGrid');if(!h)return;h.inn
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 let targetMember='';
 function selectMember(name){targetMember=name;$('#m8UnlockLabel').textContent=`${name} · 개인 4자리 PIN`;$('#m8MemberPin').value='';$('#m8MemberUnlock').classList.remove('hide');$('#m8UnlockMsg').className='groupGateMsg';$('#m8MemberPin').focus()}
-async function lockCurrent(){if(ProblemLabAPI.getLesson2MemberSession())await flushPersonal();ProblemLabAPI.clearLesson2MemberSession();window.Lesson2App?.clearMission8?.();$('#m8PersonalWorkspace').classList.add('hide');$('#m8PersonalGate').classList.remove('hide');$('#m8MemberUnlock').classList.add('hide');targetMember='';await refreshMemberStatus();setBadge('모둠 연결됨','ok')}
-async function unlockCurrent(){const pin=$('#m8MemberPin').value.trim();if(!targetMember){unlockMsg('먼저 내 이름을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){unlockMsg('개인 PIN은 숫자 4자리로 입력해 주세요.');return}$('#m8UnlockBtn').disabled=true;const {data,error}=await ProblemLabAPI.lesson2MemberUnlock({memberName:targetMember,pin});$('#m8UnlockBtn').disabled=false;if(error||!data?.ok){unlockMsg(data?.message||error?.message||'개인 작업공간을 열지 못했습니다.');return}$('#m8CurrentMember').textContent=`${data.member_name} · ${data.grade}학년 ${data.class_no}반`;$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');window.Lesson2App?.loadMission8?.(data.record||{});setBadge(`${data.member_name} 개인활동`,'ok');window.scrollTo({top:0,behavior:'smooth'})}
+async function lockCurrent(){
+  if(personalSwitching)return false;
+  personalSwitching=true;
+  const button=$('#m8LockBtn');button.disabled=true;
+  const notice=$('#m8SwitchNotice');notice.classList.add('hide');notice.textContent='';
+  try{
+    if(ProblemLabAPI.getLesson2MemberSession()){
+      const ok=await flushPersonal();
+      if(!ok){notice.textContent='저장이 완료되지 않았어요. 다른 조원으로 이동하지 않았습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.';notice.classList.remove('hide');return false}
+    }
+    ProblemLabAPI.clearLesson2MemberSession();
+    window.Lesson2App?.clearMission8?.();
+    $('#m8PersonalWorkspace').classList.add('hide');
+    $('#m8PersonalGate').classList.remove('hide');
+    $('#m8MemberUnlock').classList.add('hide');
+    targetMember='';
+    await refreshMemberStatus();
+    setBadge('모둠 연결됨','ok');return true;
+  } finally{personalSwitching=false;button.disabled=false}
+}
+async function unlockCurrent(){if(personalSwitching)return;const pin=$('#m8MemberPin').value.trim();if(!targetMember){unlockMsg('먼저 내 이름을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){unlockMsg('개인 PIN은 숫자 4자리로 입력해 주세요.');return}$('#m8UnlockBtn').disabled=true;const {data,error}=await ProblemLabAPI.lesson2MemberUnlock({memberName:targetMember,pin});$('#m8UnlockBtn').disabled=false;if(error||!data?.ok){unlockMsg(data?.message||error?.message||'개인 작업공간을 열지 못했습니다.');return}$('#m8CurrentMember').textContent=`${data.member_name} · ${data.grade}학년 ${data.class_no}반`;$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');window.Lesson2App?.loadMission8?.(data.record||{});setBadge(`${data.member_name} 개인활동`,'ok');window.scrollTo({top:0,behavior:'smooth'})}
 window.Lesson2Personal={
   isUnlocked:()=>!!ProblemLabAPI.getLesson2MemberSession(),
   enterStage8:async()=>{if(ProblemLabAPI.getLesson2MemberSession()){$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');return}$('#m8PersonalWorkspace').classList.add('hide');$('#m8PersonalGate').classList.remove('hide');await refreshMemberStatus()},
   queueSave:queuePersonal,
   lockCurrent,
-  async finishCurrent(mission8){await flushPersonal();const content={...(mission8.result||{}),reflection:mission8.reflection||{},mission8:mission8};const {data,error}=await ProblemLabAPI.publishLesson2Individual(content);if(error||!data?.ok)return{ok:false,message:data?.message||error?.message};const status=await refreshMemberStatus();return{ok:true,status}}
+  async finishCurrent(mission8){if(!(await flushPersonal()))return{ok:false,message:'개인 활동 저장이 완료되지 않았어요. 잠시 후 다시 시도해 주세요.'};const content={...(mission8.result||{}),reflection:mission8.reflection||{},mission8:mission8};const {data,error}=await ProblemLabAPI.publishLesson2Individual(content);if(error||!data?.ok)return{ok:false,message:data?.message||error?.message};const status=await refreshMemberStatus();return{ok:true,status}}
 };
 $('#m8UnlockBtn').onclick=unlockCurrent;$('#m8MemberPin').onkeydown=e=>{if(e.key==='Enter')unlockCurrent()};$('#m8LockBtn').onclick=lockCurrent;
 
-function renderGroupPicker(){const h=$('#groupPicker');h.innerHTML=Array.from({length:12},(_,i)=>{const name=`${i+1}모둠`,g=groupList.find(x=>x.group_name===name);return `<button class="groupPickCard" data-group="${name}"><div class="groupPickTop"><b>${name}</b><span class="groupPickStatus ${g?.exists?'used':''}">${g?.exists?'사용 중':'설정 전'}</span></div><div class="groupPickMembers">${g?.exists&&g.member_names?.length?escapeHtml(g.member_names.join(' · ')):'클릭해서 모둠 PIN 설정'}</div></button>`}).join('');$$('.groupPickCard',h).forEach(b=>b.onclick=()=>openGroup(b.dataset.group))}
-function openGroup(name){selectedGroup=name;const g=groupList.find(x=>x.group_name===name);$$('.groupPickCard').forEach(b=>b.classList.toggle('active',b.dataset.group===name));$('#selectedGroupTitle').textContent=name;$('#groupAccess').classList.remove('hide');$('#groupPin').value='';$('#groupGateMsg').className='groupGateMsg';if(g?.exists){$('#newGroupFields').classList.add('hide');$('#groupExistingMembers').classList.remove('hide');$('#groupExistingMembers').innerHTML=`<b>등록된 조원</b> · ${escapeHtml((g.member_names||[]).join(' · '))}`;$('#groupPinLabel').textContent='모둠 4자리 PIN 입력';$('#groupLoginBtn').textContent='모둠 들어가기'}else{$('#newGroupFields').classList.remove('hide');$('#groupExistingMembers').classList.add('hide');$('#member1').value=student.name;$('#member2').value='';$('#member3').value='';$('#groupPinLabel').textContent='처음 사용할 모둠 PIN 4자리 설정';$('#groupLoginBtn').textContent='모둠 만들고 시작'}$('#groupAccess').scrollIntoView({behavior:'smooth',block:'nearest'});setTimeout(()=>$('#groupPin').focus(),250)}
-$('#groupBackBtn').onclick=()=>{$('#groupAccess').classList.add('hide');selectedGroup=null;$$('.groupPickCard').forEach(b=>b.classList.remove('active'))};
+function renderGroupPicker(){const h=$('#groupPicker');h.innerHTML=Array.from({length:12},(_,i)=>{const name=`${i+1}모둠`,g=groupList.find(x=>x.group_name===name),mine=!!(g?.exists&&(g.member_names||[]).some(n=>String(n).trim()===student.name));const disabled=g?.exists&&!mine;return `<button class="groupPickCard ${disabled?'otherGroup':''}" data-group="${name}" ${disabled?'disabled':''}><div class="groupPickTop"><b>${name}</b><span class="groupPickStatus ${g?.exists?'used':''}">${g?.exists?(mine?'내 모둠':'사용 중'):'설정 전'}</span></div><div class="groupPickMembers">${g?.exists?(mine?escapeHtml((g.member_names||[]).join(' · ')):'다른 모둠이 사용 중입니다.'):'클릭해서 모둠 PIN 설정'}</div></button>`}).join('');$$('.groupPickCard',h).filter(b=>!b.disabled).forEach(b=>b.onclick=()=>openGroup(b.dataset.group))}
+function openGroup(name){selectedGroup=name;const g=groupList.find(x=>x.group_name===name);$$('.groupPickCard').forEach(b=>b.classList.toggle('active',b.dataset.group===name));$('#selectedGroupTitle').textContent=name;$('#groupChooseView').classList.add('hide');$('#groupAccess').classList.remove('hide');$('#groupPin').value='';$('#groupPinConfirm').value='';$('#groupGateMsg').className='groupGateMsg';if(g?.exists){$('#newGroupFields').classList.add('hide');$('#groupExistingMembers').classList.remove('hide');$('#groupExistingMembers').innerHTML=`<b>등록된 조원</b><br>${escapeHtml((g.member_names||[]).join(' · '))}`;$('#groupPinLabel').textContent='모둠 4자리 PIN 입력';$('#groupPinConfirmWrap').classList.add('hide');$('#groupAccessStepText').textContent='설정된 모둠 입장';$('#groupSetupNotice').innerHTML='<b>이미 설정된 모둠입니다.</b> 모둠 PIN을 입력한 뒤 입장 버튼을 눌러 주세요.';$('#groupLoginBtn').textContent=`${name} PIN 확인 후 입장`}else{$('#newGroupFields').classList.remove('hide');$('#groupExistingMembers').classList.add('hide');$('#member1').value=student.name;$('#member2').value='';$('#member3').value='';$('#groupPinLabel').textContent='새 모둠 PIN 4자리 설정';$('#groupPinConfirmWrap').classList.remove('hide');$('#groupAccessStepText').textContent='처음 모둠 설정';$('#groupSetupNotice').innerHTML=`<b>${name}을 처음 설정합니다.</b> 조원 2~3명의 이름과 새 PIN을 정한 뒤 <b>설정하고 입장</b>을 눌러 주세요.`;$('#groupLoginBtn').textContent=`${name} 설정하고 입장`}$('#groupGate').scrollTop=0;setTimeout(()=>{if(g?.exists)$('#groupPin').focus({preventScroll:true});else $('#member2').focus({preventScroll:true})},200)}
+$('#groupBackBtn').onclick=()=>{$('#groupAccess').classList.add('hide');$('#groupChooseView').classList.remove('hide');selectedGroup=null;$$('.groupPickCard').forEach(b=>b.classList.remove('active'));$('#groupGate').scrollTop=0};
 
 if(!student){location.href='index.html';return}
 $('#member1').value=student.name;$('#groupStudentInfo').textContent=`${student.grade}학년 ${student.class_no}반 · ${student.name}`;
 (async()=>{const {data,error}=await ProblemLabAPI.getDashboard();if(error||!data?.ok){location.href='index.html';return}if(!data.lesson2_open){gateMsg('아직 선생님이 2차시 활동을 열지 않았습니다.');return}const gl=await ProblemLabAPI.lesson2GroupList();if(gl.error||!gl.data?.ok){gateMsg(gl.data?.message||gl.error?.message||'모둠 목록을 불러오지 못했습니다.');return}groupList=gl.data.groups||[];renderGroupPicker()})();
-$('#groupLoginBtn').onclick=async()=>{const pin=$('#groupPin').value.trim();if(!selectedGroup){gateMsg('먼저 모둠을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){gateMsg('모둠 PIN은 숫자 4자리로 입력해 주세요.');return}const g=groupList.find(x=>x.group_name===selectedGroup);const m2=$('#member2').value.trim(),m3=$('#member3').value.trim();const members=g?.exists?null:[student.name,m2,m3].filter(Boolean);$('#groupLoginBtn').disabled=true;const {data,error}=await ProblemLabAPI.lesson2GroupLogin({groupName:selectedGroup,pin,memberNames:members});$('#groupLoginBtn').disabled=false;if(error||!data?.ok){gateMsg(data?.message||error?.message||'모둠에 들어가지 못했습니다.');return}const {data:rec,error:recErr}=await ProblemLabAPI.getLesson2();if(recErr||!rec?.ok){gateMsg(rec?.message||recErr?.message||'활동 기록을 불러오지 못했습니다.');return}const gs=ProblemLabAPI.getGroupSession();$('#groupInfo').innerHTML=`<small>${gs.grade}학년 ${gs.class_no}반 · ${gs.group_name}</small>${(gs.member_names||[]).join(' · ')}`;$('#groupBar').classList.add('show');$('#groupGate').classList.add('hide');setBadge('모둠 연결됨','ok');window.Lesson2App?.hydrate(rec.record||{});if(rec.member_status?.length){renderMemberCards(rec.member_status);if(rec.member_status.every(x=>x.completed)){stateDone8FromRemote()}}window.Lesson2Remote.queueSave(window.Lesson2App.getState())};
-function stateDone8FromRemote(){const st=window.Lesson2App?.getState?.();if(st?.done){st.done[8]=true}}
+$('#groupPin').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#groupLoginBtn').click()}});
+$('#groupPinConfirm').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#groupLoginBtn').click()}});
+$('#groupLoginBtn').onclick=async()=>{const pin=$('#groupPin').value.trim();if(!selectedGroup){gateMsg('먼저 모둠을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){gateMsg('모둠 PIN은 숫자 4자리로 입력해 주세요.');return}const g=groupList.find(x=>x.group_name===selectedGroup);const m2=$('#member2').value.trim(),m3=$('#member3').value.trim();let members=null;if(!g?.exists){const pin2=$('#groupPinConfirm').value.trim();if(!m2){gateMsg('모둠활동은 2~3인입니다. 조원 2 이름을 입력해 주세요.');return}if(pin!==pin2){gateMsg('두 번 입력한 모둠 PIN이 서로 달라요. 다시 확인해 주세요.');return}const names=[student.name,m2,m3].filter(Boolean).map(x=>x.trim());if(new Set(names).size!==names.length){gateMsg('같은 이름을 두 번 입력할 수 없어요. 조원 이름을 확인해 주세요.');return}members=names}$('#groupLoginBtn').disabled=true;$('#groupLoginBtn').textContent=g?.exists?'PIN 확인 중...':'모둠 설정 중...';const {data,error}=await ProblemLabAPI.lesson2GroupLogin({groupName:selectedGroup,pin,memberNames:members});$('#groupLoginBtn').disabled=false;if(error||!data?.ok){$('#groupLoginBtn').textContent=g?.exists?`${selectedGroup} PIN 확인 후 입장`:`${selectedGroup} 설정하고 입장`;gateMsg(data?.message||error?.message||'모둠에 들어가지 못했습니다.');return}const {data:rec,error:recErr}=await ProblemLabAPI.getLesson2();if(recErr||!rec?.ok){gateMsg(rec?.message||recErr?.message||'활동 기록을 불러오지 못했습니다.');return}const gs=ProblemLabAPI.getGroupSession();$('#groupInfo').innerHTML=`<small>${gs.grade}학년 ${gs.class_no}반 · ${gs.group_name}</small>${(gs.member_names||[]).join(' · ')}`;$('#groupBar').classList.add('show');$('#groupGate').classList.add('hide');setBadge('모둠 연결됨','ok');window.Lesson2App?.hydrate(rec.record||{});if(rec.member_status?.length){renderMemberCards(rec.member_status);window.Lesson2App?.setMission8GroupComplete?.(rec.member_status.every(x=>x.completed))}window.Lesson2Remote.queueSave(window.Lesson2App.getState())};
 })();
 </script>
 
