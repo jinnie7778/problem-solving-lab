@@ -16,7 +16,8 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const session=ProblemLabAPI.getStudentSession();if(!session){location.href='index.html'}
 for(let i=1;i<=3;i++) $('#galleryGrade').insertAdjacentHTML('beforeend',`<option value="${i}" ${i===session.grade?'selected':''}>${i}학년</option>`);
 for(let i=1;i<=12;i++) $('#galleryClass').insertAdjacentHTML('beforeend',`<option value="${i}" ${i===session.class_no?'selected':''}>${i}반</option>`);
-let lessonNo=1, currentPosts=[];
+let lessonNo=new URLSearchParams(location.search).get('lesson')==='2'?2:1, currentPosts=[];
+$$('.tab').forEach(b=>b.classList.toggle('active',Number(b.dataset.lesson)===lessonNo));
 const missionMeta={grade:['📚','다음 시험 성적 올리기'],soccer:['⚽','내가 감독이라면 우승하기'],trip:['🚆','친구들과 하루 여행 성공하기'],game:['🎮','게임 대회에서 이기기'],morning:['⏰','지각하지 않는 아침 만들기'],custom:['✨','나만의 문제']};
 function showMsg(t,good=false){const e=$('#galleryMsg');e.textContent=t;e.className='notice show '+(good?'good':'bad')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}

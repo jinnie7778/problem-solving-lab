@@ -4,6 +4,20 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>문제 해결 LAB</title>
 <link rel="stylesheet" href="assets/site.css">
+
+<style>
+.groupAdminFilters{align-items:end;display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 10px}.groupAdminFilters .field{min-width:110px;max-width:160px}.groupAdminFilters select{width:100%}
+.groupAdminList{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:12px;margin-top:12px}
+.groupAdminCard{padding:15px 16px;border:1px solid #dce5f1;border-radius:17px;background:#fff;display:flex;flex-direction:column;gap:8px;min-width:0}
+.groupAdminCard.unused{background:#f8fafc;opacity:.78}
+.groupAdminHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.groupAdminHead b{font-size:20px;color:#1b2c49}.groupAdminState{padding:5px 8px;border-radius:999px;background:#edf7f1;color:#197048;font-size:11px;font-weight:950}
+.groupAdminState.empty{background:#eef1f5;color:#667789}.groupAdminMembers{color:#607086;font-size:13px;line-height:1.5;overflow-wrap:anywhere;min-height:35px}
+.groupAdminBtns{display:flex;gap:7px;flex-wrap:wrap}.groupAdminBtns button{padding:9px 10px;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer}
+.groupAdminBtns .groupPinBtn{color:#2456c9;background:#edf3ff;border:1px solid #b9cbf5}.groupAdminBtns .groupResetBtn{color:#aa3343;background:#fff1f2;border:1px solid #efb6c0}
+.groupAdminBtns button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:620px){.groupAdminFilters .field{min-width:100px}.groupAdminList{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -92,6 +106,19 @@
 
     <section class="adminPanel" id="admin-lesson">
       <div class="teacherBox"><h3>2차시 공개</h3><div class="toggleRow"><div><b>학생에게 2차시 버튼 열기</b><p class="adminHint">공개하면 학생이 2차시 모둠활동에 바로 들어갈 수 있습니다.</p></div><label class="switch"><input type="checkbox" id="lesson2Toggle"><span class="slider"></span></label></div></div>
+
+<div class="teacherBox groupAdminBox" style="margin-top:18px">
+  <h3>2차시 모둠 관리</h3>
+  <p class="adminHint">학년·반을 선택해 모둠 상태를 확인하세요. <b>PIN 재설정은 기존 기록을 유지</b>하고, <b>모둠 전체 초기화는 해당 모둠의 2차시 자료를 삭제</b>합니다.</p>
+  <div class="adminFilters groupAdminFilters">
+    <div class="field"><label for="groupAdminGrade">학년</label><select id="groupAdminGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></div>
+    <div class="field"><label for="groupAdminClass">반</label><select id="groupAdminClass"></select></div>
+    <button class="btn" id="groupAdminSearch">모둠 조회</button>
+  </div>
+  <div class="adminSummary" id="groupAdminSummary" aria-live="polite"></div>
+  <div class="groupAdminList" id="groupAdminList"><div class="adminEmpty">모둠 조회를 누르면 1~12모둠이 표시됩니다.</div></div>
+</div>
+
     </section>
 
     <section class="adminPanel" id="admin-export">
@@ -100,6 +127,22 @@
 
     <div class="notice" id="teacherActionMsg"></div>
   </div>
+</div></div>
+
+
+<div class="modal subModal" id="lesson2GroupActionModal"><div class="modalCard smallModal">
+  <div class="modalTitle"><div><h2 id="lesson2GroupActionTitle">모둠 설정</h2><p id="lesson2GroupActionContext" style="color:var(--muted);margin:6px 0"></p></div><button class="ghost" id="lesson2GroupActionClose">닫기</button></div>
+  <div id="lesson2GroupPinFields">
+    <p class="adminHint">기존 공동·개인 활동 기록과 작품은 보존합니다. 현재 접속한 조원은 새 PIN으로 다시 입장해야 합니다.</p>
+    <div class="field"><label>새 모둠 PIN (숫자 4자리)</label><input id="lesson2GroupNewPin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="새 PIN 4자리"></div>
+    <div class="field"><label>PIN 다시 입력</label><input id="lesson2GroupPinConfirm" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="PIN 확인"></div>
+  </div>
+  <div id="lesson2GroupDeleteFields" class="hide">
+    <div class="dangerBox"><b>이 모둠의 2차시 기록을 모두 삭제합니다.</b><p>공동 활동, 각 조원의 8번 개인활동, 관련 2차시 갤러리 작품과 좋아요가 삭제됩니다. 1차시 학생 계정과 기록, 다른 모둠은 유지됩니다. 이 작업은 되돌릴 수 없습니다.</p></div>
+    <div class="field"><label id="lesson2GroupDeleteLabel">확인 문구 입력</label><input id="lesson2GroupDeleteConfirm" autocomplete="off" placeholder="모둠명 초기화"></div>
+  </div>
+  <div class="actions"><button class="ghost" id="lesson2GroupActionCancel">취소</button><button class="btn" id="lesson2GroupActionSubmit" disabled>변경 저장</button></div>
+  <div class="notice" id="lesson2GroupActionMsg" role="status"></div>
 </div></div>
 
 <div class="modal subModal" id="pinResetModal"><div class="modalCard smallModal">
@@ -147,7 +190,7 @@
 <script>
 const $=s=>document.querySelector(s);
 for(let i=1;i<=3;i++) $('#grade').insertAdjacentHTML('beforeend',`<option value="${i}" ${i===1?'selected':''}>${i}학년</option>`);
-for(let i=1;i<=12;i++){ const opt=`<option value="${i}">${i}반</option>`; $('#classNo').insertAdjacentHTML('beforeend',opt); $('#exportClass').insertAdjacentHTML('beforeend',opt); $('#manageClass').insertAdjacentHTML('beforeend',opt); $('#galleryManageClass').insertAdjacentHTML('beforeend',opt); }
+for(let i=1;i<=12;i++){ $('#groupAdminClass').insertAdjacentHTML('beforeend',`<option value="${i}">${i}반</option>`); const opt=`<option value="${i}">${i}반</option>`; $('#classNo').insertAdjacentHTML('beforeend',opt); $('#exportClass').insertAdjacentHTML('beforeend',opt); $('#manageClass').insertAdjacentHTML('beforeend',opt); $('#galleryManageClass').insertAdjacentHTML('beforeend',opt); }
 function msg(el,text,good=false){el.textContent=text;el.className='notice show '+(good?'good':'bad')}
 function setDashboard(session, data={}){
   $('#loginArea').style.display='none';$('#dashboard').classList.add('show');
@@ -175,6 +218,7 @@ $('#lesson2Card').onclick=()=>{if($('#lesson2Card').classList.contains('locked')
 let teacherPin='';
 let teacherStudents=[];
 let teacherGallery=[];
+let groupAdminLoaded=false,groupAdminGroups=[],groupAdminTarget=null,groupAdminAction='';
 let pinResetTarget=null;
 let studentDeleteTarget=null;
 let galleryEditTarget=null;
@@ -190,6 +234,7 @@ function showAdmin(name){
   $('#teacherActionMsg').className='notice';
   if(name==='students' && !teacherStudents.length) loadStudents();
   if(name==='gallery' && !teacherGallery.length) loadGalleryAdmin();
+  if(name==='lesson' && !groupAdminLoaded) loadLesson2Groups();
 }
 document.querySelectorAll('.adminTab').forEach(b=>b.onclick=()=>showAdmin(b.dataset.admin));
 
@@ -352,6 +397,59 @@ async function deleteGalleryPost(x){
 $('#searchGalleryAdmin').onclick=loadGalleryAdmin;$('#refreshGalleryAdmin').onclick=loadGalleryAdmin;
 
 function csvEscape(v){const s=String(v??'').replace(/\r?\n/g,' / ');return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s}
+
+// 2차시 교사용 모둠별 PIN 재설정 / 모둠 전체 초기화
+async function loadLesson2Groups(){
+  const host=$('#groupAdminList');host.innerHTML='<div class="adminEmpty">모둠 정보를 불러오는 중...</div>';
+  const {data,error}=await ProblemLabAPI.teacherListLesson2Groups(teacherPin,$('#groupAdminGrade').value,$('#groupAdminClass').value);
+  if(error||!data?.ok){host.innerHTML=`<div class="adminEmpty">${esc(data?.message||error?.message||'모둠 정보를 불러오지 못했습니다. Supabase SQL 패치를 먼저 실행해 주세요.')}</div>`;groupAdminLoaded=false;return}
+  groupAdminGroups=data.groups||[];groupAdminLoaded=true;
+  const used=groupAdminGroups.filter(g=>g.exists).length;
+  $('#groupAdminSummary').innerHTML=`<b>${data.grade}학년 ${data.class_no}반</b><span>사용 중 ${used}모둠 · 설정 전 ${12-used}모둠</span>`;
+  host.innerHTML=groupAdminGroups.map((g,i)=>`<article class="groupAdminCard ${g.exists?'':'unused'}">
+    <div class="groupAdminHead"><b>${esc(g.group_name)}</b><span class="groupAdminState ${g.exists?'':'empty'}">${g.exists?'사용 중':'설정 전'}</span></div>
+    <div class="groupAdminMembers">${g.exists?'조원 · '+esc((g.member_names||[]).join(' · ')):'아직 만든 모둠이 없습니다.'}</div>
+    <div class="groupAdminBtns"><button class="groupPinBtn" data-group-pin="${i}" ${g.exists?'':'disabled'}>PIN 재설정</button><button class="groupResetBtn" data-group-reset="${i}" ${g.exists?'':'disabled'}>모둠 전체 초기화</button></div>
+  </article>`).join('');
+  host.querySelectorAll('[data-group-pin]').forEach(b=>b.onclick=()=>openGroupAdminModal(groupAdminGroups[Number(b.dataset.groupPin)],'pin'));
+  host.querySelectorAll('[data-group-reset]').forEach(b=>b.onclick=()=>openGroupAdminModal(groupAdminGroups[Number(b.dataset.groupReset)],'delete'));
+}
+$('#groupAdminSearch').onclick=loadLesson2Groups;
+$('#groupAdminGrade').onchange=()=>{groupAdminLoaded=false;$('#groupAdminList').innerHTML='';};
+$('#groupAdminClass').onchange=()=>{groupAdminLoaded=false;$('#groupAdminList').innerHTML='';};
+function openGroupAdminModal(g,action){
+  if(!g?.exists||!g.group_id)return;
+  groupAdminTarget={...g,grade:Number($('#groupAdminGrade').value),class_no:Number($('#groupAdminClass').value)};groupAdminAction=action;
+  const isDelete=action==='delete';
+  $('#lesson2GroupActionTitle').textContent=isDelete?'모둠 전체 초기화':'모둠 PIN 재설정';
+  $('#lesson2GroupActionContext').textContent=`${groupAdminTarget.grade}학년 ${groupAdminTarget.class_no}반 · ${g.group_name}`;
+  $('#lesson2GroupPinFields').classList.toggle('hide',isDelete);
+  $('#lesson2GroupDeleteFields').classList.toggle('hide',!isDelete);
+  $('#lesson2GroupNewPin').value='';$('#lesson2GroupPinConfirm').value='';$('#lesson2GroupDeleteConfirm').value='';
+  $('#lesson2GroupDeleteLabel').textContent=`삭제 확인: '${g.group_name} 초기화'를 그대로 입력`;
+  $('#lesson2GroupDeleteConfirm').placeholder=g.group_name+' 초기화';
+  $('#lesson2GroupActionSubmit').textContent=isDelete?'모둠 기록 완전 삭제':'새 PIN 저장';
+  $('#lesson2GroupActionSubmit').className=isDelete?'danger':'btn';
+  $('#lesson2GroupActionSubmit').disabled=true;$('#lesson2GroupActionMsg').className='notice';
+  $('#lesson2GroupActionModal').classList.add('show');
+}
+function validateGroupAdmin(){
+  const target=groupAdminTarget,btn=$('#lesson2GroupActionSubmit');if(!target){btn.disabled=true;return}
+  if(groupAdminAction==='delete'){btn.disabled=$('#lesson2GroupDeleteConfirm').value.trim()!==target.group_name+' 초기화';return}
+  const pin=$('#lesson2GroupNewPin').value;btn.disabled=!/^\d{4}$/.test(pin)||pin!==$('#lesson2GroupPinConfirm').value;
+}
+['lesson2GroupNewPin','lesson2GroupPinConfirm','lesson2GroupDeleteConfirm'].forEach(id=>$('#'+id).addEventListener('input',validateGroupAdmin));
+function closeGroupAdminModal(){$('#lesson2GroupActionModal').classList.remove('show');groupAdminTarget=null;groupAdminAction=''}
+$('#lesson2GroupActionClose').onclick=closeGroupAdminModal;$('#lesson2GroupActionCancel').onclick=closeGroupAdminModal;
+$('#lesson2GroupActionSubmit').onclick=async()=>{
+  if(!groupAdminTarget)return;validateGroupAdmin();const btn=$('#lesson2GroupActionSubmit');if(btn.disabled)return;
+  const group={...groupAdminTarget},deleteMode=groupAdminAction==='delete';btn.disabled=true;
+  const result=deleteMode?await ProblemLabAPI.teacherDeleteLesson2Group(teacherPin,group.group_id):await ProblemLabAPI.teacherResetLesson2GroupPin(teacherPin,group.group_id,$('#lesson2GroupNewPin').value);
+  if(result.error||!result.data?.ok){msg($('#lesson2GroupActionMsg'),result.data?.message||result.error?.message||'작업이 실패했습니다.');btn.disabled=false;return}
+  closeGroupAdminModal();msg($('#teacherActionMsg'),deleteMode?`${group.grade}학년 ${group.class_no}반 ${group.group_name}을 초기화했습니다. 해당 모둠의 2차시 자료는 삭제되었습니다.`:`${group.grade}학년 ${group.class_no}반 ${group.group_name}의 PIN을 변경했습니다. 기록은 그대로 유지됩니다.`,true);
+  await loadLesson2Groups();
+};
+
 $('#downloadCsv').onclick=async()=>{const {data,error}=await ProblemLabAPI.teacherExport(teacherPin,$('#exportGrade').value,$('#exportClass').value);if(error||!data?.ok){msg($('#teacherActionMsg'),data?.message||error?.message||'다운로드 실패');return}const rows=data.rows||[];const heads=['학년','반','이름','최종탭','내상황미션','문제','현재상태','목표상태','조건','핵심요소','문제분해','성찰','형성평가시도','형성평가오답','형성평가통과','마지막저장'];const lines=[heads.join(',')];for(const x of rows){const r=x.record||{},a=r.activity||{},q=r.quiz||{},st=r.state||{};lines.push([x.grade,x.class_no,x.name,st.stage??'',a.mission_title||a.mission_id||'',a.problem||'',a.current_state||'',a.goal_state||'',a.conditions||'',a.core_elements||'',a.parts||'',a.reflection||'',q.attempts??'',q.wrong_total??'',q.passed??false,x.updated_at||''].map(csvEscape).join(','))}const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`문제해결LAB_1차시_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);msg($('#teacherActionMsg'),`${rows.length}명 기록을 내려받았습니다.`,true)};
 $('#downloadCsv2').onclick=async()=>{const {data,error}=await ProblemLabAPI.teacherExportLesson2(teacherPin,$('#exportGrade').value,$('#exportClass').value);if(error||!data?.ok){msg($('#teacherActionMsg'),data?.message||error?.message||'다운로드 실패');return}const rows=data.rows||[];const heads=['학년','반','모둠명','학생명','개인미션완료','공동 최종탭','공동 완료단계','문제해결미션','문제','핵심요소','제작한 모델','선택이유','적합하다고 생각한 모델','개인 생각','다른 모델 생각','형성평가시도','형성평가오답','형성평가통과','마지막저장'];const lines=[heads.join(',')];for(const x of rows){const r=x.shared_record||{},ir=x.individual_record||{},m=ir.result||{},ref=m.reflection||ir.reflection||{},q=r.quiz||{};const done=Array.isArray(r.done)?r.done.map((v,i)=>v?i:null).filter(v=>v!==null).join(' / '):'';const modelNames=(ref.models||[]).map(v=>({table:'표',tree:'트리',graph:'그래프'}[v]||v)).join(' / ');lines.push([x.grade,x.class_no,x.group_name,x.student_name||'',x.individual_completed?'완료':'미완료',r.stage??'',done,m.title||'',m.problem||'',Array.isArray(m.core)?m.core.join(' / '):(m.core||''),({table:'표',tree:'트리',graph:'그래프'}[m.modelType]||m.modelType||''),m.reason||'',modelNames,ref.why||'',ref.other||'',q.attempts??'',q.wrong_total??'',q.passed??false,x.updated_at||''].map(csvEscape).join(','))}const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`문제해결LAB_2차시_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);msg($('#teacherActionMsg'),`${rows.length}명 개인·모둠 기록을 내려받았습니다.`,true)};
 </script>

@@ -144,6 +144,20 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
   #groupLoginBtn{width:100%;min-width:0;}
 }
 
+
+/* 2026-10-27 · 명확한 강 건너기 상태 그래프: 좌표와 SVG viewBox 일치 */
+.graphFlowHint{padding:12px 14px;margin:10px 0;border-radius:13px;background:#edf3ff;color:#3159c7;font-size:13px;font-weight:900;line-height:1.6}
+.graphFlowViewport{overflow-x:auto;max-width:100%;overscroll-behavior-x:contain;padding:7px 0 15px}
+.graphFlowViewport .graphStage2{width:1020px;max-width:none;min-height:0;height:960px;overflow:hidden;position:relative;background:linear-gradient(180deg,#f7faff 0%,#fff 42%,#f7fafc 100%)}
+.graphFlowViewport .graphCanvas{position:absolute;inset:0;width:1020px;height:960px;z-index:1;pointer-events:none}
+.graphFlowViewport #graphNodes2,.graphFlowViewport #edgeLabels{position:absolute;inset:0;width:1020px;height:960px;pointer-events:none}
+.graphFlowViewport #graphNodes2{z-index:3}.graphFlowViewport #edgeLabels{z-index:4}
+.graphFlowViewport .graphNode2{width:184px;height:142px;min-height:142px;box-sizing:border-box;z-index:3;pointer-events:none;transform:none!important;padding:9px}
+.graphFlowViewport .graphNode2.routeState{border-color:#7ea0e8;box-shadow:0 5px 17px rgba(49,95,223,.13)}
+.graphFlowViewport .graphNode2.branchState{border-color:#cbd5e1;background:#fafbfc;opacity:.82}
+.graphFlowViewport .graphNode2 .shore{font-size:17px;min-height:52px;line-height:1.25;padding:3px 1px;overflow-wrap:anywhere}
+.graphFlowViewport .routeEdgeLabel{position:absolute;transform:translate(-50%,-50%);color:#204cbf;border:2px solid #9db7f4;box-shadow:0 3px 12px rgba(45,75,160,.1);background:#fff;font-size:12px;font-weight:950;padding:6px 9px;white-space:nowrap;max-width:none;line-height:1.3}
+
 </style>
 </head>
 <body>
@@ -440,7 +454,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
           <div class="diffNote">정해진 루트가 없어도 되고, 한 노드가 <b>여러 노드와 여러 방향으로 연결</b>될 수 있습니다. 다시 돌아가는 연결이나 순환도 가능합니다.</div>
         </div>
       </div>
-      <div class="modelBox"><h3>강 건너기 전체 상태 그래프</h3><p>안전한 상태들을 노드로 놓고, 한 번의 합법적인 이동으로 갈 수 있는 상태끼리 간선으로 연결했습니다. <b>파란 간선</b>은 네가 성공한 7회 해결 경로입니다.</p><div class="networkGuide"><span>🟡 시작 상태</span><span>🟢 목표 상태</span><span>🔵 내 해결 경로</span><span>회색선 = 다른 가능한 연결</span></div><div class="graphStage2" id="graphStage2"><svg class="graphCanvas" id="graphCanvas"></svg><div id="graphNodes2"></div><div id="edgeLabels"></div></div></div>
+      <div class="modelBox"><h3>강 건너기 전체 상태 그래프</h3><p>안전한 상태들을 노드로 놓고, 한 번의 합법적인 이동으로 갈 수 있는 상태끼리 간선으로 연결했습니다. <b>파란 방향 화살표</b>는 네가 성공한 7회 이동 순서이며, 숫자와 이동 대상이 적혀 있습니다.</p><div class="networkGuide"><span>🟡 시작 상태</span><span>🟢 목표 상태</span><span>🔵 내 해결 경로</span><span>회색 점선 = 다른 안전한 이동</span></div><div class="graphFlowHint">🔵 굵은 화살표: 실제 문제 해결 순서(1~7회 이동)　 ·　 회색 점선: 다른 안전한 이동</div><div class="graphFlowViewport"><div class="graphStage2" id="graphStage2"><svg class="graphCanvas" id="graphCanvas" aria-label="농부와 동물들의 강 건너기 안전한 상태 그래프"></svg><div id="graphNodes2"></div><div id="edgeLabels"></div></div></div></div>
       <div style="margin-top:16px;font-size:22px;font-weight:950">그래프가 가장 잘 보여주는 것은?</div><div class="choices" id="graphChoices" style="margin-top:10px"><button class="choice" data-ok="0">표의 행과 열</button><button class="choice" data-ok="1">상태와 상태 사이의 다양한 연결 관계</button><button class="choice" data-ok="0">루트에서 자식으로만 내려가는 계층 구조</button><button class="choice" data-ok="0">글자의 크기와 색</button></div><div class="feedback" id="fb7"></div><div class="actions"><button class="btn" id="check7">그래프 모델 확인</button><button class="btn hide" id="toMission">다음 · 문제해결 미션</button></div>
     </div>
   </section>
@@ -665,7 +679,65 @@ function safeState(s){const f=s.farmer,other=f==='L'?'R':'L';if(s.wolf===other&&
 function allSafeGraphStates(){const vals=['L','R'],arr=[];for(const farmer of vals)for(const wolf of vals)for(const sheep of vals)for(const cabbage of vals){const s={farmer,wolf,sheep,cabbage};if(safeState(s))arr.push(s)}return arr}
 function legalEdges(states){const by=new Map(states.map(s=>[code(s),s])),edges=[];states.forEach(s=>{possibleMoves(s).forEach(m=>{const r=simulate(s,m.pass);if(!r.fail&&by.has(code(r.side))){const a=code(s),b=code(r.side);const id=[a,b].sort().join('-');if(!edges.some(e=>e.id===id))edges.push({id,a,b,label:m.pass?items[m.pass].name:'농부'})}})});return edges}
 function solutionCodes(){const h=(state.solutionHistory&&state.solutionHistory.length)?state.solutionHistory:river2.history;return h.map(x=>{const s={farmer:'R',wolf:'R',sheep:'R',cabbage:'R'};x.left.forEach(n=>s[nameToKey[n]]='L');x.right.forEach(n=>s[nameToKey[n]]='R');return code(s)})}
-function renderGraph(){const states=allSafeGraphStates(),edges=legalEdges(states),host=$('#graphNodes2'),svg=$('#graphCanvas'),labs=$('#edgeLabels');host.innerHTML='';svg.innerHTML='';labs.innerHTML='';graphPath=[];const groups={};states.forEach(s=>{const n=keys.filter(k=>s[k]==='L').length;(groups[n]??=[]).push(s)});const pos={};Object.keys(groups).forEach(k=>{const col=+k,list=groups[k];list.forEach((s,i)=>{pos[code(s)]={x:[2,22,42,62,80][col]??80,y:8+i*(70/Math.max(1,list.length-1||1))}})});const sol=solutionCodes();states.forEach((s,i)=>{const c=code(s),p=pos[c];const left=keys.filter(k=>s[k]==='L').map(k=>items[k].name),right=keys.filter(k=>s[k]==='R').map(k=>items[k].name);const n=document.createElement('button');n.className='graphNode2 '+(c==='RRRR'?'start ':'')+(c==='LLLL'?'goal ':'');n.style.left=p.x+'%';n.style.top=Math.min(p.y,78)+'%';n.dataset.code=c;n.innerHTML=`<span class="stateNo">${c==='RRRR'?'시작':c==='LLLL'?'목표':'상태'}</span><div class="miniBanks"><span><div class="sideLabel">왼쪽</div><span class="shore">${emoNames(left)}</span></span><span class="riverMini">┃</span><span><div class="sideLabel">오른쪽</div><span class="shore">${emoNames(right)}</span></span></div>`;host.appendChild(n)});setTimeout(()=>{const nodes=$$('.graphNode2',host),nodeMap={};states.forEach((s,i)=>nodeMap[code(s)]=nodes[i]);const box=$('#graphStage2').getBoundingClientRect();const edgePoint=(r,toward)=>{const cx=r.left-box.left+r.width/2,cy=r.top-box.top+r.height/2,tx=toward.x-cx,ty=toward.y-cy;if(Math.abs(tx)<1&&Math.abs(ty)<1)return{x:cx,y:cy};const sx=(r.width/2)/Math.max(1,Math.abs(tx)),sy=(r.height/2)/Math.max(1,Math.abs(ty)),scale=Math.min(sx,sy);return{x:cx+tx*scale,y:cy+ty*scale}};edges.forEach(e=>{const a=nodeMap[e.a],b=nodeMap[e.b];if(!a||!b)return;const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect(),ac={x:ar.left-box.left+ar.width/2,y:ar.top-box.top+ar.height/2},bc={x:br.left-box.left+br.width/2,y:br.top-box.top+br.height/2},p1=edgePoint(ar,bc),p2=edgePoint(br,ac);const dx=p2.x-p1.x,c1x=p1.x+dx*.42,c2x=p2.x-dx*.42;const onSol=sol.some((c,j)=>j<sol.length-1&&((c===e.a&&sol[j+1]===e.b)||(c===e.b&&sol[j+1]===e.a)));const stroke=onSol?'#315fdf':'#bcc9d9',width=onSol?6:2.5,opacity=onSol?1:.62;svg.insertAdjacentHTML('beforeend',`<path d="M ${p1.x} ${p1.y} C ${c1x} ${p1.y}, ${c2x} ${p2.y}, ${p2.x} ${p2.y}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" opacity="${opacity}"/><circle cx="${p1.x}" cy="${p1.y}" r="${onSol?5:3.5}" fill="${stroke}" opacity="${opacity}"/><circle cx="${p2.x}" cy="${p2.y}" r="${onSol?5:3.5}" fill="${stroke}" opacity="${opacity}"/>`)})},140)}
+function renderGraph(){
+  // Display the successful 7-move route in reading order. Keep other valid
+  // states as branches, so every visible edge is a LEGAL move.
+  const states=allSafeGraphStates(), edges=legalEdges(states);
+  const host=$('#graphNodes2'), svg=$('#graphCanvas'), labels=$('#edgeLabels');
+  host.replaceChildren();svg.replaceChildren();labels.replaceChildren();graphPath=[];
+  const byCode=new Map(states.map(s=>[code(s),s]));
+  let route=solutionCodes().filter(c=>byCode.has(c));
+  function legalPath(a){return a.length===8 && a[0]==='RRRR' && a[7]==='LLLL' && new Set(a).size===8 && a.slice(1).every((v,i)=>edges.some(e=>(e.a===a[i]&&e.b===v)||(e.b===a[i]&&e.a===v)))}
+  if(!legalPath(route)){
+    // Solve directly from legalEdges if the saved solution history is missing.
+    const queue=[['RRRR']];route=[];
+    while(queue.length){const path=queue.shift(),last=path[path.length-1];if(last==='LLLL'){route=path;break}edges.forEach(e=>{const other=e.a===last?e.b:e.b===last?e.a:null;if(other&&!path.includes(other))queue.push([...path,other])})}
+  }
+  if(!legalPath(route)){labels.textContent='이동 경로를 그리지 못했습니다. 이전 강 건너기 활동을 먼저 완료해 주세요.';return}
+  const width=1020,height=960,nodeW=184,nodeH=142;
+  const positions={};
+  route.forEach((c,i)=>{positions[c]={x:i<4?34+i*254:34+(7-i)*254,y:i<4?145:455,route:true,step:i}});
+  const others=states.map(code).filter(c=>!positions[c]);
+  others.forEach((c,i)=>positions[c]={x:250+i*370,y:770,route:false,step:null});
+  const makeSvg=(name,attrs)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',name);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e};
+  svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.setAttribute('preserveAspectRatio','xMinYMin meet');
+  const defs=makeSvg('defs',{});
+  const blueArrow=makeSvg('marker',{id:'graphPathArrowBlue',viewBox:'0 0 12 12',refX:'10',refY:'6',markerWidth:'15',markerHeight:'15',markerUnits:'userSpaceOnUse',orient:'auto-start-reverse'});
+  blueArrow.appendChild(makeSvg('path',{d:'M 1 1 L 11 6 L 1 11 Z',fill:'#315fdf'}));defs.appendChild(blueArrow);
+  svg.appendChild(defs);
+  const middle=p=>({x:p.x+nodeW/2,y:p.y+nodeH/2});
+  function rim(p,target){const c=middle(p),t=middle(target),dx=t.x-c.x,dy=t.y-c.y;const scale=Math.min((nodeW/2-5)/Math.max(Math.abs(dx),.01),(nodeH/2-5)/Math.max(Math.abs(dy),.01));return{x:c.x+dx*scale,y:c.y+dy*scale}}
+  function makePath(a,b,strong){
+    const p=positions[a],q=positions[b];if(!p||!q)return null;
+    const from=rim(p,q),to=rim(q,p),dx=to.x-from.x,dy=to.y-from.y;
+    const d=Math.abs(dx)>Math.abs(dy)?`M ${from.x} ${from.y} C ${from.x+dx*.48} ${from.y}, ${to.x-dx*.48} ${to.y}, ${to.x} ${to.y}`:`M ${from.x} ${from.y} C ${from.x} ${from.y+dy*.48}, ${to.x} ${to.y-dy*.48}, ${to.x} ${to.y}`;
+    const line=makeSvg('path',{d,fill:'none',stroke:strong?'#315fdf':'#9badc6','stroke-width':strong?'5':'2.5','stroke-linecap':'round','stroke-dasharray':strong?'none':'8 7',opacity:strong?'1':'0.58',...(strong?{'marker-end':'url(#graphPathArrowBlue)'}:{})});
+    svg.appendChild(line);
+    return{from,to,mid:{x:(from.x+to.x)/2,y:(from.y+to.y)/2}};
+  }
+  const used=new Set();
+  route.slice(0,-1).forEach((c,i)=>used.add([c,route[i+1]].sort().join('~')));
+  edges.forEach(e=>{if(!used.has([e.a,e.b].sort().join('~')))makePath(e.a,e.b,false)});
+  route.slice(0,-1).forEach((c,i)=>{
+    const next=route[i+1],path=makePath(c,next,true);if(!path)return;
+    const passenger=['늑대','양','양배추'].find((_,j)=>c[j+1]!==next[j+1]);
+    const direction=c[0]==='R'?'오른쪽 → 왼쪽':'왼쪽 → 오른쪽';
+    const tag=document.createElement('span');tag.className='edgeLabel routeEdgeLabel';
+    tag.textContent=`${i+1}회 · 농부${passenger?' + '+passenger:''} · ${direction}`;
+    tag.style.left=path.mid.x+'px';tag.style.top=path.mid.y+'px';
+    // Lift labels above horizontal edges, but keep vertical labels beside the arrow.
+    if(Math.abs(path.to.x-path.from.x)<80) tag.style.left=(path.mid.x-78)+'px';
+    else tag.style.top=(positions[c].y<300?110:420)+'px';
+    labels.appendChild(tag);
+  });
+  states.forEach(s=>{
+    const c=code(s),p=positions[c],left=keys.filter(k=>s[k]==='L').map(k=>items[k].name),right=keys.filter(k=>s[k]==='R').map(k=>items[k].name);
+    const n=document.createElement('div');n.className='graphNode2 '+(c==='RRRR'?'start ':'')+(c==='LLLL'?'goal ':'')+(p.route?'routeState':'branchState');
+    n.style.left=p.x+'px';n.style.top=p.y+'px';n.dataset.code=c;
+    n.innerHTML=`<span class="stateNo">${p.route?(p.step===0?'시작':p.step===7?'목표':p.step+'회 이동 후'):'다른 선택'}</span><div class="miniBanks"><span><div class="sideLabel">왼쪽</div><span class="shore">${emoNames(left)}</span></span><span class="riverMini">┃</span><span><div class="sideLabel">오른쪽</div><span class="shore">${emoNames(right)}</span></span></div>`;
+    host.appendChild(n);
+  });
+}
 $$('#graphChoices .choice').forEach(b=>b.onclick=()=>{$$('#graphChoices .choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
 $('#check7').onclick=()=>{const s=$('#graphChoices .choice.selected');if(!s){showFb('fb7','하나를 선택해 주세요.',false);return}$$('#graphChoices .choice').forEach(x=>x.classList.remove('correct','wrong'));s.classList.add(s.dataset.ok==='1'?'correct':'wrong');if(s.dataset.ok==='1'){showFb('fb7','맞아요. 그래프는 노드와 간선을 이용해 여러 상태 사이의 다양한 연결 관계를 보여줍니다.',true);state.done[7]=true;save();$('#toMission').classList.remove('hide')}else{showFb('fb7','트리는 계층적 분기, 그래프는 여러 노드 사이의 연결 관계가 핵심입니다.',false);$('#toMission').classList.add('hide')}};$('#toMission').onclick=()=>renderStage(8);
 
@@ -731,8 +803,8 @@ $('#m8Complete').onclick=()=>{m8.reason=$('#m8Reason').value.trim();if(!m8.reaso
 function restoreM8Reflection(){m8.reflection=m8.reflection||{models:[],why:'',other:''};$$('[data-ref-model]').forEach(b=>b.classList.toggle('selected',(m8.reflection.models||[]).includes(b.dataset.refModel)));$('#m8ReflectionWhy').value=m8.reflection.why||'';$('#m8ReflectionOther').value=m8.reflection.other||''}
 $$('[data-ref-model]').forEach(b=>b.onclick=()=>{m8.reflection=m8.reflection||{models:[],why:'',other:''};const set=new Set(m8.reflection.models||[]);set.has(b.dataset.refModel)?set.delete(b.dataset.refModel):set.add(b.dataset.refModel);m8.reflection.models=[...set];b.classList.toggle('selected',set.has(b.dataset.refModel));saveM8()});
 $('#m8ReflectionWhy').oninput=()=>{m8.reflection=m8.reflection||{};m8.reflection.why=$('#m8ReflectionWhy').value;saveM8()};$('#m8ReflectionOther').oninput=()=>{m8.reflection=m8.reflection||{};m8.reflection.other=$('#m8ReflectionOther').value;saveM8()};
-$('#m8FinishIndividual').onclick=async()=>{m8.reflection=m8.reflection||{models:[],why:'',other:''};m8.reflection.why=$('#m8ReflectionWhy').value.trim();m8.reflection.other=$('#m8ReflectionOther').value.trim();if(!(m8.reflection.models||[]).length){showFb('m8FinishFb','표·트리·그래프 중 이 문제에 적합하다고 생각하는 모델을 하나 이상 선택해 주세요.',false);return}if(!m8.reflection.why){showFb('m8FinishFb','왜 그 모델이 적합하다고 생각했는지 내 생각을 한 문장 이상 적어 주세요.',false);return}if(!m8.result)m8.result=buildM8Result();m8.result.reflection=JSON.parse(JSON.stringify(m8.reflection));saveM8();$('#m8FinishIndividual').disabled=true;const res=await window.Lesson2Personal?.finishCurrent?.(m8);$('#m8FinishIndividual').disabled=false;if(!res?.ok){showFb('m8FinishFb',res?.message||'개인 결과를 저장하지 못했어요. 다시 눌러 주세요.',false);return}showFb('m8FinishFb','개인활동 완료! 내 작품이 2차시 갤러리에 올라갔습니다.',true);renderIndividualAfterFinish(res.status||[])};
-function renderIndividualAfterFinish(status){const host=$('#m8AfterFinish');const done=status.filter(x=>x.completed).length,total=status.length;host.innerHTML=`<div class="individualDoneBox"><h4>✅ 개인활동 저장 완료</h4><p>현재 모둠 완료 현황 · <b>${done}/${total}명</b> 완료</p></div>`;if(total>0&&done===total){state.done[8]=true;save();$('#toQuiz').classList.remove('hide');host.insertAdjacentHTML('beforeend','<div class="allDoneBox">🎉 조원 모두 미션 8을 완료했습니다. 이제 함께 형성평가로 넘어가세요.</div>')}else{$('#toQuiz').classList.add('hide');host.insertAdjacentHTML('beforeend','<div class="actions"><button class="btn" id="m8NextMemberBtn">다른 조원 개인활동으로</button></div>');$('#m8NextMemberBtn').onclick=()=>window.Lesson2Personal?.lockCurrent?.()}}
+$('#m8FinishIndividual').onclick=async()=>{m8.reflection=m8.reflection||{models:[],why:'',other:''};m8.reflection.why=$('#m8ReflectionWhy').value.trim();m8.reflection.other=$('#m8ReflectionOther').value.trim();if(!(m8.reflection.models||[]).length){showFb('m8FinishFb','표·트리·그래프 중 이 문제에 적합하다고 생각하는 모델을 하나 이상 선택해 주세요.',false);return}if(!m8.reflection.why){showFb('m8FinishFb','왜 그 모델이 적합하다고 생각했는지 내 생각을 한 문장 이상 적어 주세요.',false);return}if(!m8.result)m8.result=buildM8Result();m8.result.reflection=JSON.parse(JSON.stringify(m8.reflection));saveM8();$('#m8FinishIndividual').disabled=true;const res=await window.Lesson2Personal?.finishCurrent?.(m8);$('#m8FinishIndividual').disabled=false;if(!res?.ok){showFb('m8FinishFb',res?.message||'개인 결과를 저장하지 못했어요. 다시 눌러 주세요.',false);return}showFb('m8FinishFb','개인활동 완료! 아래 버튼으로 2차시 갤러리에서 내 작품을 확인해 보세요.',true);renderIndividualAfterFinish(res.status||[])};
+function renderIndividualAfterFinish(status){const host=$('#m8AfterFinish');const done=status.filter(x=>x.completed).length,total=status.length;host.innerHTML=`<div class="individualDoneBox"><h4>✅ 개인활동 저장 완료</h4><p>현재 모둠 완료 현황 · <b>${done}/${total}명</b> 완료</p><div class="actions" style="margin-top:14px"><a class="btn" href="gallery.html?lesson=2" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:13px 18px;border-radius:14px">🖼️ 2차시 갤러리에서 내 작품 보기</a></div></div>`;if(total>0&&done===total){state.done[8]=true;save();$('#toQuiz').classList.remove('hide');host.insertAdjacentHTML('beforeend','<div class="allDoneBox">🎉 조원 모두 미션 8을 완료했습니다. 이제 함께 형성평가로 넘어가세요.</div>')}else{$('#toQuiz').classList.add('hide');host.insertAdjacentHTML('beforeend','<div class="actions"><button class="btn" id="m8NextMemberBtn">다른 조원 개인활동으로</button></div>');$('#m8NextMemberBtn').onclick=()=>window.Lesson2Personal?.lockCurrent?.()}}
 $('#m8EditAgain').onclick=()=>{$('#m8GalleryPreviewPanel').classList.add('hide');$('#m8EditorPanel').scrollIntoView({behavior:'smooth',block:'start'})};$('#toQuiz').onclick=async()=>{if(window.Lesson2Personal?.isUnlocked?.() && !(await window.Lesson2Personal.lockCurrent()))return;renderStage(9)};
 function resetM8Dom(){
   $$('.m8ModeCard').forEach(b=>b.classList.remove('selected'));
