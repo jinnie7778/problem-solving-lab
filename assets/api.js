@@ -9,6 +9,7 @@
       auth: { persistSession: false, autoRefreshToken: false }
     });
   }
+  let lesson2MemberSession = null;
   const safeParse = (s) => { try { return JSON.parse(s); } catch { return null; } };
   const getStudentSession = () => safeParse(localStorage.getItem(SESSION_KEY) || 'null');
   const setStudentSession = (session) => localStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -90,13 +91,20 @@
     }
     return { data, error };
   }
+  async function lesson2GroupList() {
+    const args = sessionArgs();
+    if (!args) return { data: null, error: new Error('NO_SESSION') };
+    return rpc('lesson2_group_list', args);
+  }
   async function getLesson2() {
     const args = groupSessionArgs();
     if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
     return rpc('get_lesson2', args);
   }
   async function saveLesson2(record) {
-    const args = groupSessionArgs({ p_record: record });
+    const clean = JSON.parse(JSON.stringify(record || {}));
+    delete clean.mission8;
+    const args = groupSessionArgs({ p_record: clean });
     if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
     return rpc('save_lesson2', args);
   }
@@ -105,6 +113,51 @@
     if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
     return rpc('publish_lesson2', args);
   }
+  function getLesson2MemberSession() { return lesson2MemberSession; }
+  function clearLesson2MemberSession() { lesson2MemberSession = null; }
+  async function lesson2MemberStatus() {
+    const args = groupSessionArgs();
+    if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
+    return rpc('lesson2_member_status', args);
+  }
+  async function lesson2MemberUnlock({ memberName, pin }) {
+    const args = groupSessionArgs({ p_member_name: String(memberName || '').trim(), p_pin: String(pin || '') });
+    if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
+    const { data, error } = await rpc('lesson2_member_unlock', args);
+    if (!error && data?.ok) {
+      lesson2MemberSession = {
+        student_id: data.student_id,
+        member_name: data.member_name,
+        individual_session_token: data.individual_session_token,
+        grade: data.grade,
+        class_no: data.class_no,
+        group_id: data.group_id
+      };
+    }
+    return { data, error };
+  }
+  function memberArgs(extra = {}) {
+    const g = getGroupSession(), m = lesson2MemberSession;
+    if (!g || !m) return null;
+    return {
+      p_group_id: g.group_id,
+      p_group_session_token: g.group_session_token,
+      p_student_id: m.student_id,
+      p_individual_session_token: m.individual_session_token,
+      ...extra
+    };
+  }
+  async function saveLesson2Individual(record) {
+    const args = memberArgs({ p_record: record || {} });
+    if (!args) return { data: null, error: new Error('NO_MEMBER_SESSION') };
+    return rpc('save_lesson2_individual', args);
+  }
+  async function publishLesson2Individual(content) {
+    const args = memberArgs({ p_content: content || {} });
+    if (!args) return { data: null, error: new Error('NO_MEMBER_SESSION') };
+    return rpc('publish_lesson2_individual', args);
+  }
+
   async function galleryList({ grade, classNo, lessonNo = 1 }) {
     const args = sessionArgs({ p_grade: Number(grade), p_class_no: Number(classNo), p_lesson_no: Number(lessonNo) });
     if (!args) return { data: null, error: new Error('NO_SESSION') };
@@ -165,7 +218,8 @@
     configured, getStudentSession, setStudentSession, clearStudentSession,
     getGroupSession, setGroupSession, clearGroupSession,
     studentLogin, getSettings, getDashboard, getLesson1, saveLesson1, publishLesson1,
-    lesson2GroupLogin, getLesson2, saveLesson2, publishLesson2,
+    lesson2GroupLogin, lesson2GroupList, getLesson2, saveLesson2, publishLesson2,
+    getLesson2MemberSession, clearLesson2MemberSession, lesson2MemberStatus, lesson2MemberUnlock, saveLesson2Individual, publishLesson2Individual,
     galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherExportLesson2, teacherResetStudentPin,
     teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost, teacherDeleteStudent
   };
