@@ -1,5 +1,6 @@
 (() => {
   const SESSION_KEY = 'problemLabStudentSessionV1';
+  const GROUP_SESSION_KEY = 'problemLabLesson2GroupSessionV1';
   const cfg = window.PROBLEM_LAB_CONFIG || {};
   const configured = () => !!cfg.supabaseUrl && !!cfg.supabaseKey && !cfg.supabaseUrl.includes('YOUR_') && !cfg.supabaseKey.includes('YOUR_');
   let client = null;
@@ -11,7 +12,10 @@
   const safeParse = (s) => { try { return JSON.parse(s); } catch { return null; } };
   const getStudentSession = () => safeParse(localStorage.getItem(SESSION_KEY) || 'null');
   const setStudentSession = (session) => localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  const clearStudentSession = () => localStorage.removeItem(SESSION_KEY);
+  const clearStudentSession = () => { localStorage.removeItem(SESSION_KEY); localStorage.removeItem(GROUP_SESSION_KEY); };
+  const getGroupSession = () => safeParse(localStorage.getItem(GROUP_SESSION_KEY) || 'null');
+  const setGroupSession = (session) => localStorage.setItem(GROUP_SESSION_KEY, JSON.stringify(session));
+  const clearGroupSession = () => localStorage.removeItem(GROUP_SESSION_KEY);
   async function rpc(name, args = {}) {
     if (!configured()) return { data: null, error: new Error('SUPABASE_NOT_CONFIGURED') };
     if (!client) return { data: null, error: new Error('SUPABASE_CLIENT_NOT_READY') };
@@ -22,6 +26,11 @@
     const s = getStudentSession();
     if (!s) return null;
     return { p_student_id: s.student_id, p_session_token: s.session_token, ...extra };
+  }
+  function groupSessionArgs(extra = {}) {
+    const g = getGroupSession();
+    if (!g) return null;
+    return { p_group_id: g.group_id, p_group_session_token: g.group_session_token, ...extra };
   }
   async function studentLogin({ grade, classNo, name, pin }) {
     const { data, error } = await rpc('student_login', {
@@ -59,6 +68,43 @@
     if (!args) return { data: null, error: new Error('NO_SESSION') };
     return rpc('publish_lesson1', args);
   }
+  async function lesson2GroupLogin({ groupName, pin, memberNames = null }) {
+    const s = getStudentSession();
+    if (!s) return { data: null, error: new Error('NO_SESSION') };
+    const { data, error } = await rpc('lesson2_group_login', {
+      p_student_id: s.student_id,
+      p_session_token: s.session_token,
+      p_group_name: String(groupName || '').trim(),
+      p_pin: String(pin || ''),
+      p_member_names: memberNames && memberNames.length ? memberNames : null
+    });
+    if (!error && data?.ok) {
+      setGroupSession({
+        group_id: data.group_id,
+        group_session_token: data.group_session_token,
+        grade: data.grade,
+        class_no: data.class_no,
+        group_name: data.group_name,
+        member_names: data.member_names || []
+      });
+    }
+    return { data, error };
+  }
+  async function getLesson2() {
+    const args = groupSessionArgs();
+    if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
+    return rpc('get_lesson2', args);
+  }
+  async function saveLesson2(record) {
+    const args = groupSessionArgs({ p_record: record });
+    if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
+    return rpc('save_lesson2', args);
+  }
+  async function publishLesson2(content) {
+    const args = groupSessionArgs({ p_content: content });
+    if (!args) return { data: null, error: new Error('NO_GROUP_SESSION') };
+    return rpc('publish_lesson2', args);
+  }
   async function galleryList({ grade, classNo, lessonNo = 1 }) {
     const args = sessionArgs({ p_grade: Number(grade), p_class_no: Number(classNo), p_lesson_no: Number(lessonNo) });
     if (!args) return { data: null, error: new Error('NO_SESSION') };
@@ -73,6 +119,13 @@
   async function teacherSetLesson2(pin, open) { return rpc('teacher_set_lesson2', { p_pin: String(pin || ''), p_open: !!open }); }
   async function teacherExport(pin, grade = null, classNo = null) {
     return rpc('teacher_export_lesson1', {
+      p_pin: String(pin || ''),
+      p_grade: grade === '' || grade == null ? null : Number(grade),
+      p_class_no: classNo === '' || classNo == null ? null : Number(classNo)
+    });
+  }
+  async function teacherExportLesson2(pin, grade = null, classNo = null) {
+    return rpc('teacher_export_lesson2', {
       p_pin: String(pin || ''),
       p_grade: grade === '' || grade == null ? null : Number(grade),
       p_class_no: classNo === '' || classNo == null ? null : Number(classNo)
@@ -110,8 +163,10 @@
   }
   window.ProblemLabAPI = {
     configured, getStudentSession, setStudentSession, clearStudentSession,
+    getGroupSession, setGroupSession, clearGroupSession,
     studentLogin, getSettings, getDashboard, getLesson1, saveLesson1, publishLesson1,
-    galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherResetStudentPin,
+    lesson2GroupLogin, getLesson2, saveLesson2, publishLesson2,
+    galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherExportLesson2, teacherResetStudentPin,
     teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost, teacherDeleteStudent
   };
 })();
