@@ -214,6 +214,16 @@
   async function teacherDeleteStudent(pin, studentId) {
     return rpc('teacher_delete_student', { p_pin: String(pin || ''), p_student_id: studentId });
   }
+
+async function teacherListLesson2Groups(pin, grade, classNo) {
+  return rpc('teacher_list_lesson2_groups', { p_pin: String(pin || ''), p_grade: Number(grade), p_class_no: Number(classNo) });
+}
+async function teacherResetLesson2GroupPin(pin, groupId, newPin) {
+  return rpc('teacher_reset_lesson2_group_pin', { p_pin: String(pin || ''), p_group_id: groupId, p_new_pin: String(newPin || '') });
+}
+async function teacherDeleteLesson2Group(pin, groupId) {
+  return rpc('teacher_delete_lesson2_group', { p_pin: String(pin || ''), p_group_id: groupId });
+}
   window.ProblemLabAPI = {
     configured, getStudentSession, setStudentSession, clearStudentSession,
     getGroupSession, setGroupSession, clearGroupSession,
@@ -221,6 +231,7 @@
     lesson2GroupLogin, lesson2GroupList, getLesson2, saveLesson2, publishLesson2,
     getLesson2MemberSession, clearLesson2MemberSession, lesson2MemberStatus, lesson2MemberUnlock, saveLesson2Individual, publishLesson2Individual,
     galleryList, toggleLike, teacherVerify, teacherSetLesson2, teacherExport, teacherExportLesson2, teacherResetStudentPin,
-    teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost, teacherDeleteStudent
+    teacherListStudents, teacherListGallery, teacherUpdateGalleryPost, teacherDeleteGalleryPost, teacherDeleteStudent,
+    teacherListLesson2Groups, teacherResetLesson2GroupPin, teacherDeleteLesson2Group
   };
 })();
