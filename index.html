@@ -91,11 +91,11 @@
     </section>
 
     <section class="adminPanel" id="admin-lesson">
-      <div class="teacherBox"><h3>2차시 공개</h3><div class="toggleRow"><div><b>학생에게 2차시 버튼 열기</b><p class="adminHint">현재 2차시 파일은 연결하지 않았으므로 버튼만 활성화됩니다.</p></div><label class="switch"><input type="checkbox" id="lesson2Toggle"><span class="slider"></span></label></div></div>
+      <div class="teacherBox"><h3>2차시 공개</h3><div class="toggleRow"><div><b>학생에게 2차시 버튼 열기</b><p class="adminHint">공개하면 학생이 2차시 모둠활동에 바로 들어갈 수 있습니다.</p></div><label class="switch"><input type="checkbox" id="lesson2Toggle"><span class="slider"></span></label></div></div>
     </section>
 
     <section class="adminPanel" id="admin-export">
-      <div class="teacherBox"><h3>1차시 기록 다운로드</h3><p class="adminHint">학생의 내 상황 미션과 형성평가 결과를 CSV로 저장합니다.</p><div class="row"><div class="field"><label>학년</label><select id="exportGrade"><option value="">전체</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></div><div class="field"><label>반</label><select id="exportClass"><option value="">전체</option></select></div></div><div class="actions" style="justify-content:flex-start"><button class="btn" id="downloadCsv">1차시 기록 CSV</button></div></div>
+      <div class="teacherBox"><h3>1차시 기록 다운로드</h3><p class="adminHint">학생의 내 상황 미션과 형성평가 결과를 CSV로 저장합니다.</p><div class="row"><div class="field"><label>학년</label><select id="exportGrade"><option value="">전체</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></div><div class="field"><label>반</label><select id="exportClass"><option value="">전체</option></select></div></div><div class="actions" style="justify-content:flex-start"><button class="btn" id="downloadCsv">1차시 기록 CSV</button><button class="btn" id="downloadCsv2">2차시 모둠 기록 CSV</button></div></div>
     </section>
 
     <div class="notice" id="teacherActionMsg"></div>
@@ -127,14 +127,14 @@
 <div class="modal subModal" id="galleryEditModal"><div class="modalCard galleryEditCard">
   <div class="modalTitle"><div><h2>갤러리 게시물 수정</h2><p id="galleryEditAuthor" style="color:var(--muted);margin:5px 0 0"></p></div><button class="ghost" id="galleryEditClose">닫기</button></div>
   <div class="galleryEditFields">
-    <div class="field"><label>미션 제목</label><input id="editMissionTitle"></div>
+    <div class="field"><label>제목</label><input id="editMissionTitle"></div>
     <div class="field"><label>해결해야 하는 문제</label><input id="editProblem"></div>
     <div class="field"><label>현재 상태</label><textarea id="editCurrent"></textarea></div>
     <div class="field"><label>목표 상태</label><textarea id="editGoal"></textarea></div>
     <div class="field full"><label>중요한 조건</label><textarea id="editConditions"></textarea></div>
     <div class="field full"><label>핵심 요소</label><textarea id="editCore"></textarea></div>
-    <div class="field full"><label>작은 문제</label><textarea id="editParts"></textarea></div>
-    <div class="field full"><label>성찰</label><textarea id="editReflection"></textarea></div>
+    <div class="field full"><label>문제 분해 / 모델 정보</label><textarea id="editParts"></textarea></div>
+    <div class="field full"><label>성찰 / 모델 선택 이유</label><textarea id="editReflection"></textarea></div>
   </div>
   <label class="publishCheck"><input type="checkbox" id="editPublished" checked> 학급 갤러리에 공개</label>
   <div class="actions"><button class="ghost" id="galleryEditCancel">취소</button><button class="btn" id="galleryEditSave">수정 저장</button></div>
@@ -170,7 +170,7 @@ $('#loginBtn').onclick=async()=>{
 $('#switchStudent').onclick=()=>{ProblemLabAPI.clearStudentSession();location.reload()};
 $('#lesson1Card').onclick=()=>location.href='lesson1.html';
 $('#galleryCard').onclick=()=>location.href='gallery.html';
-$('#lesson2Card').onclick=()=>{if($('#lesson2Card').classList.contains('locked'))return;msg($('#dashboardMsg'),'2차시 활동은 아직 준비 중이에요.');};
+$('#lesson2Card').onclick=()=>{if($('#lesson2Card').classList.contains('locked'))return;location.href='lesson2.html';};
 
 let teacherPin='';
 let teacherStudents=[];
@@ -314,7 +314,7 @@ function renderGalleryAdmin(){
   const host=$('#galleryAdminList');if(!teacherGallery.length){host.innerHTML='<div class="adminEmpty">게시물이 없습니다.</div>';return}
   host.innerHTML=teacherGallery.map((x,i)=>{const c=x.content||{};return `<article class="galleryAdminCard ${x.published?'':'unpublished'}">
     <div class="galleryAdminTop"><div><b>${x.grade}학년 ${x.class_no}반 · ${esc(x.student_name)}</b><span>${x.lesson_no}차시 · 👍 ${x.like_count||0}</span></div><span class="statusPill ${x.published?'good':'muted'}">${x.published?'공개':'숨김'}</span></div>
-    <h4>${esc(c.mission_title||c.problem||'제목 없음')}</h4><p>${esc(c.problem||'작성 내용 없음')}</p>
+    <h4>${esc(c.mission_title||c.title||c.problem||'제목 없음')}</h4><p>${esc(c.problem||'작성 내용 없음')}</p>
     <div class="galleryAdminBtns"><button class="ghost miniBtn" data-edit="${i}">수정</button><button class="danger miniBtn" data-delete="${i}">삭제</button></div>
   </article>`}).join('');
   host.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openGalleryEdit(teacherGallery[+b.dataset.edit]));
@@ -322,12 +322,22 @@ function renderGalleryAdmin(){
 }
 function openGalleryEdit(x){
   galleryEditTarget=x;const c=x.content||{};$('#galleryEditAuthor').textContent=`${x.grade}학년 ${x.class_no}반 · ${x.student_name} · ${x.lesson_no}차시`;
-  $('#editMissionTitle').value=c.mission_title||'';$('#editProblem').value=c.problem||'';$('#editCurrent').value=c.current_state||'';$('#editGoal').value=c.goal_state||'';$('#editConditions').value=c.conditions||'';$('#editCore').value=c.core_elements||'';$('#editParts').value=c.parts||'';$('#editReflection').value=c.reflection||'';$('#editPublished').checked=!!x.published;$('#galleryEditMsg').className='notice';$('#galleryEditModal').classList.add('show')
+  if(x.lesson_no===2){
+    $('#editMissionTitle').value=c.title||c.mission_title||'';$('#editProblem').value=c.problem||'';$('#editCurrent').value=c.current||'';$('#editGoal').value=c.goal||'';$('#editConditions').value=c.conditions||'';$('#editCore').value=Array.isArray(c.core)?c.core.join('\n'):(c.core||'');$('#editParts').value=c.modelType||'';$('#editReflection').value=c.reason||'';
+  }else{
+    $('#editMissionTitle').value=c.mission_title||'';$('#editProblem').value=c.problem||'';$('#editCurrent').value=c.current_state||'';$('#editGoal').value=c.goal_state||'';$('#editConditions').value=c.conditions||'';$('#editCore').value=c.core_elements||'';$('#editParts').value=c.parts||'';$('#editReflection').value=c.reflection||'';
+  }
+  $('#editPublished').checked=!!x.published;$('#galleryEditMsg').className='notice';$('#galleryEditModal').classList.add('show')
 }
 function closeGalleryEdit(){$('#galleryEditModal').classList.remove('show');galleryEditTarget=null}
 $('#galleryEditClose').onclick=closeGalleryEdit;$('#galleryEditCancel').onclick=closeGalleryEdit;
 $('#galleryEditSave').onclick=async()=>{
-  const old=galleryEditTarget.content||{};const content={...old,mission_title:$('#editMissionTitle').value.trim(),problem:$('#editProblem').value.trim(),current_state:$('#editCurrent').value.trim(),goal_state:$('#editGoal').value.trim(),conditions:$('#editConditions').value.trim(),core_elements:$('#editCore').value.trim(),parts:$('#editParts').value.trim(),reflection:$('#editReflection').value.trim()};
+  const old=galleryEditTarget.content||{};let content;
+  if(galleryEditTarget.lesson_no===2){
+    content={...old,title:$('#editMissionTitle').value.trim(),problem:$('#editProblem').value.trim(),current:$('#editCurrent').value.trim(),goal:$('#editGoal').value.trim(),conditions:$('#editConditions').value.trim(),core:$('#editCore').value.split(/\n+/).map(x=>x.trim()).filter(Boolean),reason:$('#editReflection').value.trim()};
+  }else{
+    content={...old,mission_title:$('#editMissionTitle').value.trim(),problem:$('#editProblem').value.trim(),current_state:$('#editCurrent').value.trim(),goal_state:$('#editGoal').value.trim(),conditions:$('#editConditions').value.trim(),core_elements:$('#editCore').value.trim(),parts:$('#editParts').value.trim(),reflection:$('#editReflection').value.trim()};
+  }
   if(!content.problem){msg($('#galleryEditMsg'),'해결해야 하는 문제를 입력해 주세요.');return}
   const {data,error}=await ProblemLabAPI.teacherUpdateGalleryPost(teacherPin,galleryEditTarget.id,content,$('#editPublished').checked);
   if(error||!data?.ok){msg($('#galleryEditMsg'),data?.message||error?.message||'수정하지 못했습니다.');return}
@@ -343,5 +353,6 @@ $('#searchGalleryAdmin').onclick=loadGalleryAdmin;$('#refreshGalleryAdmin').oncl
 
 function csvEscape(v){const s=String(v??'').replace(/\r?\n/g,' / ');return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s}
 $('#downloadCsv').onclick=async()=>{const {data,error}=await ProblemLabAPI.teacherExport(teacherPin,$('#exportGrade').value,$('#exportClass').value);if(error||!data?.ok){msg($('#teacherActionMsg'),data?.message||error?.message||'다운로드 실패');return}const rows=data.rows||[];const heads=['학년','반','이름','최종탭','내상황미션','문제','현재상태','목표상태','조건','핵심요소','문제분해','성찰','형성평가시도','형성평가오답','형성평가통과','마지막저장'];const lines=[heads.join(',')];for(const x of rows){const r=x.record||{},a=r.activity||{},q=r.quiz||{},st=r.state||{};lines.push([x.grade,x.class_no,x.name,st.stage??'',a.mission_title||a.mission_id||'',a.problem||'',a.current_state||'',a.goal_state||'',a.conditions||'',a.core_elements||'',a.parts||'',a.reflection||'',q.attempts??'',q.wrong_total??'',q.passed??false,x.updated_at||''].map(csvEscape).join(','))}const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`문제해결LAB_1차시_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);msg($('#teacherActionMsg'),`${rows.length}명 기록을 내려받았습니다.`,true)};
+$('#downloadCsv2').onclick=async()=>{const {data,error}=await ProblemLabAPI.teacherExportLesson2(teacherPin,$('#exportGrade').value,$('#exportClass').value);if(error||!data?.ok){msg($('#teacherActionMsg'),data?.message||error?.message||'다운로드 실패');return}const rows=data.rows||[];const heads=['학년','반','모둠명','조원','최종탭','완료단계','문제해결미션','문제','핵심요소','모델종류','선택이유','형성평가시도','형성평가오답','형성평가통과','마지막저장'];const lines=[heads.join(',')];for(const x of rows){const r=x.record||{},m=r.mission8?.result||{},q=r.quiz||{};const done=Array.isArray(r.done)?r.done.map((v,i)=>v?i:null).filter(v=>v!==null).join(' / '):'';lines.push([x.grade,x.class_no,x.group_name,(x.member_names||[]).join(' · '),r.stage??'',done,m.title||'',m.problem||'',Array.isArray(m.core)?m.core.join(' / '):(m.core||''),m.modelType||'',m.reason||'',q.attempts??'',q.wrong_total??'',q.passed??false,x.updated_at||''].map(csvEscape).join(','))}const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`문제해결LAB_2차시_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);msg($('#teacherActionMsg'),`${rows.length}개 모둠 기록을 내려받았습니다.`,true)};
 </script>
 </body></html>
