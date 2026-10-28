@@ -158,6 +158,27 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 .graphFlowViewport .graphNode2 .shore{font-size:17px;min-height:52px;line-height:1.25;padding:3px 1px;overflow-wrap:anywhere}
 .graphFlowViewport .routeEdgeLabel{position:absolute;transform:translate(-50%,-50%);color:#204cbf;border:2px solid #9db7f4;box-shadow:0 3px 12px rgba(45,75,160,.1);background:#fff;font-size:12px;font-weight:950;padding:6px 9px;white-space:nowrap;max-width:none;line-height:1.3}
 
+
+/* 미션8 긴급 저장/복구 */
+.m8EmergencyActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+#m8RecoveryNotice{margin:12px 0 18px;padding:18px 20px;background:#fff1ed;border:2px solid #eba9a3;border-radius:18px;color:#813b32;line-height:1.55}
+#m8RecoveryNotice p{margin:9px 0 13px}
+.m8RecoveryPins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.m8RecoveryPins label{font-size:13px;font-weight:900;display:block}
+.m8RecoveryPins input{display:block;width:100%;margin-top:5px;border:1px solid #d4a3a0;border-radius:10px;padding:10px;font-size:17px}
+#m8ReconnectMsg{font-weight:850;font-size:14px;white-space:pre-wrap}
+@media(max-width:760px){.m8RecoveryPins{grid-template-columns:1fr}.m8EmergencyActions{justify-content:flex-start}}
+
+.soloGroupChoice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin:9px 0 14px;border:1px solid #cad8eb;background:#fff;border-radius:15px;cursor:pointer}
+.soloGroupChoice input{margin-top:4px;width:20px;height:20px;accent-color:#315fdf}
+.soloGroupChoice span{display:flex;flex-direction:column;gap:4px}.soloGroupChoice small{color:#68768a;font-size:13px}
+
+/* 2차시 상단 홈·갤러리 버튼: 1차시와 동일한 이동 흐름 */
+.topbar .topRight{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px;min-width:0}
+.topbar .topRight .homeLink{min-height:44px;white-space:nowrap;box-shadow:0 8px 20px rgba(29,51,84,.05)}
+.topbar .topRight .lesson2GalleryLink{border-color:#cbdaf8;background:#f4f7ff;color:#2d52b2}
+.topbar .topRight .lesson2GalleryLink:hover{background:#e9f0ff}
+@media(max-width:660px){.topbar{flex-wrap:wrap}.topbar .topRight{width:100%;justify-content:flex-start}.topbar .brand{max-width:100%}.topbar .topRight .status{margin-right:auto}}
 </style>
 </head>
 <body>
@@ -175,10 +196,11 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
       <div class="groupAccessTitle"><h3 id="selectedGroupTitle">1모둠</h3><button class="tiny" id="groupBackBtn">← 모둠 다시 선택</button></div>
       <div class="groupSetupNotice" id="groupSetupNotice">조원 이름과 모둠 PIN을 설정한 뒤 아래 버튼을 눌러야 활동에 들어갑니다.</div>
       <div class="groupExistingMembers hide" id="groupExistingMembers"></div>
+      <label id="soloGroupChoice" class="soloGroupChoice"><input id="soloGroupToggle" type="checkbox"> <span><strong>혼자 활동하기 (1인 모둠)</strong><small>혼자 하는 학생은 체크하면 조원 이름 없이도 0~9번 미션을 진행할 수 있어요.</small></span></label>
       <div class="groupGrid" id="newGroupFields">
         <div class="groupField"><label>조원 1</label><input id="member1" readonly></div>
-        <div class="groupField"><label>조원 2 · 필수</label><input id="member2" maxlength="30" placeholder="함께 활동할 조원 이름"></div>
-        <div class="groupField"><label>조원 3 · 선택</label><input id="member3" maxlength="30" placeholder="3명일 때만 입력"></div>
+        <div class="groupField" id="member2Field"><label>조원 2 · 선택</label><input id="member2" maxlength="30" placeholder="함께 활동할 조원 이름"></div>
+        <div class="groupField" id="member3Field"><label>조원 3 · 선택</label><input id="member3" maxlength="30" placeholder="3명일 때만 입력"></div>
       </div>
       <div class="groupField" style="margin-top:12px"><label id="groupPinLabel">모둠 4자리 PIN</label><input id="groupPin" type="password" inputmode="numeric" maxlength="4" placeholder="● ● ● ●"></div>
       <div class="groupField groupConfirm" id="groupPinConfirmWrap"><label>모둠 PIN 한 번 더 입력</label><input id="groupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="같은 PIN 4자리"></div>
@@ -193,7 +215,11 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
 <div class="shell">
   <div class="topbar">
     <div class="brand"><div class="brandLogo">3</div><div><b>문제 해결 LAB 02</b><small>알고리즘과 프로그래밍 · 모델링</small></div></div>
-    <div class="status" id="status">미션 0 / 8</div>
+    <div class="topRight">
+      <div class="status" id="status">미션 0 / 8</div>
+      <a class="homeLink" href="index.html" aria-label="학습 홈으로 이동">🏠 홈</a>
+      <a class="homeLink lesson2GalleryLink" id="lesson2TopGallery" href="gallery.html?lesson=2" aria-label="2차시 갤러리로 이동">🖼️ 갤러리</a>
+    </div>
   </div>
 
   <section class="hero">
@@ -473,7 +499,8 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.hide{display:no
       </div>
 
       <div id="m8PersonalWorkspace" class="hide">
-        <div class="personalBar"><div><small>현재 개인활동</small><b id="m8CurrentMember">학생 이름</b></div><button id="m8LockBtn">🔒 저장하고 다른 조원으로</button></div>
+        <div class="personalBar"><div><small>현재 개인활동</small><b id="m8CurrentMember">학생 이름</b></div><div class="m8EmergencyActions"><button id="m8BackupBtn" type="button">💾 내 작업 백업</button><button id="m8RestoreBtn" type="button">📂 백업 복원</button><input id="m8RestoreFile" class="hide" type="file" accept=".json,application/json"><button id="m8LockBtn" type="button">🔒 저장하고 다른 조원으로</button></div></div>
+        <div id="m8RecoveryNotice" class="hide" role="alert"><strong>⚠️ 서버 저장이 되지 않고 있습니다.</strong><p>작성 내용은 이 컴퓨터에 임시 보관합니다. 새로고침하지 말고, 먼저 <b>내 작업 백업</b>을 누르세요. 그다음 PIN을 다시 확인해 연결을 복구할 수 있습니다.</p><div class="m8RecoveryPins"><label>모둠 PIN 4자리<input id="m8RecoverGroupPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><label>내 개인 PIN 4자리<input id="m8RecoverMemberPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><label>홈 로그인 PIN (필요할 때만)<input id="m8RecoverStudentPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label></div><button id="m8ReconnectBtn" class="btn" type="button">PIN 확인 후 작성 내용 재저장</button><p id="m8ReconnectMsg" role="status"></p></div>
         <div id="m8SwitchNotice" class="hide" role="alert" aria-live="assertive"></div>
 
       <div class="m8Start" id="m8Start">
@@ -584,7 +611,7 @@ const sharedSnapshot=()=>{const x=JSON.parse(JSON.stringify(state));delete x.mis
 const save=()=>{const snap=sharedSnapshot();localStorage.setItem(KEY,JSON.stringify(snap));window.Lesson2Remote?.queueSave?.(snap)};
 const showFb=(id,msg,good)=>{const e=$('#'+id);e.textContent=msg;e.className='feedback show '+(good?'good':'bad')};
 function renderStage(n){state.stage=n;save();$$('.stage').forEach((x,i)=>x.classList.toggle('active',i===n));$$('#lessonNav button').forEach((b,i)=>{b.classList.toggle('active',i===n);b.classList.toggle('done',!!state.done[i]&&i!==n)});$('#status').textContent=`미션 ${state.done.slice(1).filter(Boolean).length} / 9`;window.scrollTo({top:0,behavior:'smooth'});if(n===5)renderModelTable();if(n===6)renderTree();if(n===7)renderGraph();if(n===8){window.Lesson2Personal?.enterStage8?.()}}
-$$('#lessonNav button').forEach(b=>b.onclick=async()=>{const n=+b.dataset.stage;if(n===9&&!state.done[8]){alert('미션 8은 조원 모두가 개인활동을 완료해야 형성평가로 넘어갈 수 있어요.');return}if(state.stage===8&&n!==8&&window.Lesson2Personal?.isUnlocked?.())await window.Lesson2Personal.lockCurrent();renderStage(n)});
+$$('#lessonNav button').forEach(b=>b.onclick=async()=>{const n=+b.dataset.stage;if(n===9&&!state.done[8]){alert('미션 8은 조원 모두가 개인활동을 완료해야 형성평가로 넘어갈 수 있어요.');return}if(state.stage===8&&n!==8&&window.Lesson2Personal?.isUnlocked?.()){const saved=await window.Lesson2Personal.lockCurrent();if(!saved)return;}renderStage(n)});
 
 // stage0
 $$('#bridgeChoices .choice').forEach(b=>b.onclick=()=>{$$('#bridgeChoices .choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
@@ -852,6 +879,43 @@ const badge=$('#remoteBadge');let timer=null,busy=false,pending=null;let groupLi
 function gateMsg(t,good=false){const e=$('#groupGateMsg');e.textContent=t;e.className='groupGateMsg show '+(good?'good':'bad')}
 function unlockMsg(t,good=false){const e=$('#m8UnlockMsg');e.textContent=t;e.className='groupGateMsg show '+(good?'good':'bad')}
 function setBadge(t,cls=''){badge.textContent=t;badge.className='remoteBadge '+cls}
+const DRAFT_PREFIX='problemLabLesson2M8Draft_';
+function draftKey(member=ProblemLabAPI.getLesson2MemberSession()){
+  const g=ProblemLabAPI.getGroupSession();
+  return g?.group_id&&member?.student_id?`${DRAFT_PREFIX}${g.group_id}_${member.student_id}`:null;
+}
+function storeLocalDraft(record){
+  const key=draftKey();if(!key)return;
+  try{localStorage.setItem(key,JSON.stringify({savedAt:new Date().toISOString(),record:JSON.parse(JSON.stringify(record))}))}catch(e){showRescue('컴퓨터 임시 저장 공간을 사용할 수 없습니다. 내 작업 백업을 눌러 파일을 보관해 주세요.')}
+}
+function pendingLocalDraft(){const key=draftKey();try{return key?JSON.parse(localStorage.getItem(key)||'null'):null}catch(e){return null}}
+function clearSavedDraft(record){
+  const key=draftKey();if(!key)return;
+  try{const item=JSON.parse(localStorage.getItem(key)||'null');if(item&&JSON.stringify(item.record)===JSON.stringify(record))localStorage.removeItem(key)}catch(e){}
+}
+function showRescue(message){
+  const node=$('#m8RecoveryNotice');if(!node)return;
+  node.classList.remove('hide');if(message)$('#m8ReconnectMsg').textContent=message;
+}
+function hideRescue(){const node=$('#m8RecoveryNotice');if(node)node.classList.add('hide');$('#m8ReconnectMsg').textContent=''}
+function downloadPersonalBackup(){
+  const member=ProblemLabAPI.getLesson2MemberSession(),group=ProblemLabAPI.getGroupSession();
+  if(!member){alert('먼저 내 개인 PIN으로 작업공간을 열어 주세요.');return}
+  const data={version:1,savedAt:new Date().toISOString(),student_id:member.student_id,member_name:member.member_name,group_id:group?.group_id,group_name:group?.group_name,mission8:window.Lesson2App.getMission8()};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download=`미션8_백업_${member.member_name||'학생'}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+async function restorePersonalFile(file){
+  if(!file)return;const member=ProblemLabAPI.getLesson2MemberSession(),group=ProblemLabAPI.getGroupSession();
+  if(!member)return alert('먼저 내 개인 PIN으로 입장해 주세요.');
+  let data;try{data=JSON.parse(await file.text())}catch(e){return alert('JSON 파일을 읽을 수 없습니다.')}const record=data?.mission8;
+  if(!record||!record.schemaVersion)return alert('미션8 백업 파일이 아닙니다.');
+  if((data.student_id&&data.student_id!==member.student_id)||(data.group_id&&data.group_id!==group?.group_id)||((data.member_name||data.student)&&(data.member_name||data.student)!==member.member_name)||((data.group_name||data.group)&&(data.group_name||data.group)!==group?.group_name))return alert('다른 조원이나 다른 모둠의 백업 파일은 복원할 수 없습니다.');
+  if(!confirm('현재 편집 중인 화면을 백업 파일 내용으로 바꾸고 다시 저장할까요?'))return;
+  window.Lesson2App.loadMission8(record);queuePersonal(record);setBadge('백업 복원 · 저장 시도 중');
+  showRescue('백업 내용을 화면에 복원했습니다. 서버 저장 성공 여부를 확인해 주세요.');
+}
+
 async function saveNow(record){if(busy){pending=record;return}busy=true;setBadge('모둠 저장 중...');const {data,error}=await ProblemLabAPI.saveLesson2(record);busy=false;if(error||!data?.ok){setBadge('모둠 저장 오류','bad')}else setBadge('저장됨','ok');if(pending){const next=pending;pending=null;saveNow(next)}}
 // Serialize writes and bind each snapshot to the current student session.
 // Do not clear/switch that session until the final write is confirmed.
@@ -864,14 +928,15 @@ function savePersonalNow(record){
     setBadge('개인 저장 중...');
     try{
       const {data,error}=await ProblemLabAPI.saveLesson2Individual(snapshot);
-      if(error||!data?.ok){setBadge('개인 저장 오류','bad');return false}
-      setBadge('개인 저장됨','ok');return true;
-    }catch(e){setBadge('개인 저장 오류','bad');return false}
+      if(error||!data?.ok){setBadge('개인 저장 오류','bad');showRescue(data?.message||error?.message||'연결을 확인해 주세요.');return false}
+      clearSavedDraft(snapshot);hideRescue();setBadge('개인 저장됨','ok');return true;
+    }catch(e){setBadge('개인 저장 오류','bad');showRescue(e?.message||'서버 저장 중 오류가 발생했습니다.');return false}
   });
   personalSaveTail=work;
   return work;
 }
 function queuePersonal(record){
+  storeLocalDraft(record);
   if(!personalSessionKey()||personalSwitching)return;
   clearTimeout(personalTimer);
   const snapshot=JSON.parse(JSON.stringify(record));
@@ -910,7 +975,68 @@ async function lockCurrent(){
     setBadge('모둠 연결됨','ok');return true;
   } finally{personalSwitching=false;button.disabled=false}
 }
-async function unlockCurrent(){if(personalSwitching)return;const pin=$('#m8MemberPin').value.trim();if(!targetMember){unlockMsg('먼저 내 이름을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){unlockMsg('개인 PIN은 숫자 4자리로 입력해 주세요.');return}$('#m8UnlockBtn').disabled=true;const {data,error}=await ProblemLabAPI.lesson2MemberUnlock({memberName:targetMember,pin});$('#m8UnlockBtn').disabled=false;if(error||!data?.ok){unlockMsg(data?.message||error?.message||'개인 작업공간을 열지 못했습니다.');return}$('#m8CurrentMember').textContent=`${data.member_name} · ${data.grade}학년 ${data.class_no}반`;$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');window.Lesson2App?.loadMission8?.(data.record||{});setBadge(`${data.member_name} 개인활동`,'ok');window.scrollTo({top:0,behavior:'smooth'})}
+async function unlockCurrent(){if(personalSwitching)return;const pin=$('#m8MemberPin').value.trim();if(!targetMember){unlockMsg('먼저 내 이름을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){unlockMsg('개인 PIN은 숫자 4자리로 입력해 주세요.');return}$('#m8UnlockBtn').disabled=true;const {data,error}=await ProblemLabAPI.lesson2MemberUnlock({memberName:targetMember,pin});$('#m8UnlockBtn').disabled=false;if(error||!data?.ok){unlockMsg(data?.message||error?.message||'개인 작업공간을 열지 못했습니다.');return}$('#m8CurrentMember').textContent=`${data.member_name} · ${data.grade}학년 ${data.class_no}반`;$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');window.Lesson2App?.loadMission8?.(data.record||{});
+  const draft=pendingLocalDraft();
+  if(draft?.record?.schemaVersion&&JSON.stringify(draft.record)!==JSON.stringify(data.record||{})){
+    if(confirm('이 컴퓨터에 서버에 저장되지 않은 미션8 임시 작업이 남아 있습니다. 이전 작업을 복구할까요?\n확인: 임시 작업 복구 / 취소: 서버에 저장된 기록 유지')){
+      window.Lesson2App.loadMission8(draft.record);
+      queuePersonal(draft.record);
+      setBadge('임시 기록 복원 · 서버 저장 확인 중','bad');
+    }else setBadge(`${data.member_name} 개인활동`,'ok');
+  }else setBadge(`${data.member_name} 개인활동`,'ok');
+  window.scrollTo({top:0,behavior:'smooth'})}
+async function reconnectPersonal(){
+  if(personalSwitching)return;
+  const snapshot=window.Lesson2App?.getMission8?.();
+  const person=ProblemLabAPI.getLesson2MemberSession(),group=ProblemLabAPI.getGroupSession(),student=ProblemLabAPI.getStudentSession();
+  const groupPin=$('#m8RecoverGroupPin').value.trim(),memberPin=$('#m8RecoverMemberPin').value.trim(),studentPin=$('#m8RecoverStudentPin').value.trim();
+  if(!snapshot||!person||!group||!student)return $('#m8ReconnectMsg').textContent='현재 작업 정보를 읽을 수 없습니다. 먼저 백업 파일을 보관해 주세요.';
+  if(!/^\d{4}$/.test(groupPin)||!/^\d{4}$/.test(memberPin))return $('#m8ReconnectMsg').textContent='모둠 PIN과 개인 PIN을 각각 4자리로 입력해 주세요.';
+  const btn=$('#m8ReconnectBtn');btn.disabled=true;
+  try{
+    $('#m8ReconnectMsg').textContent='연결 확인 중...';
+    clearTimeout(personalTimer);personalTimer=null;
+    await personalSaveTail.catch(()=>false);
+    let access=await ProblemLabAPI.lesson2GroupLogin({groupName:group.group_name,pin:groupPin});
+    if(!access.data?.ok&&/^\d{4}$/.test(studentPin)){
+      const relog=await ProblemLabAPI.studentLogin({grade:student.grade,classNo:student.class_no,name:student.name,pin:studentPin});
+      if(relog.data?.ok)access=await ProblemLabAPI.lesson2GroupLogin({groupName:group.group_name,pin:groupPin});
+      else return $('#m8ReconnectMsg').textContent=relog.data?.message||relog.error?.message||'홈 PIN 인증에 실패했습니다.';
+    }
+    if(!access.data?.ok)return $('#m8ReconnectMsg').textContent=access.data?.message||access.error?.message||'모둠 인증 실패. 홈 PIN을 추가 입력해 보세요.';
+    const auth=await ProblemLabAPI.lesson2MemberUnlock({memberName:person.member_name,pin:memberPin});
+    if(!auth.data?.ok)return $('#m8ReconnectMsg').textContent=auth.data?.message||auth.error?.message||'개인 PIN 인증 실패';
+    // Do not load the server record here: the unsaved in-memory work is the source of truth.
+    storeLocalDraft(snapshot);
+    const saved=await ProblemLabAPI.saveLesson2Individual(snapshot);
+    if(saved.error||!saved.data?.ok)return $('#m8ReconnectMsg').textContent=saved.data?.message||saved.error?.message||'다시 연결했으나 저장 실패. 백업 파일을 보관해 주세요.';
+    clearSavedDraft(snapshot);hideRescue();setBadge('연결 복구 · 개인 저장 완료','ok');
+    $('#m8RecoverGroupPin').value='';$('#m8RecoverMemberPin').value='';$('#m8RecoverStudentPin').value='';
+    alert('연결을 복구하고 현재 작성한 개인활동을 서버에 저장했습니다.');
+  }catch(e){$('#m8ReconnectMsg').textContent=e?.message||'재연결 중 오류가 발생했습니다.'}
+  finally{btn.disabled=false}
+}
+// 상단 갤러리로 이동하기 전 현재 개인 작업을 안전하게 저장합니다.
+$('#lesson2TopGallery').addEventListener('click',async ev=>{
+  if(!ProblemLabAPI.getLesson2MemberSession())return;
+  ev.preventDefault();
+  const link=ev.currentTarget;
+  if(link.dataset.saving==='1')return;
+  link.dataset.saving='1';link.setAttribute('aria-disabled','true');
+  try{
+    const ok=await flushPersonal();
+    if(!ok){
+      showRescue('갤러리로 이동하지 않았어요. 개인 기록이 아직 서버에 저장되지 않았습니다. 화면 상단의 백업을 먼저 받거나 PIN 재연결 후 다시 시도해 주세요.');
+      alert('개인활동이 아직 저장되지 않았습니다. 현재 화면을 유지합니다.');
+      return;
+    }
+    location.href=link.href;
+  }finally{link.dataset.saving='0';link.removeAttribute('aria-disabled')}
+});
+$('#m8BackupBtn').onclick=downloadPersonalBackup;
+$('#m8RestoreBtn').onclick=()=>$('#m8RestoreFile').click();
+$('#m8RestoreFile').onchange=async e=>{await restorePersonalFile(e.target.files?.[0]);e.target.value=''};
+$('#m8ReconnectBtn').onclick=reconnectPersonal;
 window.Lesson2Personal={
   isUnlocked:()=>!!ProblemLabAPI.getLesson2MemberSession(),
   enterStage8:async()=>{if(ProblemLabAPI.getLesson2MemberSession()){$('#m8PersonalGate').classList.add('hide');$('#m8PersonalWorkspace').classList.remove('hide');return}$('#m8PersonalWorkspace').classList.add('hide');$('#m8PersonalGate').classList.remove('hide');await refreshMemberStatus()},
@@ -921,7 +1047,9 @@ window.Lesson2Personal={
 $('#m8UnlockBtn').onclick=unlockCurrent;$('#m8MemberPin').onkeydown=e=>{if(e.key==='Enter')unlockCurrent()};$('#m8LockBtn').onclick=lockCurrent;
 
 function renderGroupPicker(){const h=$('#groupPicker');h.innerHTML=Array.from({length:12},(_,i)=>{const name=`${i+1}모둠`,g=groupList.find(x=>x.group_name===name),mine=!!(g?.exists&&(g.member_names||[]).some(n=>String(n).trim()===student.name));const disabled=g?.exists&&!mine;return `<button class="groupPickCard ${disabled?'otherGroup':''}" data-group="${name}" ${disabled?'disabled':''}><div class="groupPickTop"><b>${name}</b><span class="groupPickStatus ${g?.exists?'used':''}">${g?.exists?(mine?'내 모둠':'사용 중'):'설정 전'}</span></div><div class="groupPickMembers">${g?.exists?(mine?escapeHtml((g.member_names||[]).join(' · ')):'다른 모둠이 사용 중입니다.'):'클릭해서 모둠 PIN 설정'}</div></button>`}).join('');$$('.groupPickCard',h).filter(b=>!b.disabled).forEach(b=>b.onclick=()=>openGroup(b.dataset.group))}
-function openGroup(name){selectedGroup=name;const g=groupList.find(x=>x.group_name===name);$$('.groupPickCard').forEach(b=>b.classList.toggle('active',b.dataset.group===name));$('#selectedGroupTitle').textContent=name;$('#groupChooseView').classList.add('hide');$('#groupAccess').classList.remove('hide');$('#groupPin').value='';$('#groupPinConfirm').value='';$('#groupGateMsg').className='groupGateMsg';if(g?.exists){$('#newGroupFields').classList.add('hide');$('#groupExistingMembers').classList.remove('hide');$('#groupExistingMembers').innerHTML=`<b>등록된 조원</b><br>${escapeHtml((g.member_names||[]).join(' · '))}`;$('#groupPinLabel').textContent='모둠 4자리 PIN 입력';$('#groupPinConfirmWrap').classList.add('hide');$('#groupAccessStepText').textContent='설정된 모둠 입장';$('#groupSetupNotice').innerHTML='<b>이미 설정된 모둠입니다.</b> 모둠 PIN을 입력한 뒤 입장 버튼을 눌러 주세요.';$('#groupLoginBtn').textContent=`${name} PIN 확인 후 입장`}else{$('#newGroupFields').classList.remove('hide');$('#groupExistingMembers').classList.add('hide');$('#member1').value=student.name;$('#member2').value='';$('#member3').value='';$('#groupPinLabel').textContent='새 모둠 PIN 4자리 설정';$('#groupPinConfirmWrap').classList.remove('hide');$('#groupAccessStepText').textContent='처음 모둠 설정';$('#groupSetupNotice').innerHTML=`<b>${name}을 처음 설정합니다.</b> 조원 2~3명의 이름과 새 PIN을 정한 뒤 <b>설정하고 입장</b>을 눌러 주세요.`;$('#groupLoginBtn').textContent=`${name} 설정하고 입장`}$('#groupGate').scrollTop=0;setTimeout(()=>{if(g?.exists)$('#groupPin').focus({preventScroll:true});else $('#member2').focus({preventScroll:true})},200)}
+function updateSoloGroupForm(){const solo=$('#soloGroupToggle').checked;$('#member2Field').classList.toggle('hide',solo);$('#member3Field').classList.toggle('hide',solo);if(solo){$('#member2').value='';$('#member3').value=''}}
+$('#soloGroupToggle').onchange=updateSoloGroupForm;
+function openGroup(name){selectedGroup=name;const g=groupList.find(x=>x.group_name===name);$$('.groupPickCard').forEach(b=>b.classList.toggle('active',b.dataset.group===name));$('#selectedGroupTitle').textContent=name;$('#groupChooseView').classList.add('hide');$('#groupAccess').classList.remove('hide');$('#groupPin').value='';$('#groupPinConfirm').value='';$('#groupGateMsg').className='groupGateMsg';if(g?.exists){$('#newGroupFields').classList.add('hide');$('#soloGroupChoice').classList.add('hide');$('#groupExistingMembers').classList.remove('hide');$('#groupExistingMembers').innerHTML=`<b>등록된 조원</b><br>${escapeHtml((g.member_names||[]).join(' · '))}`;$('#groupPinLabel').textContent='모둠 4자리 PIN 입력';$('#groupPinConfirmWrap').classList.add('hide');$('#groupAccessStepText').textContent='설정된 모둠 입장';$('#groupSetupNotice').innerHTML='<b>이미 설정된 모둠입니다.</b> 모둠 PIN을 입력한 뒤 입장 버튼을 눌러 주세요.';$('#groupLoginBtn').textContent=`${name} PIN 확인 후 입장`}else{$('#newGroupFields').classList.remove('hide');$('#soloGroupChoice').classList.remove('hide');$('#soloGroupToggle').checked=false;updateSoloGroupForm();$('#groupExistingMembers').classList.add('hide');$('#member1').value=student.name;$('#member2').value='';$('#member3').value='';$('#groupPinLabel').textContent='새 모둠 PIN 4자리 설정';$('#groupPinConfirmWrap').classList.remove('hide');$('#groupAccessStepText').textContent='처음 모둠 설정';$('#groupSetupNotice').innerHTML=`<b>${name}을 처음 설정합니다.</b> 1~3명 중 해당하는 조원 이름과 새 PIN을 정한 뒤 <b>설정하고 입장</b>을 눌러 주세요.`;$('#groupLoginBtn').textContent=`${name} 설정하고 입장`}$('#groupGate').scrollTop=0;setTimeout(()=>{if(g?.exists)$('#groupPin').focus({preventScroll:true});else $('#member2').focus({preventScroll:true})},200)}
 $('#groupBackBtn').onclick=()=>{$('#groupAccess').classList.add('hide');$('#groupChooseView').classList.remove('hide');selectedGroup=null;$$('.groupPickCard').forEach(b=>b.classList.remove('active'));$('#groupGate').scrollTop=0};
 
 if(!student){location.href='index.html';return}
@@ -929,7 +1057,7 @@ $('#member1').value=student.name;$('#groupStudentInfo').textContent=`${student.g
 (async()=>{const {data,error}=await ProblemLabAPI.getDashboard();if(error||!data?.ok){location.href='index.html';return}if(!data.lesson2_open){gateMsg('아직 선생님이 2차시 활동을 열지 않았습니다.');return}const gl=await ProblemLabAPI.lesson2GroupList();if(gl.error||!gl.data?.ok){gateMsg(gl.data?.message||gl.error?.message||'모둠 목록을 불러오지 못했습니다.');return}groupList=gl.data.groups||[];renderGroupPicker()})();
 $('#groupPin').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#groupLoginBtn').click()}});
 $('#groupPinConfirm').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#groupLoginBtn').click()}});
-$('#groupLoginBtn').onclick=async()=>{const pin=$('#groupPin').value.trim();if(!selectedGroup){gateMsg('먼저 모둠을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){gateMsg('모둠 PIN은 숫자 4자리로 입력해 주세요.');return}const g=groupList.find(x=>x.group_name===selectedGroup);const m2=$('#member2').value.trim(),m3=$('#member3').value.trim();let members=null;if(!g?.exists){const pin2=$('#groupPinConfirm').value.trim();if(!m2){gateMsg('모둠활동은 2~3인입니다. 조원 2 이름을 입력해 주세요.');return}if(pin!==pin2){gateMsg('두 번 입력한 모둠 PIN이 서로 달라요. 다시 확인해 주세요.');return}const names=[student.name,m2,m3].filter(Boolean).map(x=>x.trim());if(new Set(names).size!==names.length){gateMsg('같은 이름을 두 번 입력할 수 없어요. 조원 이름을 확인해 주세요.');return}members=names}$('#groupLoginBtn').disabled=true;$('#groupLoginBtn').textContent=g?.exists?'PIN 확인 중...':'모둠 설정 중...';const {data,error}=await ProblemLabAPI.lesson2GroupLogin({groupName:selectedGroup,pin,memberNames:members});$('#groupLoginBtn').disabled=false;if(error||!data?.ok){$('#groupLoginBtn').textContent=g?.exists?`${selectedGroup} PIN 확인 후 입장`:`${selectedGroup} 설정하고 입장`;gateMsg(data?.message||error?.message||'모둠에 들어가지 못했습니다.');return}const {data:rec,error:recErr}=await ProblemLabAPI.getLesson2();if(recErr||!rec?.ok){gateMsg(rec?.message||recErr?.message||'활동 기록을 불러오지 못했습니다.');return}const gs=ProblemLabAPI.getGroupSession();$('#groupInfo').innerHTML=`<small>${gs.grade}학년 ${gs.class_no}반 · ${gs.group_name}</small>${(gs.member_names||[]).join(' · ')}`;$('#groupBar').classList.add('show');$('#groupGate').classList.add('hide');setBadge('모둠 연결됨','ok');window.Lesson2App?.hydrate(rec.record||{});if(rec.member_status?.length){renderMemberCards(rec.member_status);window.Lesson2App?.setMission8GroupComplete?.(rec.member_status.every(x=>x.completed))}window.Lesson2Remote.queueSave(window.Lesson2App.getState())};
+$('#groupLoginBtn').onclick=async()=>{const pin=$('#groupPin').value.trim();if(!selectedGroup){gateMsg('먼저 모둠을 선택해 주세요.');return}if(!/^\d{4}$/.test(pin)){gateMsg('모둠 PIN은 숫자 4자리로 입력해 주세요.');return}const g=groupList.find(x=>x.group_name===selectedGroup);const m2=$('#member2').value.trim(),m3=$('#member3').value.trim();let members=null;if(!g?.exists){const pin2=$('#groupPinConfirm').value.trim();if(!$('#soloGroupToggle').checked&&!m2){gateMsg('두 명 이상이 함께 활동할 경우 조원 2를 입력하거나, 혼자 활동하기를 선택하세요.');return}if(pin!==pin2){gateMsg('두 번 입력한 모둠 PIN이 서로 달라요. 다시 확인해 주세요.');return}const names=($('#soloGroupToggle').checked?[student.name]:[student.name,m2,m3]).filter(Boolean).map(x=>x.trim());if(new Set(names).size!==names.length){gateMsg('같은 이름을 두 번 입력할 수 없어요. 조원 이름을 확인해 주세요.');return}members=names}$('#groupLoginBtn').disabled=true;$('#groupLoginBtn').textContent=g?.exists?'PIN 확인 중...':'모둠 설정 중...';const {data,error}=await ProblemLabAPI.lesson2GroupLogin({groupName:selectedGroup,pin,memberNames:members});$('#groupLoginBtn').disabled=false;if(error||!data?.ok){$('#groupLoginBtn').textContent=g?.exists?`${selectedGroup} PIN 확인 후 입장`:`${selectedGroup} 설정하고 입장`;gateMsg(data?.message||error?.message||'모둠에 들어가지 못했습니다.');return}const {data:rec,error:recErr}=await ProblemLabAPI.getLesson2();if(recErr||!rec?.ok){gateMsg(rec?.message||recErr?.message||'활동 기록을 불러오지 못했습니다.');return}const gs=ProblemLabAPI.getGroupSession();$('#groupInfo').innerHTML=`<small>${gs.grade}학년 ${gs.class_no}반 · ${gs.group_name}</small>${(gs.member_names||[]).join(' · ')}`;$('#groupBar').classList.add('show');$('#groupGate').classList.add('hide');setBadge('모둠 연결됨','ok');window.Lesson2App?.hydrate(rec.record||{});if(rec.member_status?.length){renderMemberCards(rec.member_status);window.Lesson2App?.setMission8GroupComplete?.(rec.member_status.every(x=>x.completed))}window.Lesson2Remote.queueSave(window.Lesson2App.getState())};
 })();
 </script>
 

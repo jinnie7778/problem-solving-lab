@@ -47,6 +47,17 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 
 .topRight{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.studentChip,.syncChip,.homeLink{background:rgba(255,255,255,.91);border:1px solid rgba(255,255,255,.92);box-shadow:var(--shadow);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900}.studentChip{color:#30445f}.syncChip{color:#6a788a}.syncChip.good{color:#176140;background:#eefaf4}.syncChip.bad{color:#963740;background:#fff2f3}.homeLink{text-decoration:none;color:var(--ink)}
 @media(max-width:760px){.topbar{align-items:flex-start}.topRight{justify-content:flex-start}.status{padding:9px 12px}}
+
+.l1Recovery{margin-top:20px;padding:19px;border:1px solid #b8c9ed;border-radius:20px;background:#f3f7ff}
+.l1RecoveryHeader{display:flex;flex-direction:column;gap:6px;color:#1e355e}
+.l1RecoveryHeader b{font-size:17px}.l1RecoveryHeader span{color:#536b91;font-size:13px}
+.l1Recovery p{color:#42516b;line-height:1.6}
+.l1RecoveryRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.l1RecoveryRow label{font-weight:850;font-size:13px}
+.l1RecoveryRow input{padding:10px 12px;max-width:210px;border:1px solid #bdd0ed;border-radius:12px;background:white}
+#l1RetryPublish{min-height:48px}#l1RetryPublish:disabled{opacity:.6}
+#l1PublishResult{font-weight:800;white-space:pre-wrap;overflow-wrap:anywhere}
+
 </style>
 </head>
 <body>
@@ -55,6 +66,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
     <div class="brand"><div class="brandLogo">3</div><div><b>문제 해결 LAB 01</b><small>알고리즘과 프로그래밍 · 문제 이해와 문제 분해</small></div></div>
     <div class="topRight">
       <div class="studentChip" id="studentChip">학생 확인 중</div>
+      <button class="homeLink" type="button" id="l1BackupBtn" style="cursor:pointer;color:#225aa8">기록 백업</button><button class="homeLink" type="button" id="l1RestoreBtn" style="cursor:pointer">백업 복원</button><button class="homeLink" type="button" id="l1RetryBtn" style="cursor:pointer">저장 재시도</button><input type="file" accept="application/json,.json" id="l1RestoreFile" style="display:none">
       <div class="syncChip" id="syncState">저장 준비 중</div>
       <div class="status" id="status">미션 0 / 6</div>
       <a class="homeLink" href="index.html">🏠 홈</a>
@@ -307,6 +319,14 @@ button,input,textarea{font:inherit}button{cursor:pointer}
         <div class="field full"><label>문제를 나누기 전과 후, 무엇이 달라졌나요?</label><textarea id="reflection" placeholder="내 생각을 1~2문장으로 작성"></textarea></div>
       </div>
       <div class="feedback" id="fb5"></div>
+  <div id="l1PublishRecovery" class="l1Recovery" aria-live="polite">
+    <div class="l1RecoveryHeader"><b>내 상황 미션 · 서버 저장 / 갤러리 등록 확인</b><span>로그인이 만료돼도 작성 내용을 유지해요</span></div>
+    <p>등록되지 않았다면 먼저 <strong>기록 백업</strong>을 누른 뒤 아래에서 다시 시도하세요. 갤러리에 등록돼야 완료입니다.</p>
+    <div class="l1RecoveryRow"><label for="l1ReloginPin">내 로그인 PIN 4자리 (로그인 만료 시에만 입력)</label><input id="l1ReloginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="필요할 때만 입력" /></div>
+    <button id="l1RetryPublish" class="btn" type="button">서버 저장 및 갤러리 등록 다시 시도</button>
+    <p id="l1PublishResult" role="status"></p>
+  </div>
+
       <div class="actions"><button class="btn" id="finish">내 상황 미션 완료</button><button class="btn hide" id="to6">다음 · 형성평가</button></div>
     </div>
   </section>
@@ -365,19 +385,83 @@ const STUDENT=ProblemLabAPI.getStudentSession();
 if(!STUDENT){location.href='index.html';return;}
 $('#studentChip').textContent=`${STUDENT.grade}학년 ${STUDENT.class_no}반 · ${STUDENT.name}`;
 const KEY=`problemLabLesson1V9_${STUDENT.student_id}`;
+const DRAFT_KEY=`problemLabLesson1EmergencyDraft_${STUDENT.student_id}`;
 const state={stage:0,done:[false,false,false,false,false,false,false],analysis:{},abstract:{},chosen:[],mission:'',mode:'example',ramenDone:false,ramenItems:[],ramenOrder:[],quizStats:{attempts:0,wrong_total:0,passed:false}};
-try{Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const parseJson=v=>{try{return JSON.parse(v||'null')}catch{return null}};
+const initialLocalState=parseJson(localStorage.getItem(KEY));
+if(initialLocalState)Object.assign(state,initialLocalState);
 if(!state.quizStats)state.quizStats={attempts:0,wrong_total:0,passed:false};
-let remoteReady=false,syncTimer=null;
-function setSync(text,kind=''){const e=$('#syncState');e.textContent=text;e.className='syncChip '+kind}
+let remoteReady=false,syncTimer=null,syncInProgress=null,revision=0,preventAutoSave=false;
+function setSync(text,kind=''){const e=$('#syncState');e.textContent=text;e.className='syncChip '+kind;e.title=text;}
+function sameStudent(){return ProblemLabAPI.getStudentSession()?.student_id===STUDENT.student_id;}
+function downloadJson(name,content){
+  const u=URL.createObjectURL(new Blob([JSON.stringify(content,null,2)],{type:'application/json'}));
+  const a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),15000);
+}
+function makeBackup(){return {student_id:STUDENT.student_id,grade:STUDENT.grade,class_no:STUDENT.class_no,name:STUDENT.name,record:collectRecord(),exported_at:new Date().toISOString()};}
+function persistDraft(){
+  const record=collectRecord();revision++;
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({...record,student_id:STUDENT.student_id}));
+    return true;
+  }catch(e){setSync('이 PC 저장 공간 오류 · 기록 백업 버튼을 누르세요','bad');return false;}
+}
+$('#l1BackupBtn').onclick=()=>{try{downloadJson('1차시_내상황미션_'+STUDENT.name+'.json',makeBackup());setSync('이 PC로 백업 파일 다운로드됨 · 서버 저장 여부는 별도 확인')}catch(e){alert('백업 파일을 만들지 못했습니다: '+e.message)}};
+$('#l1RetryBtn').onclick=()=>{remoteReady=true;syncRemote();};
+$('#l1RestoreBtn').onclick=()=>$('#l1RestoreFile').click();
+$('#l1RestoreFile').onchange=async ev=>{
+  const file=ev.target.files?.[0];if(!file)return;
+  try{
+    const backup=parseJson(await file.text());
+    if(backup?.student_id&&backup.student_id!==STUDENT.student_id)throw Error('다른 학생의 백업 파일입니다.');
+    // 이전 탭 긴급 콘솔 백업과 이 페이지의 기록 백업을 모두 읽을 수 있습니다.
+    let record=backup?.record||backup?.localDrafts?.[DRAFT_KEY]||null;
+    if(!record&&backup?.localDrafts?.[KEY]){
+      const restoredState=backup.localDrafts[KEY];
+      const pairs={customContext:'custom_context',myProblem:'problem',myCond:'conditions',myCurrent:'current_state',myGoal:'goal_state',myCore:'core_elements',myParts:'parts',reflection:'reflection'};
+      const activity={...(restoredState.formDraft||{})};
+      (backup.fields||[]).forEach(field=>{if(pairs[field.id])activity[pairs[field.id]]=field.value||''});
+      record={state:restoredState,activity};
+    }
+    if(!record?.state||!record?.activity)throw Error('복원할 수 있는 1차시 기록이 없습니다.');
+    if(!confirm('현재 화면을 백업 파일 내용으로 교체할까요? 현재 내용도 먼저 백업해 주세요.'))return;
+    preventAutoSave=true;
+    Object.assign(state,record.state);state.formDraft=record.activity;
+    rerenderAll();applyForm(record.activity);
+    preventAutoSave=false;persistDraft();
+    setSync('백업 복원됨 · 저장 재시도 필요','bad');
+  }catch(e){alert('백업 복원 오류: '+e.message)}finally{ev.target.value=''}
+};
+window.addEventListener('online',()=>{if(localStorage.getItem(DRAFT_KEY))syncRemote()});
+window.addEventListener('storage',ev=>{
+  if(ev.key==='problemLabStudentSessionV1'&&!sameStudent())setSync('다른 학생이 로그인함 · 먼저 기록 백업','bad');
+});
 function collectActivity(){
   const mission=typeof missions!=='undefined'?missions.find(x=>x.id===state.mission):null;
   const val=id=>$('#'+id)?.value?.trim?.()||'';
   return {mission_id:state.mission,mission_title:mission?.title||'',mode:state.mode,custom_context:val('customContext'),problem:val('myProblem'),conditions:val('myCond'),current_state:val('myCurrent'),goal_state:val('myGoal'),core_elements:val('myCore'),parts:val('myParts'),reflection:val('reflection')};
 }
 function collectRecord(){return {state:JSON.parse(JSON.stringify(state)),activity:collectActivity(),quiz:{...state.quizStats},saved_at:new Date().toISOString()}}
-async function syncRemote(){if(!remoteReady)return;setSync('저장 중...');const {data,error}=await ProblemLabAPI.saveLesson1(collectRecord());if(error||!data?.ok){setSync('저장 실패','bad');return}setSync('저장됨','good')}
-const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,450)}};
+async function syncRemote(){
+  if(!remoteReady)return false;
+  if(!sameStudent()){setSync('로그인 계정이 바뀜 · 백업 후 원래 학생으로 로그인','bad');return false;}
+  if(syncInProgress){await syncInProgress;if(!localStorage.getItem(DRAFT_KEY))return true;}
+  const current=revision;
+  const snapshot=collectRecord();
+  setSync('서버에 저장 중...');
+  syncInProgress=(async()=>{
+    try{
+      const {data,error}=await ProblemLabAPI.saveLesson1(snapshot);
+      if(error||!data?.ok){setSync('서버 저장 실패 · 이 PC 초안 보관 중','bad');return false;}
+      if(revision===current){localStorage.removeItem(DRAFT_KEY);setSync('Supabase 저장 완료','good');}
+      else{setSync('추가 변경 내용 저장 중...');setTimeout(syncRemote,300);}
+      return true;
+    }catch(e){setSync('인터넷 또는 서버 오류 · 이 PC 초안 보관 중','bad');return false;}
+  })();
+  try{return await syncInProgress}finally{syncInProgress=null;}
+}
+const save=()=>{if(preventAutoSave)return;persistDraft();if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,600)}};
 
 const analysisItems=[
 {id:'a1',t:'금요일 15:40, 세 사람은 모두 학교에 있음',z:'current'},
@@ -467,7 +551,55 @@ $('#reset4').onclick=()=>{state.chosen=[];save();renderTasks();$('#to5').classLi
 function renderMissions(){const h=$('#missionCards');h.innerHTML=missions.map(m=>`<button class="missionCard ${state.mission===m.id?'selected':''}" data-mid="${m.id}"><div class="ico">${m.ico}</div><h3>${m.title}</h3><p>${m.desc}</p></button>`).join('');$$('.missionCard',h).forEach(b=>b.onclick=()=>{state.mission=b.dataset.mid;state.mode='example';save();renderMissions();renderMissionData()})}
 function renderMissionData(){const box=$('#dataSheet');if(!state.mission){box.classList.add('hide');return}const m=missions.find(x=>x.id===state.mission);box.classList.remove('hide');$('#dataTitle').textContent=`${m.ico} ${m.title} · 예시 데이터`;$('#dataFacts').innerHTML=m.facts.map(([k,v])=>`<div class="dataFact"><small>${k}</small><b>${v}</b></div>`).join('');$$('.modeSwitch button').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));$('#customData').classList.toggle('hide',state.mode!=='custom')}
 $$('.modeSwitch button').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;save();renderMissionData()});
-$('#finish').onclick=async()=>{const vals=[$('#myProblem').value,$('#myCond').value,$('#myCurrent').value,$('#myGoal').value,$('#myCore').value,$('#myParts').value,$('#reflection').value].map(v=>v.trim());if(!state.mission){showFb('fb5','먼저 상황 하나를 선택해 주세요.',false);return}if(vals.some(v=>!v)){showFb('fb5','모든 칸을 채운 뒤 완료해 주세요.',false);return}state.done[5]=true;state.formDraft=collectActivity();$('#to6').classList.remove('hide');save();const content=collectActivity();const {data,error}=await ProblemLabAPI.publishLesson1(content);if(error||!data?.ok){showFb('fb5','활동은 저장했지만 갤러리 등록에 실패했어요. 인터넷 연결을 확인한 뒤 완료 버튼을 다시 눌러 주세요.',false);return}showFb('fb5','좋아요. 내 상황 미션을 저장했고 학급 갤러리에도 카드로 등록했어요. 준비되면 형성평가로 넘어가세요.',true)};$('#to6').onclick=()=>renderStage(6);
+
+const L1_PUBLISH_PENDING_KEY=`problemLabLesson1PendingPublish_${STUDENT.student_id}`;
+function l1PublishMessage(text,ok=false){
+  const node=$('#l1PublishResult');node.textContent=text;node.style.color=ok?'#166342':'#a23e42';
+  showFb('fb5',text,ok);
+}
+function l1ValidActivity(){
+  const vals=['myProblem','myCond','myCurrent','myGoal','myCore','myParts','reflection'].map(id=>$('#'+id).value.trim());
+  if(!state.mission){l1PublishMessage('먼저 상황 하나를 선택해 주세요.');return false}
+  if(vals.some(v=>!v)){l1PublishMessage('아직 비어 있는 칸이 있습니다. 내용을 채운 뒤 등록해 주세요.');return false}
+  return true;
+}
+async function l1SafePublish(){
+  if(!l1ValidActivity())return;
+  const button=$('#l1RetryPublish');button.disabled=true;
+  try{
+    state.done[5]=true;state.formDraft=collectActivity();$('#to6').classList.remove('hide');
+    persistDraft();
+    localStorage.setItem(L1_PUBLISH_PENDING_KEY,'1');
+    const pin=$('#l1ReloginPin').value.trim();
+    if(pin){
+      if(!/^\d{4}$/.test(pin)){l1PublishMessage('로그인 PIN은 숫자 4자리로 입력해 주세요.');return}
+      l1PublishMessage('기존 학생으로 재인증하는 중...');
+      const {data:auth,error:authErr}=await ProblemLabAPI.studentLogin({grade:STUDENT.grade,classNo:STUDENT.class_no,name:STUDENT.name,pin});
+      if(authErr||!auth?.ok||auth.student_id!==STUDENT.student_id){
+        l1PublishMessage(auth?.message||authErr?.message||'로그인 인증에 실패했어요. 입력한 PIN을 확인해 주세요.');return
+      }
+      $('#l1ReloginPin').value='';
+    }
+    remoteReady=true;
+    l1PublishMessage('작성 내용을 Supabase에 저장하고 있습니다...');
+    const synced=await syncRemote();
+    if(!synced){l1PublishMessage('서버 저장 실패: 화면 상단의 저장 상태를 확인해 주세요. 기록 백업 후 로그인 PIN을 입력해서 다시 시도할 수 있어요.');return}
+    // Publishing MUST independently succeed; a successful save_lesson1 alone is not proof of a gallery post.
+    const content=collectActivity();
+    const {data,error}=await ProblemLabAPI.publishLesson1(content);
+    if(error||!data?.ok){
+      l1PublishMessage('갤러리 등록 실패: '+(data?.message||error?.message||'서버 응답을 확인할 수 없습니다.')+'\n현재 작성 내용은 보관 중입니다. PIN 재인증 후 다시 시도해 주세요.');return
+    }
+    localStorage.removeItem(L1_PUBLISH_PENDING_KEY);
+    l1PublishMessage('✅ 서버 저장 및 갤러리 등록 완료! 갤러리에 작품이 등록됐습니다.',true);
+    setSync('Supabase 저장 + 갤러리 등록 완료','good');
+  }catch(e){l1PublishMessage('서버 연결 오류: '+(e?.message||'잠시 후 다시 시도하세요.')+'\n기록 백업 후 재시도해 주세요.');}
+  finally{button.disabled=false;}
+}
+$('#finish').onclick=l1SafePublish;
+$('#l1RetryPublish').onclick=l1SafePublish;
+$('#to6').onclick=()=>renderStage(6);
+
 
 // formative quiz
 const quizQuestions=[
@@ -512,9 +644,41 @@ $('#startQuiz').onclick=buildQuiz;$('#restartQuiz').onclick=buildQuiz;$('#quizNe
 
 function applyForm(a={}){const pairs={customContext:'custom_context',myProblem:'problem',myCond:'conditions',myCurrent:'current_state',myGoal:'goal_state',myCore:'core_elements',myParts:'parts',reflection:'reflection'};Object.entries(pairs).forEach(([id,k])=>{if($('#'+id)&&a[k]!=null)$('#'+id).value=a[k]})}
 function rerenderAll(){renderAnalysis();renderAbstract();renderTasks();renderMissions();renderMissionData();renderStage(state.stage||0);if(state.done[1])$('#to2').classList.remove('hide');if(state.done[2])$('#to3').classList.remove('hide');if(state.done[3])$('#to4').classList.remove('hide');if(state.done[4]){$('#to5').classList.remove('hide');$('#modelPreview').classList.remove('hide');}if(state.done[5])$('#to6').classList.remove('hide');}
-['customContext','myProblem','myCond','myCurrent','myGoal','myCore','myParts','reflection'].forEach(id=>$('#'+id)?.addEventListener('input',()=>{state.formDraft=collectActivity();localStorage.setItem(KEY,JSON.stringify(state));if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,700)}}));
-async function bootRemote(){setSync('기록 확인 중');const {data,error}=await ProblemLabAPI.getLesson1();if(error||!data?.ok){setSync('저장 확인 필요','bad');remoteReady=true;return}const r=data.record||{};if(r.state&&Object.keys(r.state).length){Object.assign(state,r.state);if(!state.quizStats)state.quizStats=r.quiz||{attempts:0,wrong_total:0,passed:false};localStorage.setItem(KEY,JSON.stringify(state));applyForm(r.activity||{});rerenderAll()}remoteReady=true;setSync('저장됨','good');syncRemote()}
-initRamenGame();rerenderAll();if(state.formDraft)applyForm(state.formDraft);bootRemote();
+['customContext','myProblem','myCond','myCurrent','myGoal','myCore','myParts','reflection'].forEach(id=>$('#'+id)?.addEventListener('input',()=>{state.formDraft=collectActivity();persistDraft();if(remoteReady){clearTimeout(syncTimer);syncTimer=setTimeout(syncRemote,700)}}));
+async function bootRemote(){
+  setSync('Supabase 확인 중');
+  let result;
+  try{result=await ProblemLabAPI.getLesson1()}catch(e){result={error:e}};
+  const {data,error}=result||{};
+  const localDraft=parseJson(localStorage.getItem(DRAFT_KEY));
+  if(error||!data?.ok){setSync('서버 연결 또는 로그인 확인 필요 · 작성 내용은 이 PC에 보관','bad');remoteReady=true;return;}
+  const r=data.record||{};
+  // 이전 버전에서 서버 저장에 실패한 초안도 보호합니다.
+  const oldLocalActivity=initialLocalState?.formDraft;
+  const hasOldUnsavedDraft=oldLocalActivity&&Object.values(oldLocalActivity).some(v=>typeof v==='string'&&v.trim())&&
+    JSON.stringify(oldLocalActivity)!==JSON.stringify(r.activity||{});
+  const pendingNewer=localDraft&&Date.parse(localDraft.saved_at||0)>Date.parse(r.saved_at||0);
+  const keepLocal=(pendingNewer||hasOldUnsavedDraft)&&initialLocalState;
+  if(keepLocal){
+    preventAutoSave=true;
+    rerenderAll();applyForm(localDraft?.activity||oldLocalActivity||{});
+    preventAutoSave=false;
+    setSync('이 PC와 서버 기록이 달라 초안을 보호함 · 백업 후 저장 재시도','bad');
+  }else if(r.state&&Object.keys(r.state).length){
+    preventAutoSave=true;
+    Object.assign(state,r.state);
+    if(!state.quizStats)state.quizStats=r.quiz||{attempts:0,wrong_total:0,passed:false};
+    localStorage.setItem(KEY,JSON.stringify(state));
+    rerenderAll();applyForm(r.activity||{});
+    preventAutoSave=false;
+    localStorage.removeItem(DRAFT_KEY);
+  }
+  remoteReady=true;
+  if(localStorage.getItem(L1_PUBLISH_PENDING_KEY))$('#l1PublishResult').textContent='⚠️ 이전에 갤러리 등록이 확인되지 않았습니다. 작성 내용을 확인하고 등록을 다시 시도해 주세요.';
+  if(keepLocal){persistDraft();}
+  else setSync('Supabase 연결됨 · 기록 불러옴','good');
+} 
+preventAutoSave=true;initRamenGame();rerenderAll();if(state.formDraft)applyForm(state.formDraft);preventAutoSave=false;bootRemote();
 })();
 </script>
 </body>
